@@ -5,7 +5,7 @@ description: 'Using the dotset CLI to run apps with secrets and monitoring'
 
 # Unified CLI
 
-The `@dotsetlabs/cli` package provides a unified `dotset` command that combines the power of Axion and Gluon.
+The `@dotsetlabs/cli` package provides the `dotset` command that combines the power of all three modules: Axion (secrets), Gluon (security), and Tachyon (tunnels).
 
 ## Installation
 
@@ -32,9 +32,11 @@ dotset run [options] -- <command>
 | Option | Description |
 | :--- | :--- |
 | `--scope <env>` | Environment scope for secrets (development, staging, production) |
+| `-s, --service <name>` | Service to load secrets for |
 | `--mode <mode>` | Secret protection mode: `detect`, `redact`, `block` |
 | `--redact-text <text>` | Custom text used for redaction (default: `[REDACTED]`) |
-| `--no-monitor` | Disable runtime monitoring (secrets only) |
+| `--no-secrets` | Disable secret injection |
+| `--no-monitor` | Disable runtime monitoring |
 
 ### Examples
 
@@ -53,21 +55,9 @@ dotset run --scope production --mode redact -- node server.js
 dotset run --mode block -- npm start
 ```
 
-## Secondary Commands
-
-The unified CLI also acts as a shortcut to individual product CLIs:
-
+**Multi-Service**
 ```bash
-# Axion shortcuts
-dotset axn list
-dotset axn set KEY VALUE
-
-# Gluon shortcuts
-dotset gln analyze
-dotset gln sbom
-
-# Tachyon shortcuts
-dotset tcn share 3000
+dotset run --service api --scope production -- npm start
 ```
 
 ## Why use the Unified CLI?

@@ -9,20 +9,22 @@ description: 'Get started with Gluon in 5 minutes'
 
 ## Installation
 
+### CLI
+
 ```bash
-npm install -g @dotsetlabs/gluon
+npm install -g @dotsetlabs/cli
 ```
 
-Or use directly with npx:
+### SDK (for programmatic access)
 
 ```bash
-npx @dotsetlabs/gluon run -- npm start
+npm install @dotsetlabs/gluon
 ```
 
 ## Initialize a Project
 
 ```bash
-gln init
+dotset init --gluon
 ```
 
 This creates `.dotset/gluon/` with configuration files.
@@ -32,12 +34,12 @@ This creates `.dotset/gluon/` with configuration files.
 Analyze your codebase for security issues:
 
 ```bash
-gln analyze
+dotset scan
 ```
 
 Detects:
-- Exposed secrets in code
-- Vulnerable dependencies
+- Exposed `.env` files that should be gitignored
+- Hardcoded credentials in package.json scripts
 - Security misconfigurations
 
 ## Runtime Monitoring
@@ -45,25 +47,25 @@ Detects:
 Run your app with monitoring:
 
 ```bash
-gln run -- npm start
+dotset run -- npm start
 ```
 
 Monitors:
 - Secret exposure in stdout/stderr
 - Outbound network connections
-- File system access patterns
+- Module loading patterns
 
 ## Secret Protection Modes
 
 ```bash
 # Default: Detect and warn
-gln run -- npm start
+dotset run -- npm start
 
 # Redact secrets in output
-gln run --mode redact -- npm start
+dotset run --mode redact -- npm start
 
 # Block output containing secrets
-gln run --mode block -- npm start
+dotset run --mode block -- npm start
 ```
 
 ## Generate SBOM
@@ -71,8 +73,8 @@ gln run --mode block -- npm start
 Create a Software Bill of Materials:
 
 ```bash
-gln sbom
-gln sbom --format spdx --output sbom.json
+dotset sbom --static
+dotset sbom --static --format spdx --output sbom.json
 ```
 
 ## Next Steps

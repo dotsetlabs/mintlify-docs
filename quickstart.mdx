@@ -1,0 +1,76 @@
+---
+title: 'Quickstart'
+description: 'Get started with dotset in 60 seconds'
+---
+
+# Quickstart
+
+Get the full security stack running in under a minute.
+
+## 1. Install the CLI
+
+```bash
+npm install -g @dotsetlabs/cli
+```
+
+## 2. Initialize Your Project
+
+```bash
+cd your-project
+dotset init
+```
+
+This creates a `.dotset/` directory with your project configuration. You'll be prompted to enable modules:
+
+- **Secrets** — Encrypted environment variables
+- **Security** — Runtime leak detection
+- **Tunnels** — Secure localhost sharing
+
+## 3. Add Your First Secret
+
+```bash
+dotset secrets set DATABASE_URL "postgres://localhost/mydb"
+dotset secrets set API_KEY "sk-your-api-key"
+```
+
+Secrets are encrypted locally with AES-256-GCM. They never touch disk unencrypted.
+
+## 4. Run Your App
+
+```bash
+dotset run -- npm start
+```
+
+This command:
+1. Injects your secrets into `process.env`
+2. Monitors stdout/stderr for leaked secrets
+3. Tracks outbound network connections
+
+## 5. Share with Your Team (Optional)
+
+```bash
+dotset share 3000
+```
+
+This creates a secure tunnel to your local server. The URL is protected by default.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Cloud Sync" icon="cloud" href="/axion/cloud-sync">
+    Sync secrets with your team
+  </Card>
+  <Card title="Protection Modes" icon="shield-check" href="/gluon/runtime-monitoring">
+    Configure detect, redact, or block modes
+  </Card>
+</CardGroup>
+
+## Gitignore
+
+Add this to your `.gitignore`:
+
+```
+.dotset/
+```
+
+The `.dotset/` directory contains your encrypted secrets and local configuration. Don't commit it to version control.

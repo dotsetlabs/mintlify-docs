@@ -18,7 +18,7 @@
     "topbarLinks": [
         {
             "name": "Dashboard",
-            "url": "https://dotsetlabs.com/dashboard"
+            "url": "https://app.dotsetlabs.com"
         }
     ],
     "topbarCtaButton": {
@@ -27,15 +27,19 @@
     },
     "tabs": [
         {
-            "name": "Axion",
+            "name": "Platform",
+            "url": "/"
+        },
+        {
+            "name": "Secrets",
             "url": "axion"
         },
         {
-            "name": "Gluon",
+            "name": "Security",
             "url": "gluon"
         },
         {
-            "name": "Tachyon",
+            "name": "Tunnels",
             "url": "tachyon"
         }
     ],
@@ -55,11 +59,13 @@
         {
             "group": "Getting Started",
             "pages": [
-                "introduction"
+                "introduction",
+                "quickstart",
+                "cli-reference"
             ]
         },
         {
-            "group": "Axion",
+            "group": "Secrets (Axion)",
             "pages": [
                 "axion/quickstart",
                 "axion/cli-reference",
@@ -71,7 +77,7 @@
             ]
         },
         {
-            "group": "Gluon",
+            "group": "Security (Gluon)",
             "pages": [
                 "gluon/quickstart",
                 "gluon/cli-reference",
@@ -81,19 +87,13 @@
             ]
         },
         {
-            "group": "Tachyon",
+            "group": "Tunnels (Tachyon)",
             "pages": [
                 "tachyon/quickstart",
                 "tachyon/cli-reference",
                 "tachyon/inspector",
                 "tachyon/authentication",
                 "tachyon/guides"
-            ]
-        },
-        {
-            "group": "Unified CLI",
-            "pages": [
-                "cli/unified-cli"
             ]
         }
     ],

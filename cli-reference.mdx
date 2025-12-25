@@ -1,0 +1,178 @@
+---
+title: 'CLI Reference'
+description: 'Complete command reference for the dotset CLI'
+---
+
+# CLI Reference
+
+Complete reference for all dotset commands.
+
+## Installation
+
+```bash
+npm install -g @dotsetlabs/cli
+```
+
+---
+
+## Core Commands
+
+### `dotset init`
+
+Initialize a new dotset project.
+
+```bash
+dotset init [options]
+```
+
+| Option | Description |
+|:-------|:------------|
+| `--name <name>` | Project name |
+| `--cloud` | Create cloud project immediately |
+| `--axion` | Enable Secrets module |
+| `--gluon` | Enable Security module |
+| `--tachyon` | Enable Tunnels module |
+
+### `dotset run`
+
+Run a command with secrets injected and security monitoring enabled.
+
+```bash
+dotset run [options] -- <command>
+```
+
+| Option | Description |
+|:-------|:------------|
+| `--scope <env>` | Environment scope: development, staging, production |
+| `-s, --service <name>` | Service to scope secrets to |
+| `--no-secrets` | Disable secret injection |
+| `--no-monitor` | Disable security monitoring |
+| `--mode <mode>` | Protection mode: detect, redact, block |
+
+### `dotset login`
+
+Authenticate with the dotset cloud.
+
+```bash
+dotset login
+```
+
+### `dotset logout`
+
+Clear stored credentials.
+
+```bash
+dotset logout
+```
+
+### `dotset status`
+
+Show project and authentication status.
+
+```bash
+dotset status
+```
+
+---
+
+## Secrets Commands
+
+### `dotset secrets set`
+
+Set a secret value.
+
+```bash
+dotset secrets set <key> [value] [options]
+```
+
+| Option | Description |
+|:-------|:------------|
+| `--scope <env>` | Environment scope (default: development) |
+| `-s, --service <name>` | Service to scope the secret to |
+
+### `dotset secrets get`
+
+Get a secret value.
+
+```bash
+dotset secrets get <key> [options]
+```
+
+### `dotset secrets list`
+
+List all secrets.
+
+```bash
+dotset secrets list [options]
+```
+
+| Option | Description |
+|:-------|:------------|
+| `--scope <env>` | Environment scope |
+| `--show-values` | Show secret values (use with caution) |
+
+### `dotset secrets delete`
+
+Delete a secret.
+
+```bash
+dotset secrets delete <key> [options]
+```
+
+---
+
+## Security Commands
+
+### `dotset scan`
+
+Run static security analysis.
+
+```bash
+dotset scan [options]
+```
+
+| Option | Description |
+|:-------|:------------|
+| `--fix` | Attempt to fix issues automatically |
+| `--json` | Output results as JSON |
+
+### `dotset sbom`
+
+Generate a Software Bill of Materials.
+
+```bash
+dotset sbom [options]
+```
+
+| Option | Description |
+|:-------|:------------|
+| `--format <format>` | Output format: cyclonedx, spdx |
+| `-o, --output <file>` | Output file path |
+| `--static` | Generate from package.json |
+
+---
+
+## Tunnel Commands
+
+### `dotset share`
+
+Share localhost via secure tunnel.
+
+```bash
+dotset share <port> [options]
+```
+
+| Option | Description |
+|:-------|:------------|
+| `--subdomain <name>` | Request specific subdomain |
+| `--inspect` | Enable request inspector |
+| `--auth` | Require authentication |
+| `--project <id>` | Link to a specific project |
+
+### `dotset tunnels`
+
+List active tunnels.
+
+```bash
+dotset tunnels
+```

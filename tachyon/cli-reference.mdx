@@ -5,16 +5,16 @@ description: 'Complete Tachyon CLI command reference'
 
 # Tachyon CLI Reference
 
-All commands use the `tcn` prefix.
+> **Note**: CLI access requires the unified `@dotsetlabs/cli` package. The `@dotsetlabs/tachyon` package provides SDK access only.
 
 ## Core Commands
 
-### tcn share
+### dotset share
 
 Expose a local port via a secure tunnel.
 
 ```bash
-tcn share <port> [options]
+dotset share <port> [options]
 ```
 
 | Option | Description |
@@ -24,108 +24,115 @@ tcn share <port> [options]
 | `--subdomain <name>` | Custom subdomain name (Pro) |
 | `--host <host>` | Local host to forward to (default: `localhost`) |
 | `--allow <emails...>` | Allow specific email addresses |
-| `-p, --project <name>` | Use existing project by name |
-| `--new-project <name>` | Create and use a new project |
-| `--standalone` | Create tunnel without project |
-| `--inspect [port]` | Enable request inspector (default: 4040) |
-| `--no-inspect` | Disable the request inspector |
+| `--project <id>` | Link to a specific project |
+| `--inspect` | Enable request inspector (localhost:4040) |
 
 **Examples:**
 
 ```bash
-tcn share 3000
-tcn share 8080 --public
-tcn share 3000 --subdomain my-app
-tcn share 3000 --allow colleague@example.com
-tcn share 3000 --inspect 8080
+dotset share 3000
+dotset share 8080 --public
+dotset share 3000 --subdomain my-app
+dotset share 3000 --allow colleague@example.com
+dotset share 3000 --inspect
+```
+
+### dotset tunnels
+
+List active tunnels.
+
+```bash
+dotset tunnels
+```
+
+---
+
+## Webhook Commands
+
+### dotset webhooks list
+
+List captured webhook requests.
+
+```bash
+dotset webhooks list [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--limit <n>` | Number of webhooks to show |
+
+### dotset webhooks show
+
+Show details of a specific webhook.
+
+```bash
+dotset webhooks show <id>
+```
+
+### dotset webhooks replay
+
+Replay a webhook request to localhost.
+
+```bash
+dotset webhooks replay <id> [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `-p, --port <port>` | Local port to replay to |
+
+---
+
+## Project Commands
+
+### dotset project list
+
+List your projects.
+
+```bash
+dotset project list
+```
+
+### dotset project show
+
+Show project details.
+
+```bash
+dotset project show <id>
+```
+
+### dotset project link
+
+Link current directory to a cloud project.
+
+```bash
+dotset project link <id>
+```
+
+### dotset project unlink
+
+Unlink from cloud project.
+
+```bash
+dotset project unlink
 ```
 
 ---
 
 ## Authentication
 
-### tcn login
+### dotset login
 
 Sign in with SSO.
 
 ```bash
-tcn login [options]
+dotset login
 ```
 
-| Option | Description |
-|--------|-------------|
-| `--google` | Sign in with Google (default: GitHub) |
-
-### tcn logout
+### dotset logout
 
 Sign out and clear credentials.
 
 ```bash
-tcn logout
-```
-
-### tcn whoami
-
-Show current user and session info.
-
-```bash
-tcn whoami
-```
-
----
-
-## Project Management
-
-### tcn projects
-
-List your projects.
-
-```bash
-tcn projects
-```
-
-### tcn project create
-
-Create a new project.
-
-```bash
-tcn project create <name> [options]
-```
-
-| Option | Description |
-|--------|-------------|
-| `--subdomain <name>` | Reserve a subdomain (Pro) |
-
-### tcn project delete
-
-Delete a project.
-
-```bash
-tcn project delete <name>
-```
-
----
-
-## Team Management
-
-### tcn members
-
-Manage project members.
-
-```bash
-tcn members list
-tcn members add <email>
-tcn members remove <email>
-```
-
----
-
-## Status
-
-### tcn status
-
-Show active tunnels.
-
-```bash
-tcn status
+dotset logout
 ```

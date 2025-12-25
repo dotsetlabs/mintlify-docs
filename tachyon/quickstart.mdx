@@ -9,20 +9,22 @@ description: 'Get started with Tachyon in 5 minutes'
 
 ## Installation
 
+### CLI
+
 ```bash
-npm install -g @dotsetlabs/tachyon
+npm install -g @dotsetlabs/cli
 ```
 
-Or use directly with npx:
+### SDK (for programmatic access)
 
 ```bash
-npx @dotsetlabs/tachyon share 3000
+npm install @dotsetlabs/tachyon
 ```
 
 ## Sign In
 
 ```bash
-tcn login
+dotset login
 ```
 
 Sign in with GitHub or Google SSO.
@@ -30,7 +32,7 @@ Sign in with GitHub or Google SSO.
 ## Share a Local Port
 
 ```bash
-tcn share 3000
+dotset share 3000
 ```
 
 You'll get a public URL like:
@@ -45,13 +47,13 @@ By default, tunnels require authentication. Share with your team:
 
 ```bash
 # Public (no auth required)
-tcn share 3000 --public
+dotset share 3000 --public
 
 # Allow specific emails
-tcn share 3000 --allow colleague@example.com
+dotset share 3000 --allow colleague@example.com
 
 # Custom subdomain (Pro)
-tcn share 3000 --subdomain my-app
+dotset share 3000 --subdomain my-app
 ```
 
 ## Projects
@@ -59,14 +61,8 @@ tcn share 3000 --subdomain my-app
 Organize tunnels in projects for the dashboard:
 
 ```bash
-# Create a new project
-tcn share 3000 --new-project "My App"
-
-# Use existing project
-tcn share 3000 --project "My App"
-
-# Standalone (no project)
-tcn share 3000 --standalone
+# Link to existing project
+dotset share 3000 --project <project-id>
 ```
 
 ## Request Inspector
@@ -74,7 +70,7 @@ tcn share 3000 --standalone
 Inspect incoming requests in real-time:
 
 ```bash
-tcn share 3000 --inspect
+dotset share 3000 --inspect
 ```
 
 Opens the inspector at `http://localhost:4040`.

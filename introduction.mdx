@@ -1,59 +1,84 @@
 ---
 title: 'Introduction'
-description: 'Developer tools for security, performance, and DX'
+description: 'The Secure Developer Runtime'
 ---
 
-# Welcome to dotset labs
+# dotset labs
 
-Build secure, observable, and collaborative applications with our integrated developer tools.
+**One CLI for secrets, security, and tunnels.**
 
-<CardGroup cols={3}>
-  <Card title="Axion" icon="key" href="/axion/quickstart">
-    Zero-disk secrets management. Encrypted secrets injected directly into memory.
-  </Card>
-  <Card title="Gluon" icon="shield" href="/gluon/quickstart">
-    Runtime security telemetry. Monitor secrets, network, and generate SBOMs.
-  </Card>
-  <Card title="Tachyon" icon="globe" href="/tachyon/quickstart">
-    Zero-trust tunnels for teams. Share local services with authentication.
-  </Card>
-</CardGroup>
+dotset is a unified developer platform that combines encrypted secrets management, runtime security telemetry, and zero-trust localhost sharing into a single developer experience.
 
 ## Quick Install
-
-Install all tools with a single package:
 
 ```bash
 npm install -g @dotsetlabs/cli
 ```
 
-Or install individual tools:
+## The Unified Runtime
+
+With one command, inject secrets and monitor for leaks:
 
 ```bash
-npm install -g @dotsetlabs/axion   # Secrets
-npm install -g @dotsetlabs/gluon   # Monitoring
-npm install -g @dotsetlabs/tachyon # Tunnels
-```
+# Initialize your project
+dotset init
 
-## Unified CLI
-
-The `dotset` CLI provides a unified interface for all products:
-
-```bash
-# Run with secrets + monitoring
+# Run with full security stack
 dotset run -- npm start
-
-# Individual product commands
-dotset axn set API_KEY "sk-xxx"
-dotset gln analyze
-dotset tcn share 3000
 ```
 
-<CardGroup cols={2}>
-  <Card title="Unified Run Command" icon="play" href="/cli/unified-cli">
-    Run your app with secrets injection and runtime monitoring combined.
+This single command:
+- 🔐 **Injects secrets** from your encrypted vault
+- 🛡️ **Monitors runtime** for secret leaks in logs
+- 📊 **Tracks network** calls to detect anomalies
+
+## Platform Modules
+
+<CardGroup cols={3}>
+  <Card title="Secrets" icon="shield" href="/axion/quickstart">
+    Zero-disk encrypted secrets with AES-256-GCM.
   </Card>
-  <Card title="GitHub" icon="github" href="https://github.com/dotsetlabs">
-    View source code and contribute.
+  <Card title="Security" icon="chart-line" href="/gluon/quickstart">
+    Runtime telemetry that detects leaks and tracks network.
+  </Card>
+  <Card title="Tunnels" icon="globe" href="/tachyon/quickstart">
+    Zero-trust localhost sharing with SSO authentication.
   </Card>
 </CardGroup>
+
+## Core Commands
+
+| Command | Description |
+|:--------|:------------|
+| `dotset init` | Initialize a new project |
+| `dotset run` | Run with secrets + monitoring |
+| `dotset login` | Authenticate with cloud |
+| `dotset status` | Show project status |
+
+## Module Commands
+
+```bash
+# Secrets
+dotset secrets set API_KEY "sk-..."
+dotset secrets list
+
+# Security
+dotset scan
+dotset sbom --static
+
+# Tunnels
+dotset share 3000
+dotset tunnels
+```
+
+## Why dotset?
+
+Most security tools are:
+- **Siloed** — Separate tools for secrets, scanning, and tunneling
+- **Friction-heavy** — Require extensive configuration
+- **Dev-unfriendly** — Designed for ops, not developers
+
+dotset is different:
+- **Unified** — One CLI, one config, one workflow
+- **Zero-config** — Sensible defaults that just work
+- **Dev-first** — Built for the local development workflow

@@ -5,101 +5,108 @@ description: 'Complete Gluon CLI command reference'
 
 # Gluon CLI Reference
 
-All commands use the `gln` prefix.
+> **Recommended**: Use the unified `dotset` CLI for the full platform experience. The standalone `gln` command is available when installing `@dotsetlabs/gluon` directly.
 
 ## Core Commands
 
-### gln init
-
-Initialize Gluon in your project.
-
-```bash
-gln init
-```
-
-### gln analyze
+### dotset scan
 
 Run static security analysis.
 
 ```bash
-gln analyze [options]
+dotset scan [options]
 ```
 
 | Option | Description |
 |--------|-------------|
-| `--fix` | Auto-fix issues where possible |
-| `--format <fmt>` | Output format: `text`, `json`, `sarif` |
+| `--json` | Output results as JSON |
 
-### gln run
+**What it checks:**
+- `.env` files that should be gitignored
+- Hardcoded secrets in package.json scripts
+- Common security misconfigurations
+
+### dotset run
 
 Run a command with runtime monitoring.
 
 ```bash
-gln run [options] -- <command>
+dotset run [options] -- <command>
 ```
 
 | Option | Description |
 |--------|-------------|
 | `--mode <mode>` | Secret protection: `detect`, `redact`, `block` |
 | `--redact-text <text>` | Custom redaction text (default: `[REDACTED]`) |
-| `--no-secrets` | Disable secret detection |
-| `--no-network` | Disable network monitoring |
+| `--no-secrets` | Disable secret injection (Axion) |
+| `--no-monitor` | Disable runtime monitoring (Gluon) |
 
 **Examples:**
 
 ```bash
-gln run -- npm start
-gln run --mode redact -- npm start
-gln run --mode block -- node server.js
-gln run --no-network -- npm test
+dotset run -- npm start
+dotset run --mode redact -- npm start
+dotset run --mode block -- node server.js
 ```
 
-### gln sbom
+### dotset sbom
 
 Generate a Software Bill of Materials.
 
 ```bash
-gln sbom [options]
+dotset sbom [options]
 ```
 
 | Option | Description |
 |--------|-------------|
-| `--format <fmt>` | Format: `cyclonedx`, `spdx` |
-| `--output <file>` | Output file path |
-| `--static` | Include static analysis results |
+| `--format <fmt>` | Format: `cyclonedx`, `spdx` (default: cyclonedx) |
+| `-o, --output <file>` | Output file path |
+| `--static` | Generate from package.json dependencies |
 
 **Examples:**
 
 ```bash
-gln sbom
-gln sbom --format spdx --output sbom.json
+dotset sbom --static
+dotset sbom --static --format spdx --output sbom.json
 ```
 
 ---
 
-## Configuration
+## Protection Modes
 
-### gln config
+Gluon supports three protection modes for secret leak detection:
 
-View or set configuration.
+| Mode | Behavior |
+|:-----|:---------|
+| `detect` | Log exposure warnings but allow output (default) |
+| `redact` | Replace detected secrets with `[REDACTED]` |
+| `block` | Suppress output lines containing secrets entirely |
 
 ```bash
-gln config [key] [value]
+# Development: detect and warn
+dotset run --mode detect -- npm run dev
+
+# Staging: redact for safety
+dotset run --mode redact -- npm run test
+
+# Production: block leaks entirely
+dotset run --mode block -- npm start
 ```
 
 ---
 
-## Reports
+## What Gluon Monitors
 
-### gln report
+### Secret Patterns
+- Stripe API keys (live and test)
+- AWS access keys
+- GitHub tokens (PAT, OAuth, fine-grained)
+- Google API keys
+- JWT tokens
+- Generic API keys, secrets, and passwords
 
-Generate security report.
+### Tracked Environment Variables
+Gluon also monitors for any values from environment variables you specify, detecting if those values appear in output.
 
-```bash
-gln report [options]
-```
-
-| Option | Description |
-|--------|-------------|
-| `--format <fmt>` | Format: `text`, `json`, `html` |
-| `--output <file>` | Output file path |
+### Network Connections
+When enabled, Gluon tracks all outbound HTTP/HTTPS connections and can alert on connections to new/unknown domains.

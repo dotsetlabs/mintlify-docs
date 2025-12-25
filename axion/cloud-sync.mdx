@@ -11,57 +11,37 @@ Axion Cloud enables secure team collaboration with encrypted secret sharing.
 
 ```bash
 # 1. Sign in
-axn login
+dotset login
 
 # 2. Initialize cloud project
-axn init --cloud
+dotset init --cloud
 
 # 3. Push local secrets
-axn push
+dotset sync push
 ```
 
-## Syncing .env Files
+## Pushing and Pulling
 
-Axion auto-discovers and syncs your .env files:
+### Push to Cloud
 
 ```bash
-# Discover .env files in your project
-axn sync --discover
+# Push all local secrets
+dotset sync push
 
-# Set up sync config
-axn sync --init
-
-# Sync all configured files
-axn sync
-
-# Sync a specific file with scope
-axn sync .env.production --scope production
+# Import from .env and push in one step
+dotset sync push --from-env .env.production
 ```
 
-### Sync Config
+### Pull from Cloud
 
-Configure sync in `.dotset/axion/sync.yaml`:
-
-```yaml
-version: "1"
-files:
-  - path: .env
-    scope: development
-  - path: .env.production
-    scope: production
-  - path: apps/api/.env
-    service: api
-    scope: development
+```bash
+dotset sync pull
 ```
 
-## Monorepo Support
+### Check Status
 
-Axion automatically detects service context in monorepos:
-
-```
-apps/api/.env       → service: api
-apps/web/.env       → service: web
-packages/lib/.env   → service: lib
+```bash
+dotset sync status
 ```
 
 ## Drift Detection
@@ -69,7 +49,7 @@ packages/lib/.env   → service: lib
 Identify differences between local and cloud:
 
 ```bash
-axn drift
+dotset drift
 ```
 
 Output shows:
@@ -77,14 +57,30 @@ Output shows:
 - **Cloud only** — Secrets not locally
 - **Modified** — Different values
 
-## Conflict Resolution
+### CI Mode
 
 ```bash
-# Force push local to cloud
-axn sync --push
+dotset drift --ci
+```
 
-# Force pull from cloud
-axn sync --pull
+Exits with code 1 if drift is detected, useful for CI pipelines.
+
+### JSON Output
+
+```bash
+dotset drift --json
+```
+
+## Importing .env Files
+
+Import existing .env files into your encrypted manifest:
+
+```bash
+# Import to development scope
+dotset secrets import .env
+
+# Import to production scope
+dotset secrets import .env.production --scope production
 ```
 
 ## CI/CD Deployment
@@ -94,7 +90,7 @@ axn sync --pull
 Create a read-only token for CI/CD:
 
 ```bash
-axn tokens create
+# Create via dashboard at app.dotsetlabs.com
 ```
 
 ### Environment Variable
@@ -108,9 +104,9 @@ AXION_TOKEN=axn_xxxxxxxxxxxxx
 ### Start Command
 
 ```bash
-npx @dotsetlabs/axion run --scope production -- node dist/index.js
+npx @dotsetlabs/cli run --scope production -- node dist/index.js
 ```
 
 <Note>
-With a service token, Axion fetches secrets directly from the cloud. No local manifest needed.
+With a service token, secrets are fetched directly from the cloud. No local manifest needed.
 </Note>

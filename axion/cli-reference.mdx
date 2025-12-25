@@ -5,289 +5,207 @@ description: 'Complete Axion CLI command reference'
 
 # Axion CLI Reference
 
-All commands use the `axn` prefix.
+> **Recommended**: Use the unified `dotset` CLI for the full platform experience. The standalone `axn` command is available when installing `@dotsetlabs/axion` directly.
 
-## Core Commands
+## Secrets Commands
 
-### axn init
+### dotset secrets init
 
-Initialize a new Axion project.
+Initialize the Axion secrets vault.
 
 ```bash
-axn init [options]
+dotset secrets init
 ```
 
-| Option | Description |
-|--------|-------------|
-| `--cloud` | Create and link to a cloud project |
-
-### axn set
+### dotset secrets set
 
 Set an environment variable.
 
 ```bash
-axn set <key> <value> [options]
+dotset secrets set <key> [value] [options]
 ```
 
 | Option | Description |
 |--------|-------------|
 | `--scope <env>` | Environment scope: `development`, `staging`, `production` |
-| `--force` | Suppress overwrite warning |
-| `--json` | Validate value as JSON before storing |
 | `-s, --service <name>` | Scope to a specific service |
 
 **Examples:**
 
 ```bash
-axn set DATABASE_URL "postgres://localhost/db"
-axn set API_KEY "sk-xxx" --scope production
-axn set CONFIG '{"debug":true}' --json
-axn set DATABASE_URL "postgres://{{PG_USER}}:{{PG_PASS}}@localhost/db"
+dotset secrets set DATABASE_URL "postgres://localhost/db"
+dotset secrets set API_KEY "sk-xxx" --scope production
+dotset secrets set DATABASE_URL "postgres://{{PG_USER}}:{{PG_PASS}}@localhost/db"
 ```
 
-### axn get
+<Note>
+You can pipe values: `echo "secret-value" | dotset secrets set API_KEY`
+</Note>
+
+### dotset secrets get
 
 Get an environment variable value.
 
 ```bash
-axn get <key> [options]
+dotset secrets get <key> [options]
 ```
 
 | Option | Description |
 |--------|-------------|
 | `--scope <env>` | Environment scope (default: `development`) |
-| `--reveal` | Show actual value (unmask) |
 
-### axn rm
+### dotset secrets delete
 
 Remove an environment variable.
 
 ```bash
-axn rm <key> [options]
+dotset secrets delete <key> [options]
 ```
 
-### axn list / axn ls
+### dotset secrets list
 
 List all environment variables.
 
 ```bash
-axn list [options]
-axn ls [options]
+dotset secrets list [options]
 ```
 
 | Option | Description |
 |--------|-------------|
 | `--scope <env>` | Environment scope |
-| `--reveal` | Show actual values |
+| `--show-values` | Show actual values |
 
-### axn run
+### dotset secrets export
+
+Export secrets to file or stdout.
+
+```bash
+dotset secrets export [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--scope <env>` | Environment scope |
+| `-o, --output <file>` | Write to file |
+
+### dotset secrets import
+
+Import secrets from a .env file.
+
+```bash
+dotset secrets import <file> [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--scope <env>` | Environment scope |
+
+---
+
+## Key Management
+
+### dotset secrets key show
+
+Display the encryption key.
+
+```bash
+dotset secrets key show
+```
+
+### dotset secrets key fingerprint
+
+Show key fingerprint (safe to share).
+
+```bash
+dotset secrets key fingerprint
+```
+
+### dotset secrets rotate
+
+Rotate encryption key and re-encrypt all secrets.
+
+```bash
+dotset secrets rotate
+```
+
+---
+
+## Cloud Sync
+
+### dotset sync push
+
+Push local secrets to cloud.
+
+```bash
+dotset sync push [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--from-env <file>` | Import from .env file before pushing |
+
+### dotset sync pull
+
+Pull secrets from cloud.
+
+```bash
+dotset sync pull
+```
+
+### dotset sync status
+
+Check sync status and detect drift.
+
+```bash
+dotset sync status
+```
+
+### dotset drift
+
+Detect differences between local and cloud.
+
+```bash
+dotset drift [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--json` | Output as JSON |
+| `--ci` | Exit with code 1 if drift detected |
+
+---
+
+## Running with Secrets
+
+### dotset run
 
 Run a command with secrets injected.
 
 ```bash
-axn run [options] -- <command>
+dotset run [options] -- <command>
 ```
 
 | Option | Description |
 |--------|-------------|
 | `--scope <env>` | Environment scope (default: `development`) |
 | `-s, --service <name>` | Service to load secrets for |
+| `--mode <mode>` | Protection mode: `detect`, `redact`, `block` |
 
 **Examples:**
 
 ```bash
-axn run -- npm start
-axn run --scope production -- node dist/index.js
-axn run -s api -- npm start
-```
-
-### axn export
-
-Export secrets to stdout or file.
-
-```bash
-axn export [options]
-```
-
-| Option | Description |
-|--------|-------------|
-| `--scope <env>` | Environment scope |
-| `--format <fmt>` | Output format: `env`, `json`, `yaml` |
-| `-o, --output <file>` | Write to file |
-
----
-
-## Cloud Sync
-
-### axn sync
-
-Sync .env files with encrypted manifest.
-
-```bash
-axn sync [file] [options]
-```
-
-| Option | Description |
-|--------|-------------|
-| `--push` | Force push local to cloud |
-| `--pull` | Force pull from cloud |
-| `--discover` | Discover .env files |
-| `--init` | Initialize sync config |
-
-### axn drift
-
-Detect differences between local and cloud.
-
-```bash
-axn drift
-```
-
-### axn push
-
-Push manifest to cloud.
-
-```bash
-axn push
-```
-
----
-
-## Authentication
-
-### axn login
-
-Sign in with SSO.
-
-```bash
-axn login [options]
-```
-
-| Option | Description |
-|--------|-------------|
-| `--google` | Sign in with Google (default: GitHub) |
-
-### axn logout
-
-Sign out and clear credentials.
-
-```bash
-axn logout
-```
-
-### axn whoami
-
-Show current user and linked project.
-
-```bash
-axn whoami
-```
-
----
-
-## Project Management
-
-### axn link
-
-Link to an existing cloud project.
-
-```bash
-axn link <project-id>
-```
-
-### axn unlink
-
-Disconnect from cloud.
-
-```bash
-axn unlink
-```
-
-### axn destroy
-
-Delete a project (owner only).
-
-```bash
-axn destroy [options]
-```
-
----
-
-## Team Management
-
-### axn members
-
-Manage project members.
-
-```bash
-axn members list
-axn members add <email>
-axn members revoke <user-id>
-```
-
-### axn audit
-
-View access audit logs.
-
-```bash
-axn audit
-```
-
----
-
-## Service Tokens (CI/CD)
-
-### axn tokens
-
-Manage service tokens.
-
-```bash
-axn tokens create
-axn tokens list
-axn tokens revoke <id>
-```
-
----
-
-## Key Management
-
-### axn key
-
-Show key fingerprint or reveal key.
-
-```bash
-axn key [options]
-```
-
-| Option | Description |
-|--------|-------------|
-| `--show` | Reveal the actual key |
-
-### axn rotate
-
-Rotate encryption key.
-
-```bash
-axn rotate
-```
-
-### axn recovery
-
-Manage key recovery.
-
-```bash
-axn recovery setup
-axn recovery restore
+dotset run -- npm start
+dotset run --scope production -- node dist/index.js
+dotset run -s api -- npm start
 ```
 
 ---
 
 ## Global Options
 
-These options work with any command:
+These options work with secrets commands:
 
 | Option | Description |
 |--------|-------------|
 | `-s, --service <name>` | Scope operations to a specific service |
 | `--scope <env>` | Environment scope |
-| `--reveal` | Show actual secret values |
-| `--force` | Skip confirmation prompts |
