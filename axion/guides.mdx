@@ -1,0 +1,164 @@
+---
+title: 'Integration Guides'
+description: 'Platform-specific tutorials for integrating Axion'
+---
+
+# Integration Guides
+
+Step-by-step tutorials for deploying with Axion on popular platforms.
+
+## Vercel
+
+Use Axion to inject secrets into Vercel serverless functions and Next.js apps.
+
+### 1. Create a Service Token
+
+In the Axion dashboard, go to your project → Tokens → Create Token. Give it `read` scope.
+
+```bash
+axn tokens create --name 'vercel-production' --scope read
+```
+
+### 2. Add Token to Vercel
+
+In Vercel Project Settings → Environment Variables, add:
+
+```bash
+AXION_TOKEN=vpt_xxxxxxxxxxxxxxxxxxxxx
+```
+
+### 3. Update Your Build Command
+
+In Vercel Project Settings → General → Build Command:
+
+```bash
+npx @dotsetlabs/axion run --scope production -- npm run build
+```
+
+---
+
+## GitHub Actions
+
+Inject secrets into your GitHub Actions workflows for testing and deployment.
+
+### 1. Create a Service Token
+
+```bash
+axn tokens create --name 'github-actions' --scope read
+```
+
+### 2. Add Token as GitHub Secret
+
+Go to your repo → Settings → Secrets and variables → Actions → New repository secret. Name it `AXION_TOKEN`.
+
+### 3. Update Your Workflow
+
+Modify your `.github/workflows/*.yml`:
+
+```yaml
+name: Test & Deploy
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run tests with secrets
+        env:
+          AXION_TOKEN: ${{ secrets.AXION_TOKEN }}
+        run: npx @dotsetlabs/axion run --scope development -- npm test
+```
+
+---
+
+## Docker
+
+Run Docker containers with secrets injected at runtime — zero secrets in your image.
+
+### 1. Keep Your Dockerfile Clean
+
+Your Dockerfile should NOT contain any secrets.
+
+```dockerfile
+FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+RUN npm install -g @dotsetlabs/axion
+COPY . .
+CMD ["axn", "run", "--scope", "production", "--", "npm", "start"]
+```
+
+### 2. Pass Token at Runtime
+
+Pass the token when running the container (never bake it into the image):
+
+```bash
+docker run -e AXION_TOKEN=vpt_xxx -p 3000:3000 my-app
+```
+
+---
+
+## Render
+
+Configure Render web services and background workers with Axion.
+
+### 1. Add Token in Render Dashboard
+
+Go to your Render service → Environment → Add Environment Variable: `AXION_TOKEN=vpt_xxx`
+
+### 2. Update Start Command
+
+```bash
+npx @dotsetlabs/axion run --scope production -- node dist/index.js
+```
+
+---
+
+## AWS (EC2, ECS, Lambda)
+
+### 1. ECS Task Definition
+
+Reference the parameter in your task definition:
+
+```yaml
+containerDefinitions:
+  - name: app
+    image: myapp:latest
+    secrets:
+      - name: AXION_TOKEN
+        valueFrom: arn:aws:ssm:us-east-1:123456789:parameter/myapp/axion-token
+    command:
+      - npx
+      - "@dotsetlabs/axion"
+      - run
+      - "--scope"
+      - production
+      - "--"
+      - node
+      - dist/index.js
+```
+
+### 2. Lambda Functions
+
+For Lambda, inject secrets in your handler wrapper or use the [Native SDK](/axion/sdk).
+
+```typescript
+import { loadSecrets } from '@dotsetlabs/axion/sdk';
+
+// Load once at cold start
+await loadSecrets({ scope: 'production' });
+
+export const handler = async (event) => {
+  // Secrets are now in process.env
+};
+```

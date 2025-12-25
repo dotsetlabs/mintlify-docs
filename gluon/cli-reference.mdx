@@ -1,0 +1,105 @@
+---
+title: 'CLI Reference'
+description: 'Complete Gluon CLI command reference'
+---
+
+# Gluon CLI Reference
+
+All commands use the `gln` prefix.
+
+## Core Commands
+
+### gln init
+
+Initialize Gluon in your project.
+
+```bash
+gln init
+```
+
+### gln analyze
+
+Run static security analysis.
+
+```bash
+gln analyze [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--fix` | Auto-fix issues where possible |
+| `--format <fmt>` | Output format: `text`, `json`, `sarif` |
+
+### gln run
+
+Run a command with runtime monitoring.
+
+```bash
+gln run [options] -- <command>
+```
+
+| Option | Description |
+|--------|-------------|
+| `--mode <mode>` | Secret protection: `detect`, `redact`, `block` |
+| `--redact-text <text>` | Custom redaction text (default: `[REDACTED]`) |
+| `--no-secrets` | Disable secret detection |
+| `--no-network` | Disable network monitoring |
+
+**Examples:**
+
+```bash
+gln run -- npm start
+gln run --mode redact -- npm start
+gln run --mode block -- node server.js
+gln run --no-network -- npm test
+```
+
+### gln sbom
+
+Generate a Software Bill of Materials.
+
+```bash
+gln sbom [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--format <fmt>` | Format: `cyclonedx`, `spdx` |
+| `--output <file>` | Output file path |
+| `--static` | Include static analysis results |
+
+**Examples:**
+
+```bash
+gln sbom
+gln sbom --format spdx --output sbom.json
+```
+
+---
+
+## Configuration
+
+### gln config
+
+View or set configuration.
+
+```bash
+gln config [key] [value]
+```
+
+---
+
+## Reports
+
+### gln report
+
+Generate security report.
+
+```bash
+gln report [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--format <fmt>` | Format: `text`, `json`, `html` |
+| `--output <file>` | Output file path |

@@ -1,0 +1,90 @@
+---
+title: 'Quickstart'
+description: 'Get started with Gluon in 5 minutes'
+---
+
+# Gluon Quickstart
+
+**Runtime Security Telemetry.** Monitor secrets exposure, track network activity, and generate SBOMs.
+
+## Installation
+
+```bash
+npm install -g @dotsetlabs/gluon
+```
+
+Or use directly with npx:
+
+```bash
+npx @dotsetlabs/gluon run -- npm start
+```
+
+## Initialize a Project
+
+```bash
+gln init
+```
+
+This creates `.dotset/gluon/` with configuration files.
+
+## Static Analysis
+
+Analyze your codebase for security issues:
+
+```bash
+gln analyze
+```
+
+Detects:
+- Exposed secrets in code
+- Vulnerable dependencies
+- Security misconfigurations
+
+## Runtime Monitoring
+
+Run your app with monitoring:
+
+```bash
+gln run -- npm start
+```
+
+Monitors:
+- Secret exposure in stdout/stderr
+- Outbound network connections
+- File system access patterns
+
+## Secret Protection Modes
+
+```bash
+# Default: Detect and warn
+gln run -- npm start
+
+# Redact secrets in output
+gln run --mode redact -- npm start
+
+# Block output containing secrets
+gln run --mode block -- npm start
+```
+
+## Generate SBOM
+
+Create a Software Bill of Materials:
+
+```bash
+gln sbom
+gln sbom --format spdx --output sbom.json
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="CLI Reference" icon="terminal" href="/gluon/cli-reference">
+    Complete list of all CLI commands.
+  </Card>
+  <Card title="Runtime Monitoring" icon="eye" href="/gluon/runtime-monitoring">
+    Deep dive into runtime hooks and monitoring.
+  </Card>
+  <Card title="SBOM Generation" icon="list" href="/gluon/sbom">
+    Learn about SBOM formats and compliance.
+  </Card>
+</CardGroup>

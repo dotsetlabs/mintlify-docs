@@ -1,0 +1,121 @@
+---
+title: 'Runtime Monitoring'
+description: 'Monitor your application at runtime'
+---
+
+# Runtime Monitoring
+
+Gluon provides real-time monitoring of your application's behavior.
+
+## Secret Detection
+
+Monitors stdout/stderr for exposed secrets:
+
+```bash
+gln run -- npm start
+```
+
+### Detection Patterns
+
+| Pattern | Example |
+|---------|---------|
+| AWS Keys | `AKIA...` |
+| GitHub Tokens | `ghp_...`, `gho_...` |
+| Stripe Keys | `sk_live_...`, `sk_test_...` |
+| Generic API Keys | `api_key=...` |
+| Passwords | `password=...` |
+| Private Keys | `-----BEGIN RSA PRIVATE KEY-----` |
+
+### Protection Modes
+
+<Tabs>
+  <Tab title="Detect (Default)">
+    Logs warnings when secrets are detected:
+    ```bash
+    gln run -- npm start
+    ```
+    Secrets pass through with a warning in the log.
+  </Tab>
+  <Tab title="Redact">
+    Replaces secrets with redaction text:
+    ```bash
+    gln run --mode redact -- npm start
+    ```
+    Output: `Connected with API key: [REDACTED]`
+  </Tab>
+  <Tab title="Block">
+    Blocks entire output lines containing secrets:
+    ```bash
+    gln run --mode block -- npm start
+    ```
+    Output: `[BLOCKED: Output contained sensitive data]`
+  </Tab>
+</Tabs>
+
+### Custom Redaction Text
+
+```bash
+gln run --mode redact --redact-text "***HIDDEN***" -- npm start
+```
+
+## Network Monitoring
+
+Track outbound HTTP/HTTPS requests:
+
+```bash
+gln run -- npm start
+```
+
+Monitors:
+- Request URLs
+- Request methods
+- Response status codes
+- Request timing
+
+### Disable Network Monitoring
+
+```bash
+gln run --no-network -- npm start
+```
+
+## Environment Variable Tracking
+
+Gluon tracks which environment variables are accessed:
+
+- Variables read from `process.env`
+- Variables containing sensitive patterns
+- Variables exposed to child processes
+
+## Exit Report
+
+When your app exits, Gluon displays a summary:
+
+```
+┌─────────────────────────────────────────────┐
+│           Gluon Security Report             │
+├─────────────────────────────────────────────┤
+│ Secrets Detected: 2                         │
+│ Network Requests: 15                        │
+│ Env Vars Accessed: 8                        │
+└─────────────────────────────────────────────┘
+```
+
+## Configuration
+
+Configure monitoring in `.dotset/gluon/config.yaml`:
+
+```yaml
+secrets:
+  mode: detect        # detect | redact | block
+  redactText: "[REDACTED]"
+  alertOnExposure: true
+  patterns:
+    - name: "custom-api-key"
+      pattern: "myapp_[a-z0-9]{32}"
+
+network:
+  enabled: true
+  logRequests: true
+  allowlist:
+    - "*.myapp.com"
+```

@@ -1,0 +1,198 @@
+---
+title: 'Native SDK'
+description: 'Programmatic access to Axion secrets'
+---
+
+# Axion Native SDK
+
+Access secrets directly in your code without CLI wrapper commands. Ideal for serverless functions, native integrations, and direct access patterns.
+
+## Installation
+
+The SDK is included with the main package:
+
+```bash
+npm install @dotsetlabs/axion
+```
+
+## Quick Start
+
+### Load into process.env
+
+```typescript
+import { loadSecrets } from '@dotsetlabs/axion/sdk';
+
+await loadSecrets({ scope: 'production' });
+console.log(process.env.DATABASE_URL);
+```
+
+### Direct Access
+
+```typescript
+import { getSecret, getSecrets, hasSecret } from '@dotsetlabs/axion/sdk';
+
+const dbUrl = await getSecret('DATABASE_URL');
+const allSecrets = await getSecrets({ scope: 'production' });
+const exists = await hasSecret('API_KEY');
+```
+
+## API Reference
+
+### loadSecrets(options?)
+
+Inject secrets into `process.env`.
+
+```typescript
+await loadSecrets({
+  scope: 'production',      // 'development' | 'staging' | 'production'
+  service: 'api',           // Service name (default: '_global')
+  workDir: process.cwd(),   // Project directory
+  overwrite: false,         // Overwrite existing env vars
+});
+```
+
+<Note>
+By default, existing `process.env` values are not overwritten. Set `overwrite: true` to replace them.
+</Note>
+
+### getSecret(key, options?)
+
+Get a single secret value.
+
+```typescript
+const dbUrl = await getSecret('DATABASE_URL', { scope: 'production' });
+// Returns: string | undefined
+```
+
+### getSecrets(options?)
+
+Get all secrets as an object.
+
+```typescript
+const secrets = await getSecrets({ scope: 'production' });
+// Returns: Record<string, string>
+```
+
+### hasSecret(key, options?)
+
+Check if a secret exists.
+
+```typescript
+const exists = await hasSecret('API_KEY');
+// Returns: boolean
+```
+
+### createClient(options?)
+
+Create a reusable client with fixed options.
+
+```typescript
+import { createClient } from '@dotsetlabs/axion/sdk';
+
+const client = createClient({
+  scope: 'production',
+  service: 'api',
+});
+
+const dbUrl = await client.get('DATABASE_URL');
+const secrets = await client.getAll();
+const exists = await client.has('API_KEY');
+await client.reload(); // Clear cache and reload
+```
+
+### clearCache()
+
+Clear all cached secrets.
+
+```typescript
+import { clearCache } from '@dotsetlabs/axion/sdk';
+
+clearCache();
+```
+
+### isInitialized(workDir?)
+
+Check if Axion is initialized in a directory.
+
+```typescript
+import { isInitialized } from '@dotsetlabs/axion/sdk';
+
+if (await isInitialized()) {
+  await loadSecrets();
+}
+```
+
+## Use Cases
+
+### Serverless Function (AWS Lambda)
+
+```typescript
+import { loadSecrets } from '@dotsetlabs/axion/sdk';
+
+// Load once at cold start
+await loadSecrets({ scope: 'production' });
+
+export async function handler(event) {
+  const dbUrl = process.env.DATABASE_URL;
+  // ...
+}
+```
+
+### Vercel Edge Function
+
+```typescript
+import { getSecret } from '@dotsetlabs/axion/sdk';
+
+export const config = { runtime: 'edge' };
+
+export default async function handler(req) {
+  const apiKey = await getSecret('API_KEY', { scope: 'production' });
+  // ...
+}
+```
+
+### Multi-Service Application
+
+```typescript
+import { createClient } from '@dotsetlabs/axion/sdk';
+
+const apiSecrets = createClient({ service: 'api' });
+const workerSecrets = createClient({ service: 'worker' });
+
+const apiDbUrl = await apiSecrets.get('DATABASE_URL');
+const workerRedis = await workerSecrets.get('REDIS_URL');
+```
+
+### Hot Reload in Development
+
+```typescript
+import { createClient } from '@dotsetlabs/axion/sdk';
+
+const client = createClient({ scope: 'development' });
+
+// When secrets change
+await client.reload();
+```
+
+## Caching
+
+The SDK caches decrypted secrets in memory for performance:
+
+- First call decrypts from manifest
+- Subsequent calls return cached values
+- Cache is keyed by `workDir + service + scope`
+- Use `clearCache()` or `client.reload()` to refresh
+
+## TypeScript
+
+Full TypeScript support with exported types:
+
+```typescript
+import type {
+  Scope,
+  LoadSecretsOptions,
+  GetSecretsOptions,
+  CreateClientOptions,
+  AxionClient,
+} from '@dotsetlabs/axion/sdk';
+```

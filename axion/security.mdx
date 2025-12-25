@@ -1,0 +1,130 @@
+---
+title: 'Security'
+description: 'Encryption and security architecture'
+---
+
+# Security
+
+Axion employs a **client-side zero-knowledge architecture** with industry-standard cryptography.
+
+## Encryption
+
+| Component | Implementation |
+|:----------|:---------------|
+| **Encryption** | AES-256-GCM (authenticated encryption) |
+| **Key Derivation** | Argon2id (64 MiB memory, 3 iterations, 4 parallelism) |
+| **Project Key** | 128-bit random key |
+| **Salt** | 256-bit random salt per encryption |
+| **IV** | 128-bit random IV per encryption |
+| **Format** | Versioned for future algorithm upgrades |
+
+## How It Works
+
+```mermaid
+sequenceDiagram
+    participant Dev as Developer
+    participant CLI as Axion CLI
+    participant Cloud as Axion Cloud
+
+    Dev->>CLI: axn set API_KEY "sk-xxx"
+    CLI->>CLI: Encrypt with local key
+    CLI->>Cloud: Send encrypted blob
+    Note over Cloud: Cannot decrypt<br/>Zero-knowledge
+
+    Dev->>CLI: axn run -- npm start
+    CLI->>Cloud: Fetch encrypted blob
+    CLI->>CLI: Decrypt with local key
+    CLI->>Dev: Inject into process.env
+```
+
+## Key Storage
+
+Your project key is stored at:
+
+```
+.dotset/axion/key
+```
+
+<Warning>
+This file contains your encryption key. Add it to `.gitignore` and back it up securely.
+</Warning>
+
+## Protected Keys
+
+Configure write-only secrets in `axion.config.yaml`:
+
+```yaml
+protected_keys:
+  - STRIPE_SECRET_KEY
+  - DATABASE_PASSWORD
+```
+
+Protected keys:
+- Can be set but not revealed
+- Cannot be exported
+- Cannot be viewed with `--reveal`
+
+## Validation Patterns
+
+Enforce secret formats:
+
+```yaml
+validation:
+  DATABASE_URL: "^postgres://"
+  API_KEY: "^sk-[a-z0-9]{32}$"
+```
+
+## Key Rotation
+
+Rotate your encryption key:
+
+```bash
+axn rotate
+```
+
+This:
+1. Generates a new key
+2. Re-encrypts all secrets
+3. Invalidates the old key
+
+## Key Recovery
+
+Set up recovery before you need it:
+
+```bash
+# Create recovery blob
+axn recovery setup
+
+# Restore if key is lost
+axn recovery restore
+```
+
+## Audit Logs
+
+Track all secret access (Pro/Business):
+
+```bash
+axn audit
+```
+
+Shows:
+- Who accessed secrets
+- When and from where
+- What operations were performed
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Gitignore" icon="git">
+    Add `.dotset/axion/key` to `.gitignore`
+  </Card>
+  <Card title="Backup" icon="cloud">
+    Back up your key to a password manager
+  </Card>
+  <Card title="Rotate" icon="rotate">
+    Rotate keys periodically or after team changes
+  </Card>
+  <Card title="Protect" icon="lock">
+    Mark sensitive keys as protected
+  </Card>
+</CardGroup>

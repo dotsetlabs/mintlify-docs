@@ -1,0 +1,131 @@
+---
+title: 'CLI Reference'
+description: 'Complete Tachyon CLI command reference'
+---
+
+# Tachyon CLI Reference
+
+All commands use the `tcn` prefix.
+
+## Core Commands
+
+### tcn share
+
+Expose a local port via a secure tunnel.
+
+```bash
+tcn share <port> [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `<port>` | Local port to expose (e.g., `3000`) |
+| `--public` | Allow public access (no auth required) |
+| `--subdomain <name>` | Custom subdomain name (Pro) |
+| `--host <host>` | Local host to forward to (default: `localhost`) |
+| `--allow <emails...>` | Allow specific email addresses |
+| `-p, --project <name>` | Use existing project by name |
+| `--new-project <name>` | Create and use a new project |
+| `--standalone` | Create tunnel without project |
+| `--inspect [port]` | Enable request inspector (default: 4040) |
+| `--no-inspect` | Disable the request inspector |
+
+**Examples:**
+
+```bash
+tcn share 3000
+tcn share 8080 --public
+tcn share 3000 --subdomain my-app
+tcn share 3000 --allow colleague@example.com
+tcn share 3000 --inspect 8080
+```
+
+---
+
+## Authentication
+
+### tcn login
+
+Sign in with SSO.
+
+```bash
+tcn login [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--google` | Sign in with Google (default: GitHub) |
+
+### tcn logout
+
+Sign out and clear credentials.
+
+```bash
+tcn logout
+```
+
+### tcn whoami
+
+Show current user and session info.
+
+```bash
+tcn whoami
+```
+
+---
+
+## Project Management
+
+### tcn projects
+
+List your projects.
+
+```bash
+tcn projects
+```
+
+### tcn project create
+
+Create a new project.
+
+```bash
+tcn project create <name> [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--subdomain <name>` | Reserve a subdomain (Pro) |
+
+### tcn project delete
+
+Delete a project.
+
+```bash
+tcn project delete <name>
+```
+
+---
+
+## Team Management
+
+### tcn members
+
+Manage project members.
+
+```bash
+tcn members list
+tcn members add <email>
+tcn members remove <email>
+```
+
+---
+
+## Status
+
+### tcn status
+
+Show active tunnels.
+
+```bash
+tcn status
+```

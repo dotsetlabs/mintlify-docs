@@ -1,0 +1,94 @@
+---
+title: 'Quickstart'
+description: 'Get started with Tachyon in 5 minutes'
+---
+
+# Tachyon Quickstart
+
+**Zero-Trust Tunnels for Teams.** Share local development servers with built-in authentication.
+
+## Installation
+
+```bash
+npm install -g @dotsetlabs/tachyon
+```
+
+Or use directly with npx:
+
+```bash
+npx @dotsetlabs/tachyon share 3000
+```
+
+## Sign In
+
+```bash
+tcn login
+```
+
+Sign in with GitHub or Google SSO.
+
+## Share a Local Port
+
+```bash
+tcn share 3000
+```
+
+You'll get a public URL like:
+
+```
+https://abc123.tunnel.dotsetlabs.dev
+```
+
+## Access Control
+
+By default, tunnels require authentication. Share with your team:
+
+```bash
+# Public (no auth required)
+tcn share 3000 --public
+
+# Allow specific emails
+tcn share 3000 --allow colleague@example.com
+
+# Custom subdomain (Pro)
+tcn share 3000 --subdomain my-app
+```
+
+## Projects
+
+Organize tunnels in projects for the dashboard:
+
+```bash
+# Create a new project
+tcn share 3000 --new-project "My App"
+
+# Use existing project
+tcn share 3000 --project "My App"
+
+# Standalone (no project)
+tcn share 3000 --standalone
+```
+
+## Request Inspector
+
+Inspect incoming requests in real-time:
+
+```bash
+tcn share 3000 --inspect
+```
+
+Opens the inspector at `http://localhost:4040`.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="CLI Reference" icon="terminal" href="/tachyon/cli-reference">
+    Complete list of all CLI commands.
+  </Card>
+  <Card title="Request Inspector" icon="eye" href="/tachyon/inspector">
+    Deep dive into request inspection.
+  </Card>
+  <Card title="Authentication" icon="lock" href="/tachyon/authentication">
+    Configure access control and team sharing.
+  </Card>
+</CardGroup>

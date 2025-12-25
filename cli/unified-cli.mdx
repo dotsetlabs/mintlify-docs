@@ -1,0 +1,77 @@
+---
+title: 'Unified CLI'
+description: 'Using the dotset CLI to run apps with secrets and monitoring'
+---
+
+# Unified CLI
+
+The `@dotsetlabs/cli` package provides a unified `dotset` command that combines the power of Axion and Gluon.
+
+## Installation
+
+```bash
+npm install -g @dotsetlabs/cli
+```
+
+## dotset run
+
+The `run` command is the flagship feature of the unified CLI. It allows you to run your application with encrypted secrets from Axion and runtime security monitoring from Gluon.
+
+```bash
+dotset run [options] -- <command>
+```
+
+### How it Works
+
+1. **Secret Injection:** Axion fetches your encrypted secrets, decrypts them in memory, and injects them into the process environment.
+2. **Runtime Monitoring:** Gluon hooks into stdout/stderr and network calls to detect secret leaks and monitor activity.
+3. **Unified Execution:** Your command is spawned as a child process with full protection and telemetry.
+
+### Options
+
+| Option | Description |
+| :--- | :--- |
+| `--scope <env>` | Environment scope for secrets (development, staging, production) |
+| `--mode <mode>` | Secret protection mode: `detect`, `redact`, `block` |
+| `--redact-text <text>` | Custom text used for redaction (default: `[REDACTED]`) |
+| `--no-monitor` | Disable runtime monitoring (secrets only) |
+
+### Examples
+
+**Basic Development**
+```bash
+dotset run -- npm run dev
+```
+
+**Production with Redaction**
+```bash
+dotset run --scope production --mode redact -- node server.js
+```
+
+**Blocking Secret Leaks**
+```bash
+dotset run --mode block -- npm start
+```
+
+## Secondary Commands
+
+The unified CLI also acts as a shortcut to individual product CLIs:
+
+```bash
+# Axion shortcuts
+dotset axn list
+dotset axn set KEY VALUE
+
+# Gluon shortcuts
+dotset gln analyze
+dotset gln sbom
+
+# Tachyon shortcuts
+dotset tcn share 3000
+```
+
+## Why use the Unified CLI?
+
+- **Simplicity:** One tool to manage your entire security and DX stack.
+- **Better Together:** Seamless integration between secret management and leak prevention.
+- **CI/CD Ready:** Use a single `dotset run` command in your pipelines to ensure security and compliance.

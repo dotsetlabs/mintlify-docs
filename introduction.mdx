@@ -1,0 +1,59 @@
+---
+title: 'Introduction'
+description: 'Developer tools for security, performance, and DX'
+---
+
+# Welcome to dotset labs
+
+Build secure, observable, and collaborative applications with our integrated developer tools.
+
+<CardGroup cols={3}>
+  <Card title="Axion" icon="key" href="/axion/quickstart">
+    Zero-disk secrets management. Encrypted secrets injected directly into memory.
+  </Card>
+  <Card title="Gluon" icon="shield" href="/gluon/quickstart">
+    Runtime security telemetry. Monitor secrets, network, and generate SBOMs.
+  </Card>
+  <Card title="Tachyon" icon="globe" href="/tachyon/quickstart">
+    Zero-trust tunnels for teams. Share local services with authentication.
+  </Card>
+</CardGroup>
+
+## Quick Install
+
+Install all tools with a single package:
+
+```bash
+npm install -g @dotsetlabs/cli
+```
+
+Or install individual tools:
+
+```bash
+npm install -g @dotsetlabs/axion   # Secrets
+npm install -g @dotsetlabs/gluon   # Monitoring
+npm install -g @dotsetlabs/tachyon # Tunnels
+```
+
+## Unified CLI
+
+The `dotset` CLI provides a unified interface for all products:
+
+```bash
+# Run with secrets + monitoring
+dotset run -- npm start
+
+# Individual product commands
+dotset axn set API_KEY "sk-xxx"
+dotset gln analyze
+dotset tcn share 3000
+```
+
+<CardGroup cols={2}>
+  <Card title="Unified Run Command" icon="play" href="/cli/unified-cli">
+    Run your app with secrets injection and runtime monitoring combined.
+  </Card>
+  <Card title="GitHub" icon="github" href="https://github.com/dotsetlabs">
+    View source code and contribute.
+  </Card>
+</CardGroup>

@@ -1,0 +1,293 @@
+---
+title: 'CLI Reference'
+description: 'Complete Axion CLI command reference'
+---
+
+# Axion CLI Reference
+
+All commands use the `axn` prefix.
+
+## Core Commands
+
+### axn init
+
+Initialize a new Axion project.
+
+```bash
+axn init [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--cloud` | Create and link to a cloud project |
+
+### axn set
+
+Set an environment variable.
+
+```bash
+axn set <key> <value> [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--scope <env>` | Environment scope: `development`, `staging`, `production` |
+| `--force` | Suppress overwrite warning |
+| `--json` | Validate value as JSON before storing |
+| `-s, --service <name>` | Scope to a specific service |
+
+**Examples:**
+
+```bash
+axn set DATABASE_URL "postgres://localhost/db"
+axn set API_KEY "sk-xxx" --scope production
+axn set CONFIG '{"debug":true}' --json
+axn set DATABASE_URL "postgres://{{PG_USER}}:{{PG_PASS}}@localhost/db"
+```
+
+### axn get
+
+Get an environment variable value.
+
+```bash
+axn get <key> [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--scope <env>` | Environment scope (default: `development`) |
+| `--reveal` | Show actual value (unmask) |
+
+### axn rm
+
+Remove an environment variable.
+
+```bash
+axn rm <key> [options]
+```
+
+### axn list / axn ls
+
+List all environment variables.
+
+```bash
+axn list [options]
+axn ls [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--scope <env>` | Environment scope |
+| `--reveal` | Show actual values |
+
+### axn run
+
+Run a command with secrets injected.
+
+```bash
+axn run [options] -- <command>
+```
+
+| Option | Description |
+|--------|-------------|
+| `--scope <env>` | Environment scope (default: `development`) |
+| `-s, --service <name>` | Service to load secrets for |
+
+**Examples:**
+
+```bash
+axn run -- npm start
+axn run --scope production -- node dist/index.js
+axn run -s api -- npm start
+```
+
+### axn export
+
+Export secrets to stdout or file.
+
+```bash
+axn export [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--scope <env>` | Environment scope |
+| `--format <fmt>` | Output format: `env`, `json`, `yaml` |
+| `-o, --output <file>` | Write to file |
+
+---
+
+## Cloud Sync
+
+### axn sync
+
+Sync .env files with encrypted manifest.
+
+```bash
+axn sync [file] [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--push` | Force push local to cloud |
+| `--pull` | Force pull from cloud |
+| `--discover` | Discover .env files |
+| `--init` | Initialize sync config |
+
+### axn drift
+
+Detect differences between local and cloud.
+
+```bash
+axn drift
+```
+
+### axn push
+
+Push manifest to cloud.
+
+```bash
+axn push
+```
+
+---
+
+## Authentication
+
+### axn login
+
+Sign in with SSO.
+
+```bash
+axn login [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--google` | Sign in with Google (default: GitHub) |
+
+### axn logout
+
+Sign out and clear credentials.
+
+```bash
+axn logout
+```
+
+### axn whoami
+
+Show current user and linked project.
+
+```bash
+axn whoami
+```
+
+---
+
+## Project Management
+
+### axn link
+
+Link to an existing cloud project.
+
+```bash
+axn link <project-id>
+```
+
+### axn unlink
+
+Disconnect from cloud.
+
+```bash
+axn unlink
+```
+
+### axn destroy
+
+Delete a project (owner only).
+
+```bash
+axn destroy [options]
+```
+
+---
+
+## Team Management
+
+### axn members
+
+Manage project members.
+
+```bash
+axn members list
+axn members add <email>
+axn members revoke <user-id>
+```
+
+### axn audit
+
+View access audit logs.
+
+```bash
+axn audit
+```
+
+---
+
+## Service Tokens (CI/CD)
+
+### axn tokens
+
+Manage service tokens.
+
+```bash
+axn tokens create
+axn tokens list
+axn tokens revoke <id>
+```
+
+---
+
+## Key Management
+
+### axn key
+
+Show key fingerprint or reveal key.
+
+```bash
+axn key [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--show` | Reveal the actual key |
+
+### axn rotate
+
+Rotate encryption key.
+
+```bash
+axn rotate
+```
+
+### axn recovery
+
+Manage key recovery.
+
+```bash
+axn recovery setup
+axn recovery restore
+```
+
+---
+
+## Global Options
+
+These options work with any command:
+
+| Option | Description |
+|--------|-------------|
+| `-s, --service <name>` | Scope operations to a specific service |
+| `--scope <env>` | Environment scope |
+| `--reveal` | Show actual secret values |
+| `--force` | Skip confirmation prompts |

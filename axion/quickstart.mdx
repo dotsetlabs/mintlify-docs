@@ -1,0 +1,83 @@
+---
+title: 'Quickstart'
+description: 'Get started with Axion in 5 minutes'
+---
+
+# Axion Quickstart
+
+**The Zero-Disk Secret Plane.** Stop syncing `.env` files. Stream encrypted secrets directly to your app's memory.
+
+## Installation
+
+```bash
+npm install -g @dotsetlabs/axion
+```
+
+Or use directly with npx:
+
+```bash
+npx @dotsetlabs/axion run -- npm start
+```
+
+## Initialize a Project
+
+```bash
+axn init
+```
+
+This creates:
+- `.dotset/axion/key` — Your encryption key (keep this safe!)
+- `.dotset/axion/manifest.enc` — Encrypted secrets store
+
+<Warning>
+Back up your project key securely. If you lose it, your secrets cannot be recovered.
+</Warning>
+
+## Add Secrets
+
+**Manually:**
+
+```bash
+axn set DATABASE_URL "postgres://localhost/mydb"
+axn set API_KEY "sk-12345" --scope production
+```
+
+**Import from .env files:**
+
+```bash
+axn sync
+```
+
+## Run Your App
+
+```bash
+axn run -- npm start
+axn run --scope production -- node dist/index.js
+```
+
+Axion decrypts secrets in memory and injects them into `process.env`.
+
+## Enable Cloud Sync (Optional)
+
+```bash
+axn login           # Authenticate with GitHub/Google
+axn init --cloud    # Create cloud project and link
+axn push            # Sync manifest to cloud
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="CLI Reference" icon="terminal" href="/axion/cli-reference">
+    Complete list of all CLI commands.
+  </Card>
+  <Card title="Native SDK" icon="code" href="/axion/sdk">
+    Use the SDK for serverless and programmatic access.
+  </Card>
+  <Card title="Secret Templating" icon="brackets-curly" href="/axion/secret-templating">
+    Reference secrets inside other secrets.
+  </Card>
+  <Card title="Security" icon="shield" href="/axion/security">
+    Learn about encryption and security architecture.
+  </Card>
+</CardGroup>

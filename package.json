@@ -1,0 +1,9 @@
+{
+    "name": "@dotsetlabs/docs",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "dev": "mintlify dev",
+        "install-cli": "npm install -g mintlify"
+    }
+}

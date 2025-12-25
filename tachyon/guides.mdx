@@ -1,0 +1,71 @@
+---
+title: 'Guides'
+description: 'Use case tutorials for Tachyon zero-trust tunnels'
+---
+
+# Tachyon Guides
+
+Practical guides for using Tachyon in development and CI/CD.
+
+## Webhook Testing
+
+Test webhooks from Stripe, GitHub, and other services locally.
+
+### 1. Create a tunnel
+
+```bash
+tcn share 3000
+# → https://abc123.tunnel.dotsetlabs.com
+```
+
+### 2. Configure endpoint
+
+Copy the tunnel URL to your provider: `https://abc123.tunnel.dotsetlabs.com/api/webhooks/stripe`
+
+### 3. Inspect requests
+
+Tachyon captures incoming requests. Open the [Inspector](/tachyon/inspector) to see payloads.
+
+---
+
+## Team Demos & Sharing
+
+Share your local environment with teammates.
+
+### 1. Create an authenticated tunnel
+
+```bash
+tcn share 3000 --subdomain my-feature
+```
+
+By default, only your team members can access this URL.
+
+### 2. Make it public (if needed)
+
+```bash
+tcn share 3000 --public
+```
+
+---
+
+## CI Preview Environments
+
+Create preview environments for pull requests.
+
+### 1. Authenticate in CI
+
+Use the `TACHYON_AUTH_TOKEN` environment variable in your CI provider.
+
+### 2. Create preview tunnel
+
+```yaml
+- name: Start app & create tunnel
+  run: |
+    npm start &
+    sleep 5
+    tcn share 3000 --subdomain pr-${{ github.event.pull_request.number }}
+```
+
+### 3. Post to GitHub
+
+Use a script to post the URL `https://pr-${{ github.event.pull_request.number }}.tunnel.dotsetlabs.com` back to the PR as a comment.

@@ -1,0 +1,116 @@
+---
+title: 'Cloud Sync'
+description: 'Sync secrets across teams and environments'
+---
+
+# Cloud Sync
+
+Axion Cloud enables secure team collaboration with encrypted secret sharing.
+
+## Enable Cloud Sync
+
+```bash
+# 1. Sign in
+axn login
+
+# 2. Initialize cloud project
+axn init --cloud
+
+# 3. Push local secrets
+axn push
+```
+
+## Syncing .env Files
+
+Axion auto-discovers and syncs your .env files:
+
+```bash
+# Discover .env files in your project
+axn sync --discover
+
+# Set up sync config
+axn sync --init
+
+# Sync all configured files
+axn sync
+
+# Sync a specific file with scope
+axn sync .env.production --scope production
+```
+
+### Sync Config
+
+Configure sync in `.dotset/axion/sync.yaml`:
+
+```yaml
+version: "1"
+files:
+  - path: .env
+    scope: development
+  - path: .env.production
+    scope: production
+  - path: apps/api/.env
+    service: api
+    scope: development
+```
+
+## Monorepo Support
+
+Axion automatically detects service context in monorepos:
+
+```
+apps/api/.env       → service: api
+apps/web/.env       → service: web
+packages/lib/.env   → service: lib
+```
+
+## Drift Detection
+
+Identify differences between local and cloud:
+
+```bash
+axn drift
+```
+
+Output shows:
+- **Local only** — Secrets not in cloud
+- **Cloud only** — Secrets not locally
+- **Modified** — Different values
+
+## Conflict Resolution
+
+```bash
+# Force push local to cloud
+axn sync --push
+
+# Force pull from cloud
+axn sync --pull
+```
+
+## CI/CD Deployment
+
+### Service Tokens
+
+Create a read-only token for CI/CD:
+
+```bash
+axn tokens create
+```
+
+### Environment Variable
+
+Set `AXION_TOKEN` in your CI environment:
+
+```bash
+AXION_TOKEN=axn_xxxxxxxxxxxxx
+```
+
+### Start Command
+
+```bash
+npx @dotsetlabs/axion run --scope production -- node dist/index.js
+```
+
+<Note>
+With a service token, Axion fetches secrets directly from the cloud. No local manifest needed.
+</Note>

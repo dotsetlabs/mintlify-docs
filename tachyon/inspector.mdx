@@ -1,0 +1,103 @@
+---
+title: 'Request Inspector'
+description: 'Inspect incoming requests in real-time'
+---
+
+# Request Inspector
+
+The Request Inspector provides real-time visibility into HTTP traffic to your tunnel.
+
+## Enable Inspector
+
+```bash
+tcn share 3000 --inspect
+```
+
+The inspector opens at `http://localhost:4040`.
+
+### Custom Port
+
+```bash
+tcn share 3000 --inspect 8080
+```
+
+### Disable Inspector
+
+```bash
+tcn share 3000 --no-inspect
+```
+
+## Features
+
+### Request List
+
+View all incoming requests:
+- Method and URL
+- Status code
+- Response time
+- Timestamp
+
+### Request Details
+
+Click any request to see:
+- Headers
+- Query parameters
+- Request body
+- Response headers
+- Response body
+
+### Live Updates
+
+Requests appear in real-time via WebSocket connection.
+
+## API Access
+
+The inspector provides a REST API:
+
+### List Requests
+
+```bash
+GET http://localhost:4040/api/requests
+```
+
+### Get Request Details
+
+```bash
+GET http://localhost:4040/api/requests/:id
+```
+
+### Clear Requests
+
+```bash
+DELETE http://localhost:4040/api/requests
+```
+
+## WebSocket
+
+Subscribe to live request updates:
+
+```javascript
+const ws = new WebSocket('ws://localhost:4040/ws');
+
+ws.onmessage = (event) => {
+  const request = JSON.parse(event.data);
+  console.log('New request:', request);
+};
+```
+
+## Use Cases
+
+<CardGroup cols={2}>
+  <Card title="Webhook Debugging" icon="webhook">
+    See exactly what webhooks are sending to your endpoint.
+  </Card>
+  <Card title="API Testing" icon="flask">
+    Verify request/response payloads during development.
+  </Card>
+  <Card title="Integration Debugging" icon="plug">
+    Debug third-party service integrations.
+  </Card>
+  <Card title="Team Collaboration" icon="users">
+    Share your inspector URL with teammates.
+  </Card>
+</CardGroup>

@@ -1,0 +1,98 @@
+---
+title: 'Authentication'
+description: 'Configure access control for tunnels'
+---
+
+# Authentication
+
+Tachyon provides flexible access control for your tunnels.
+
+## Default: Team Authentication
+
+By default, tunnels require sign-in with company credentials:
+
+```bash
+tcn share 3000
+```
+
+Users must authenticate via GitHub/Google before accessing.
+
+## Public Access
+
+Disable authentication for demos or webhooks:
+
+```bash
+tcn share 3000 --public
+```
+
+<Warning>
+Public tunnels are accessible by anyone with the URL. Use carefully.
+</Warning>
+
+## Email Allowlist
+
+Restrict access to specific email addresses:
+
+```bash
+tcn share 3000 --allow alice@company.com bob@company.com
+```
+
+Only users with matching email addresses can access.
+
+## Reserved Subdomains
+
+With a Pro plan, reserve a consistent subdomain:
+
+```bash
+tcn share 3000 --subdomain my-api
+# → https://my-api.tunnel.dotsetlabs.dev
+```
+
+Benefits:
+- Consistent URL across sessions
+- Easy to remember and share
+- Webhook configurations don't break
+
+## Project-Level Access
+
+Grant access to entire teams via projects:
+
+```bash
+# Create project
+tcn share 3000 --new-project "API Development"
+
+# Add team members
+tcn members add alice@company.com
+tcn members add bob@company.com
+```
+
+All project members can access tunnels in that project.
+
+## Access Roles
+
+| Role | Permissions |
+|------|-------------|
+| **Owner** | Full access, can delete project |
+| **Admin** | Manage members, create tunnels |
+| **Member** | Access tunnels, view requests |
+| **Viewer** | View tunnels only |
+
+## SSO Providers
+
+Tachyon supports:
+
+<CardGroup cols={2}>
+  <Card title="GitHub" icon="github">
+    Default SSO provider. Personal or organization accounts.
+  </Card>
+  <Card title="Google" icon="google">
+    Use `tcn login --google` to authenticate.
+  </Card>
+</CardGroup>
+
+## Security Best Practices
+
+1. **Use authentication** — Only use `--public` when necessary
+2. **Limit access** — Use `--allow` to restrict to specific emails
+3. **Use projects** — Organize tunnels by team or purpose
+4. **Monitor access** — Check tunnel access in the dashboard

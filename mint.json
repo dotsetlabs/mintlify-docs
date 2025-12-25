@@ -1,0 +1,104 @@
+{
+    "$schema": "https://mintlify.com/schema.json",
+    "name": "dotset labs",
+    "logo": {
+        "dark": "/logo/dark.svg",
+        "light": "/logo/light.svg"
+    },
+    "favicon": "/favicon.svg",
+    "colors": {
+        "primary": "#10B981",
+        "light": "#34D399",
+        "dark": "#059669",
+        "anchors": {
+            "from": "#10B981",
+            "to": "#6366F1"
+        }
+    },
+    "topbarLinks": [
+        {
+            "name": "Dashboard",
+            "url": "https://dotsetlabs.com/dashboard"
+        }
+    ],
+    "topbarCtaButton": {
+        "name": "Get Started",
+        "url": "https://dotsetlabs.com"
+    },
+    "tabs": [
+        {
+            "name": "Axion",
+            "url": "axion"
+        },
+        {
+            "name": "Gluon",
+            "url": "gluon"
+        },
+        {
+            "name": "Tachyon",
+            "url": "tachyon"
+        }
+    ],
+    "anchors": [
+        {
+            "name": "GitHub",
+            "icon": "github",
+            "url": "https://github.com/dotsetlabs"
+        },
+        {
+            "name": "npm",
+            "icon": "npm",
+            "url": "https://www.npmjs.com/org/dotsetlabs"
+        }
+    ],
+    "navigation": [
+        {
+            "group": "Getting Started",
+            "pages": [
+                "introduction"
+            ]
+        },
+        {
+            "group": "Axion",
+            "pages": [
+                "axion/quickstart",
+                "axion/cli-reference",
+                "axion/sdk",
+                "axion/secret-templating",
+                "axion/cloud-sync",
+                "axion/security",
+                "axion/guides"
+            ]
+        },
+        {
+            "group": "Gluon",
+            "pages": [
+                "gluon/quickstart",
+                "gluon/cli-reference",
+                "gluon/runtime-monitoring",
+                "gluon/sbom",
+                "gluon/guides"
+            ]
+        },
+        {
+            "group": "Tachyon",
+            "pages": [
+                "tachyon/quickstart",
+                "tachyon/cli-reference",
+                "tachyon/inspector",
+                "tachyon/authentication",
+                "tachyon/guides"
+            ]
+        },
+        {
+            "group": "Unified CLI",
+            "pages": [
+                "cli/unified-cli"
+            ]
+        }
+    ],
+    "footerSocials": {
+        "github": "https://github.com/dotsetlabs",
+        "twitter": "https://twitter.com/dotsetlabs"
+    }
+}
