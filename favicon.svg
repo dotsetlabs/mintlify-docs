@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <defs>
+    <!-- Emerald to Cyan gradient matching brand -->
+    <linearGradient id="brand-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981"/>
+      <stop offset="100%" style="stop-color:#06b6d4"/>
+    </linearGradient>
+    <!-- Subtle inner glow -->
+    <radialGradient id="inner-glow" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#34d399;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:transparent"/>
+    </radialGradient>
+  </defs>
+  <!-- Rounded square background -->
+  <rect width="32" height="32" rx="7" fill="url(#brand-gradient)"/>
+  <!-- Inner glow effect -->
+  <rect width="32" height="32" rx="7" fill="url(#inner-glow)"/>
+  <!-- Dot with ring - representing the "." in .set labs -->
+  <circle cx="16" cy="16" r="5" fill="white"/>
+  <circle cx="16" cy="16" r="9" stroke="white" stroke-width="1.5" fill="none" stroke-opacity="0.6"/>
+  <!-- Subtle outer ring for depth -->
+  <circle cx="16" cy="16" r="12" stroke="white" stroke-width="1" fill="none" stroke-opacity="0.25"/>
+</svg>
