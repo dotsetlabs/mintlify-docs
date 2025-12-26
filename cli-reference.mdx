@@ -200,3 +200,129 @@ List active tunnels.
 ```bash
 dotset tunnels
 ```
+
+---
+
+## Team Commands
+
+### `dotset team list`
+
+List all team members.
+
+```bash
+dotset team list
+```
+
+### `dotset team add`
+
+Add a team member.
+
+```bash
+dotset team add <email> [options]
+```
+
+| Option | Description |
+|:-------|:------------|
+| `--role <role>` | Role: admin, member, readonly |
+| `--scopes <scopes>` | Comma-separated: development, staging, production |
+
+### `dotset team update`
+
+Update a team member's role or scopes.
+
+```bash
+dotset team update <email> [options]
+```
+
+| Option | Description |
+|:-------|:------------|
+| `--role <role>` | New role |
+| `--scopes <scopes>` | New scopes |
+
+### `dotset team remove`
+
+Remove a team member.
+
+```bash
+dotset team remove <email>
+```
+
+---
+
+## Token Commands
+
+### `dotset tokens list`
+
+List service tokens.
+
+```bash
+dotset tokens list
+```
+
+### `dotset tokens create`
+
+Create a service token.
+
+```bash
+dotset tokens create <name> [options]
+```
+
+| Option | Description |
+|:-------|:------------|
+| `--scopes <scopes>` | Required. Comma-separated scopes |
+| `--readonly` | Token can only read secrets |
+| `--expires <duration>` | Expiration: 30d, 90d, 1y |
+
+### `dotset tokens revoke`
+
+Revoke a service token.
+
+```bash
+dotset tokens revoke <name>
+```
+
+---
+
+## Audit Commands
+
+### `dotset audit`
+
+View audit logs.
+
+```bash
+dotset audit [options]
+```
+
+| Option | Description |
+|:-------|:------------|
+| `--action <action>` | Filter by action type |
+| `--user <email>` | Filter by user |
+| `--scope <scope>` | Filter by environment scope |
+| `--source <product>` | Filter by product: axion, gluon, hadron, tachyon |
+| `--since <date>` | Start date (YYYY-MM-DD) |
+| `--until <date>` | End date (YYYY-MM-DD) |
+| `--limit <n>` | Maximum entries to show |
+
+### `dotset audit export`
+
+Export audit logs.
+
+```bash
+dotset audit export [options]
+```
+
+| Option | Description |
+|:-------|:------------|
+| `--format <format>` | Output format: json, csv |
+| `--output <file>` | Output file path |
+| `--since <date>` | Start date |
+| `--until <date>` | End date |
+
+### `dotset audit verify`
+
+Verify audit log integrity.
+
+```bash
+dotset audit verify
+```
+

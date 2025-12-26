@@ -105,16 +105,99 @@ axn recovery restore
 
 ## Audit Logs
 
-Track all secret access (Pro/Business):
+Track all activity across your project with a tamper-proof audit trail (Pro/Business).
+
+### Unified Audit System
+
+dotset provides a unified audit log that captures events across all products:
+
+| Source | Events Logged |
+|:-------|:--------------|
+| **Axion** | Secret reads, writes, deletions, key rotations |
+| **Gluon** | Security mode changes, leak detections, blocks |
+| **Tachyon** | Tunnel starts, connections, auth events |
+| **Hadron** | CI job executions, secret injections |
+| **Platform** | Team changes, token management, project settings |
+
+### Hash Chain Integrity
+
+Every audit log entry is linked to the previous entry via a SHA-256 hash chain. This makes the audit trail **tamper-evident** — any modification breaks the chain.
 
 ```bash
-axn audit
+# Verify audit log integrity
+dotset audit verify
 ```
 
-Shows:
-- Who accessed secrets
-- When and from where
-- What operations were performed
+```
+✓ Verified 1,247 audit entries
+✓ Hash chain intact
+✓ No tampering detected
+```
+
+### Viewing Logs
+
+```bash
+# View recent audit logs
+dotset audit
+
+# Filter by action type
+dotset audit --action secret.read
+
+# Filter by user
+dotset audit --user dev@example.com
+
+# Filter by scope
+dotset audit --scope production
+
+# Filter by date range
+dotset audit --since 2024-01-01 --until 2024-01-31
+
+# Filter by source product
+dotset audit --source axion
+```
+
+### Log Entry Contents
+
+Each audit entry includes:
+
+- **Action** — What happened (e.g., `axion.secret.read`, `platform.member.add`)
+- **Actor** — User email or service token name
+- **Scope** — Environment scope (development/staging/production)
+- **IP Address** — Origin of the request
+- **Timestamp** — When the action occurred
+- **Metadata** — Additional context (secret key name, affected user, etc.)
+- **Hash** — SHA-256 link to previous entry
+
+### Exporting Logs
+
+Export audit logs for compliance reporting:
+
+```bash
+# Export as JSON
+dotset audit export --format json --output audit-2024.json
+
+# Export as CSV
+dotset audit export --format csv --output audit-2024.csv
+
+# Export specific date range
+dotset audit export --since 2024-01-01 --until 2024-03-31 --format json
+```
+
+<Tip>
+Exported logs include the hash chain, allowing offline integrity verification.
+</Tip>
+
+### Dashboard Access
+
+View and filter audit logs in the dashboard:
+
+1. Navigate to your project
+2. Click the **Audit** tab
+3. Use filters to narrow results by action, user, scope, or date
+
+<Note>
+Audit log retention varies by plan: Free (7 days), Pro (90 days), Business (1 year).
+</Note>
 
 ## Best Practices
 
@@ -132,3 +215,4 @@ Shows:
     Mark sensitive keys as protected
   </Card>
 </CardGroup>
+

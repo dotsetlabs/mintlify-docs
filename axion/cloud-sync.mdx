@@ -87,26 +87,21 @@ dotset secrets import .env.production --scope production
 
 ### Service Tokens
 
-Create a read-only token for CI/CD:
+Create tokens for programmatic access in CI/CD pipelines:
 
 ```bash
-# Create via dashboard at app.dotsetlabs.com
+# Create a production-only readonly token
+dotset tokens create ci-deploy --scopes production --readonly
 ```
 
-### Environment Variable
+### Next Steps
 
-Set `AXION_TOKEN` in your CI environment:
+<CardGroup cols={2}>
+  <Card title="Team Management" icon="users" href="/axion/team-management">
+    Learn about RBAC roles, environment scopes, and team collaboration.
+  </Card>
+  <Card title="Integration Guides" icon="book" href="/axion/guides">
+    Tutorials for Vercel, GitHub Actions, Docker, and more.
+  </Card>
+</CardGroup>
 
-```bash
-AXION_TOKEN=axn_xxxxxxxxxxxxx
-```
-
-### Start Command
-
-```bash
-npx @dotsetlabs/cli run --scope production -- node dist/index.js
-```
-
-<Note>
-With a service token, secrets are fetched directly from the cloud. No local manifest needed.
-</Note>
