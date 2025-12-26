@@ -31,6 +31,7 @@ dotset init [options]
 | `--cloud` | Create cloud project immediately |
 | `--axion` | Enable Secrets module |
 | `--gluon` | Enable Security module |
+| `--hadron` | Enable Local CI module |
 | `--tachyon` | Enable Tunnels module |
 
 ### `dotset run`
@@ -149,6 +150,28 @@ dotset sbom [options]
 | `--format <format>` | Output format: cyclonedx, spdx |
 | `-o, --output <file>` | Output file path |
 | `--static` | Generate from package.json |
+
+---
+
+## CI Commands
+
+### `dotset ci`
+
+Run GitHub Actions jobs locally.
+
+```bash
+dotset ci [jobs...] [options]
+```
+
+| Option | Description |
+|:-------|:------------|
+| `--workflow <path>` | Path to workflow file |
+| `--scope <env>` | Environment scope for secrets |
+| `--mode <mode>` | Protection mode: detect, redact, block |
+| `--list` | List available workflows and jobs |
+| `--dry-run` | Preview without executing |
+| `--no-secrets` | Disable secret injection |
+| `--no-monitor` | Disable leak monitoring |
 
 ---
 

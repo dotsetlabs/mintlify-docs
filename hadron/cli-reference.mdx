@@ -1,0 +1,128 @@
+---
+title: 'CLI Reference'
+description: 'Hadron CI command reference'
+---
+
+# Hadron CLI Reference
+
+Complete reference for local CI commands.
+
+## `dotset ci`
+
+Run GitHub Actions jobs locally.
+
+```bash
+dotset ci [jobs...] [options]
+```
+
+### Arguments
+
+| Argument | Description |
+|:---------|:------------|
+| `[jobs...]` | Job names to run (e.g., `build test deploy`) |
+
+### Options
+
+| Option | Description |
+|:-------|:------------|
+| `--workflow <path>` | Path to workflow file (default: auto-detect) |
+| `--scope <env>` | Environment scope for Axion secrets (development, staging, production) |
+| `--mode <mode>` | Gluon protection mode: detect, redact, block |
+| `--list` | List available workflows and jobs |
+| `--dry-run` | Show what would run without executing |
+| `--no-secrets` | Disable Axion secret injection |
+| `--no-monitor` | Disable Gluon monitoring |
+
+### Examples
+
+```bash
+# List available jobs
+dotset ci --list
+
+# Run a single job
+dotset ci build
+
+# Run multiple jobs in sequence
+dotset ci build test
+
+# Use production secrets
+dotset ci deploy --scope prod
+
+# With leak protection
+dotset ci build --mode block
+
+# Specify workflow file
+dotset ci build --workflow .github/workflows/deploy.yml
+
+# Dry run to preview
+dotset ci build test --dry-run
+```
+
+## Workflow Discovery
+
+Hadron automatically discovers workflows in:
+
+1. `.github/workflows/*.yml`
+2. `.github/workflows/*.yaml`
+
+The `--list` flag shows all discovered workflows and their jobs:
+
+```bash
+$ dotset ci --list
+
+Workflows:
+  ci.yml
+    ├── build (runs-on: ubuntu-latest)
+    ├── test (runs-on: ubuntu-latest)
+    └── deploy (runs-on: ubuntu-latest, needs: [build, test])
+
+  release.yml
+    └── publish (runs-on: ubuntu-latest)
+```
+
+## Exit Codes
+
+| Code | Description |
+|:-----|:------------|
+| `0` | All jobs completed successfully |
+| `1` | One or more jobs failed |
+| `2` | Configuration or parsing error |
+| `3` | No matching jobs found |
+
+## Environment Variables
+
+Hadron sets the following environment variables during execution:
+
+| Variable | Value |
+|:---------|:------|
+| `CI` | `true` |
+| `GITHUB_ACTIONS` | `true` |
+| `HADRON_LOCAL` | `true` |
+| `GITHUB_WORKFLOW` | Workflow name |
+| `GITHUB_JOB` | Current job name |
+
+## Integration with Axion
+
+When `--scope` is provided, Hadron loads secrets from Axion:
+
+```bash
+# Uses secrets from production scope
+dotset ci deploy --scope prod
+```
+
+Secrets are injected into the environment exactly as they would be in GitHub Actions using `${{ secrets.KEY }}` syntax.
+
+## Integration with Gluon
+
+When `--mode` is provided, Hadron monitors output for secret leaks:
+
+| Mode | Behavior |
+|:-----|:---------|
+| `detect` | Logs warnings when secrets appear in output |
+| `redact` | Replaces leaked secrets with `[REDACTED]` |
+| `block` | Halts execution if secrets are leaked |
+
+```bash
+# Block if any secrets leak to stdout/stderr
+dotset ci test --mode block
+```

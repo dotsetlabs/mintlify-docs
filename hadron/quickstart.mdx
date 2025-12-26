@@ -1,0 +1,131 @@
+---
+title: 'Quickstart'
+description: 'Run CI Pipelines Locally with Hadron'
+---
+
+# Hadron Quickstart
+
+Debug your GitHub Actions locally before pushing to CI.
+
+## Prerequisites
+
+- Node.js 18+
+- `@dotsetlabs/cli` installed globally
+- A project with GitHub Actions workflows (`.github/workflows/`)
+
+## Installation
+
+```bash
+npm install -g @dotsetlabs/cli
+```
+
+## Initialize Hadron
+
+```bash
+dotset init --hadron
+```
+
+Or add to an existing project:
+
+```bash
+# Enable Hadron in your dotset project
+dotset config set hadron.enabled true
+```
+
+## Running Your First CI Build
+
+### 1. List Available Jobs
+
+See what workflows and jobs are available:
+
+```bash
+dotset ci --list
+```
+
+### 2. Run a Single Job
+
+Execute a specific CI job locally:
+
+```bash
+dotset ci build
+```
+
+### 3. Run Multiple Jobs
+
+Execute multiple jobs in sequence:
+
+```bash
+dotset ci build test deploy
+```
+
+## Key Features
+
+### Real Secrets from Axion
+
+Hadron automatically loads secrets from Axion, so your local CI runs use the same secrets as production:
+
+```bash
+# Secrets are injected automatically
+dotset ci build --scope prod
+```
+
+### Gluon Leak Protection
+
+If Gluon is enabled, your CI output is monitored for secret leaks:
+
+```bash
+# With leak blocking enabled
+dotset ci test --mode block
+```
+
+### Custom Workflow Files
+
+Specify a different workflow file:
+
+```bash
+dotset ci build --workflow .github/workflows/deploy.yml
+```
+
+## Example Workflow
+
+```yaml
+# .github/workflows/ci.yml
+name: CI
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npm test
+```
+
+Then run locally:
+
+```bash
+dotset ci build test
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="CLI Reference" icon="terminal" href="/hadron/cli-reference">
+    Full command reference for Hadron CI commands
+  </Card>
+  <Card title="Integration" icon="link" href="/hadron/integration">
+    Deep integration with Axion and Gluon
+  </Card>
+</CardGroup>

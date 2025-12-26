@@ -39,6 +39,10 @@
             "url": "gluon"
         },
         {
+            "name": "Local CI",
+            "url": "hadron"
+        },
+        {
             "name": "Tunnels",
             "url": "tachyon"
         }
@@ -84,6 +88,14 @@
                 "gluon/runtime-monitoring",
                 "gluon/sbom",
                 "gluon/guides"
+            ]
+        },
+        {
+            "group": "Local CI (Hadron)",
+            "pages": [
+                "hadron/quickstart",
+                "hadron/cli-reference",
+                "hadron/integration"
             ]
         },
         {

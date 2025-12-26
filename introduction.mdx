@@ -5,9 +5,9 @@ description: 'The Secure Developer Runtime'
 
 # dotset labs
 
-**One CLI for secrets, security, and tunnels.**
+**One CLI for secrets, security, CI, and tunnels.**
 
-dotset is a unified developer platform that combines encrypted secrets management, runtime security telemetry, and zero-trust localhost sharing into a single developer experience.
+dotset is a unified developer platform that combines encrypted secrets management, runtime security, local CI debugging, and zero-trust localhost sharing into a single developer experience.
 
 ## Quick Install
 
@@ -17,32 +17,33 @@ npm install -g @dotsetlabs/cli
 
 ## The Unified Runtime
 
-With one command, inject secrets and monitor for leaks:
+With one CLI, manage your entire development security stack:
 
 ```bash
 # Initialize your project
 dotset init
 
-# Run with full security stack
-dotset run -- npm start
-```
+# Run with secrets + protection
+dotset run --scope prod --mode block -- npm start
 
-This single command:
-- 🔐 **Injects secrets** from your encrypted vault
-- 🛡️ **Monitors runtime** for secret leaks in logs
-- 📊 **Tracks network** calls to detect anomalies
+# Debug CI locally
+dotset ci build test --scope prod
+```
 
 ## Platform Modules
 
-<CardGroup cols={3}>
-  <Card title="Secrets" icon="shield" href="/axion/quickstart">
+<CardGroup cols={2}>
+  <Card title="Secrets (Axion)" icon="shield" href="/axion/quickstart">
     Zero-disk encrypted secrets with AES-256-GCM.
   </Card>
-  <Card title="Security" icon="chart-line" href="/gluon/quickstart">
-    Runtime telemetry that detects leaks and tracks network.
+  <Card title="Security (Gluon)" icon="chart-line" href="/gluon/quickstart">
+    Runtime telemetry that detects and blocks leaks.
   </Card>
-  <Card title="Tunnels" icon="globe" href="/tachyon/quickstart">
-    Zero-trust localhost sharing with SSO authentication.
+  <Card title="Local CI (Hadron)" icon="terminal" href="/hadron/quickstart">
+    Run GitHub Actions locally with real secrets.
+  </Card>
+  <Card title="Tunnels (Tachyon)" icon="globe" href="/tachyon/quickstart">
+    Zero-trust localhost sharing with authentication.
   </Card>
 </CardGroup>
 
@@ -52,6 +53,8 @@ This single command:
 |:--------|:------------|
 | `dotset init` | Initialize a new project |
 | `dotset run` | Run with secrets + monitoring |
+| `dotset ci` | Run CI jobs locally |
+| `dotset share` | Share localhost securely |
 | `dotset login` | Authenticate with cloud |
 | `dotset status` | Show project status |
 
@@ -66,6 +69,10 @@ dotset secrets list
 dotset scan
 dotset sbom --static
 
+# Local CI
+dotset ci build test
+dotset ci --list
+
 # Tunnels
 dotset share 3000
 dotset tunnels
@@ -74,7 +81,7 @@ dotset tunnels
 ## Why dotset?
 
 Most security tools are:
-- **Siloed** — Separate tools for secrets, scanning, and tunneling
+- **Siloed** — Separate tools for secrets, scanning, CI, and tunneling
 - **Friction-heavy** — Require extensive configuration
 - **Dev-unfriendly** — Designed for ops, not developers
 
