@@ -101,6 +101,21 @@ Gluon monitors:
 - **Log files** - If steps write to known log paths
 - **Environment echoes** - `env` or `printenv` commands
 
+## Cloud Synchronization
+
+Sync your local CI results to the dotset cloud for team visibility and historical tracking.
+
+```bash
+# Run and sync to dashboard
+dotset ci build test --sync
+```
+
+When synchronized:
+- **Run status** is visible in the project dashboard
+- **Step durations** are tracked for performance analysis
+- **Leak summaries** are reported to the security team
+- **External Run ID** links local runs to cloud projects
+
 ## Unified Configuration
 
 Configure default behavior in your project's `dotset.json`:

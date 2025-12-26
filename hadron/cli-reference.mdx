@@ -30,6 +30,7 @@ dotset ci [jobs...] [options]
 | `--mode <mode>` | Gluon protection mode: detect, redact, block |
 | `--list` | List available workflows and jobs |
 | `--dry-run` | Show what would run without executing |
+| `--sync` | Sync results to dotset cloud |
 | `--no-secrets` | Disable Axion secret injection |
 | `--no-monitor` | Disable Gluon monitoring |
 
@@ -41,6 +42,9 @@ dotset ci --list
 
 # Run a single job
 dotset ci build
+
+# Run with cloud synchronization
+dotset ci build test --sync
 
 # Run multiple jobs in sequence
 dotset ci build test
