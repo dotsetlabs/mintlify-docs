@@ -37,13 +37,17 @@ sequenceDiagram
     CLI->>Dev: Inject into process.env
 ```
 
-## Key Storage
+## Key Management (Zero-Disk Auth)
 
-Your project key is stored at:
+Axion uses a **Zero-Disk Authentication** model for enhanced security.
 
-```
-.dotset/axion/key
-```
+-   **Development**: Keys are fetched dynamically from the server when you run `dotset login`.
+-   **Memory-Only**: Keys are injected directly into process memory and never written to disk.
+-   **Scope Isolation**: Each environment (Development, Staging, Production) has a unique encryption key.
+
+<Note>
+Legacy local-only projects may still use `.dotset/axion/key` for offline development, but cloud-linked projects use dynamic key fetching.
+</Note>
 
 <Warning>
 This file contains your encryption key. Add it to `.gitignore` and back it up securely.
