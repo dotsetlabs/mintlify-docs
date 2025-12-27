@@ -29,10 +29,6 @@ dotset init [options]
 |:-------|:------------|
 | `--name <name>` | Project name |
 | `--cloud` | Create cloud project immediately |
-| `--axion` | Enable Secrets module |
-| `--gluon` | Enable Security module |
-| `--hadron` | Enable Local CI module |
-| `--tachyon` | Enable Tunnels module |
 
 ### `dotset run`
 
@@ -153,7 +149,30 @@ dotset sbom [options]
 
 ---
 
-## CI Commands
+| `--no-monitor` | Disable leak monitoring |
+
+---
+
+## Lagrangian Commands
+
+### `dotset replay`
+
+Replay a captured production error locally.
+
+```bash
+dotset replay <eventId> [options]
+```
+
+| Option | Description |
+|:-------|:------------|
+| `--cmd <command>` | Command to start the local server (default: npm start) |
+| `--scope <scope>` | Secrets scope to use (default: development) |
+| `--port <port>` | Local port to send the replay to (default: 3000) |
+| `--delay <ms>` | Delay in ms before replaying (default: 2000) |
+
+---
+
+## CI Commands (Hadron)
 
 ### `dotset ci`
 
@@ -173,33 +192,6 @@ dotset ci [jobs...] [options]
 | `--sync` | Sync results to dotset cloud |
 | `--no-secrets` | Disable secret injection |
 | `--no-monitor` | Disable leak monitoring |
-
----
-
-## Tunnel Commands
-
-### `dotset share`
-
-Share localhost via secure tunnel.
-
-```bash
-dotset share <port> [options]
-```
-
-| Option | Description |
-|:-------|:------------|
-| `--subdomain <name>` | Request specific subdomain |
-| `--inspect` | Enable request inspector |
-| `--auth` | Require authentication |
-| `--project <id>` | Link to a specific project |
-
-### `dotset tunnels`
-
-List active tunnels.
-
-```bash
-dotset tunnels
-```
 
 ---
 
@@ -298,7 +290,6 @@ dotset audit [options]
 | `--action <action>` | Filter by action type |
 | `--user <email>` | Filter by user |
 | `--scope <scope>` | Filter by environment scope |
-| `--source <product>` | Filter by product: axion, gluon, hadron, tachyon |
 | `--since <date>` | Start date (YYYY-MM-DD) |
 | `--until <date>` | End date (YYYY-MM-DD) |
 | `--limit <n>` | Maximum entries to show |

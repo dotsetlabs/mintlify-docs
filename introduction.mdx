@@ -5,9 +5,9 @@ description: 'The Secure Developer Runtime'
 
 # dotset labs
 
-**One CLI for secrets, security, CI, and tunnels.**
+**One CLI for secrets, security, CI, and crash replay.**
 
-dotset is a unified developer platform that combines encrypted secrets management, runtime security, local CI debugging, and zero-trust localhost sharing into a single developer experience.
+dotset is a unified developer platform that combines encrypted secrets management, runtime security, local CI debugging, and instant crash reproduction into a single developer experience.
 
 ## Quick Install
 
@@ -39,11 +39,8 @@ dotset ci build test --scope prod
   <Card title="Security (Gluon)" icon="chart-line" href="/gluon/quickstart">
     Runtime telemetry that detects and blocks leaks.
   </Card>
-  <Card title="Local CI (Hadron)" icon="terminal" href="/hadron/quickstart">
-    Run GitHub Actions locally with real secrets.
-  </Card>
-  <Card title="Tunnels (Tachyon)" icon="globe" href="/tachyon/quickstart">
-    Zero-trust localhost sharing with authentication.
+  <Card title="Crash Replay (Lagrangian)" icon="repeat" href="/gluon/crash-replay">
+    Reproduce production crashes locally in one command.
   </Card>
 </CardGroup>
 
@@ -54,7 +51,7 @@ dotset ci build test --scope prod
 | `dotset init` | Initialize a new project |
 | `dotset run` | Run with secrets + monitoring |
 | `dotset ci` | Run CI jobs locally |
-| `dotset share` | Share localhost securely |
+| `dotset replay` | Replay crashes locally |
 | `dotset login` | Authenticate with cloud |
 | `dotset status` | Show project status |
 
@@ -73,9 +70,8 @@ dotset sbom --static
 dotset ci build test
 dotset ci --list
 
-# Tunnels
-dotset share 3000
-dotset tunnels
+# Crash Replay (Lagrangian)
+dotset replay <event-id>
 
 # Team & Governance
 dotset team add user@example.com --role member

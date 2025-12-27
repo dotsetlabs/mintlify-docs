@@ -43,8 +43,8 @@
             "url": "hadron"
         },
         {
-            "name": "Tunnels",
-            "url": "tachyon"
+            "name": "Crash Replay",
+            "url": "lagrangian"
         }
     ],
     "anchors": [
@@ -87,6 +87,7 @@
                 "gluon/quickstart",
                 "gluon/cli-reference",
                 "gluon/runtime-monitoring",
+                "gluon/crash-replay",
                 "gluon/sbom",
                 "gluon/guides"
             ]
@@ -100,13 +101,9 @@
             ]
         },
         {
-            "group": "Tunnels (Tachyon)",
+            "group": "Crash Replay (Lagrangian)",
             "pages": [
-                "tachyon/quickstart",
-                "tachyon/cli-reference",
-                "tachyon/inspector",
-                "tachyon/authentication",
-                "tachyon/guides"
+                "gluon/crash-replay"
             ]
         }
     ],
