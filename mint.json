@@ -51,15 +51,16 @@
             "pages": [
                 "concepts/protection-modes",
                 "concepts/secrets",
-                "concepts/scopes"
+                "concepts/scopes",
+                "concepts/pricing"
             ]
         },
         {
             "group": "CLI Reference",
             "pages": [
                 "cli/overview",
-                "cli/init",
                 "cli/run",
+                "cli/link",
                 "cli/secrets",
                 "cli/ci",
                 "cli/auth"
@@ -70,7 +71,8 @@
             "pages": [
                 "guides/github-actions",
                 "guides/local-ci",
-                "guides/team-sync"
+                "guides/analytics",
+                "guides/api-tokens"
             ]
         },
         {

@@ -5,17 +5,25 @@ description: 'dotset shield command-line interface'
 
 # CLI Reference
 
-The shield CLI provides a unified interface for cross-provider secret management and leak protection.
+The shield CLI provides a unified interface for secret protection and cloud analytics.
 
 ## Commands
 
 | Command | Description |
 |---------|-------------|
-| [`secrets init`](/cli/init) | Initialize native encrypted storage |
 | [`run`](/cli/run) | Run commands with protection |
-| [`secrets`](/cli/secrets) | Manage cross-provider secrets |
+| [`link`](/cli/link) | Connect project to cloud |
+| [`secrets`](/cli/secrets) | Manage local encrypted storage |
 | [`ci`](/cli/ci) | Run local CI (GitHub Actions) |
-| [`auth`](/cli/auth) | Authenticate with Dotset Cloud |
+| [`auth`](/cli/auth) | Authenticate with cloud |
+
+## Cloud Commands
+
+| Command | Description |
+|---------|-------------|
+| `dotset link <id> --token <t>` | Connect to dashboard |
+| `dotset unlink` | Disconnect from cloud |
+| `dotset status` | Show connection status |
 
 ## Global Options
 
@@ -30,16 +38,16 @@ dotset --help       # Show help
 # Zero-setup protection
 dotset run -- npm start
 
-# Mix and match providers
-dotset run --providers dotenv,aws-sm -- node server.js
+# Redact secrets from output
+dotset run --mode redact -- npm test
 
-# Initialize native storage
-dotset secrets init
+# Link to cloud for analytics
+dotset link proj_123 --token dss_xxx
 
-# Set a native secret
-dotset secrets set API_KEY "sk-..."
-
-# Run with redaction
+# Run with telemetry
 dotset run --mode redact -- npm start
-```
+# Analytics appear at app.dotsetlabs.com
 
+# Disable telemetry for a run
+dotset run --no-telemetry -- npm start
+```
