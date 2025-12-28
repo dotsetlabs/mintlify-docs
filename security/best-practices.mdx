@@ -43,8 +43,9 @@ dotset secrets set API_KEY "prod-key" --scope production
 # Update a secret
 dotset secrets set API_KEY "new-key"
 
-# Push to team
-dotset secrets sync --push
+# Commit the updated encrypted file
+git add .dotset/secrets.enc
+git commit -m "Rotate API key"
 ```
 
 ### Delete Unused Secrets

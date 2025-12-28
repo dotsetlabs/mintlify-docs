@@ -1,91 +1,120 @@
 ---
-title: dotset auth
-description: 'Authenticate with cloud services'
+title: Cloud Connection
+description: 'Connect projects to the dotset cloud for analytics and policies'
 ---
 
-# dotset auth
+# Cloud Connection
 
-Authenticate with dotset cloud for team sync and dashboard access.
+Connect your projects to dotset cloud for analytics, team sync, and centralized security policies.
 
 ## Commands
 
 | Command | Description |
 |---------|-------------|
-| `dotset login` | Sign in to your account |
-| `dotset logout` | Sign out |
+| `dotset link <id> --token <t>` | Connect project to cloud |
+| `dotset unlink` | Disconnect from cloud |
+| `dotset status` | Show connection status |
+| `dotset sync` | Sync security policies |
 
 ---
 
-## dotset login
+## dotset link
 
-Authenticate via browser.
+Connect a local project to your cloud dashboard.
 
 ```bash
-dotset login
+dotset link <project-id> --token <api-token>
 ```
 
-This opens your browser to complete OAuth authentication.
+### Prerequisites
+
+1. Create a project in the [dashboard](https://app.dotsetlabs.com)
+2. Generate an API token from project settings
+3. Copy the project ID and token
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `--token, -t` | API token from dashboard (required) |
+| `--api-url` | Custom API URL for self-hosted |
 
 ### Output
 
 ```bash
-$ dotset login
+$ dotset link abc123 --token dss_xxxx...
 
-Opening browser to authenticate...
-✓ Logged in as user@example.com
+Connecting to dotset cloud...
+✓ Project linked successfully
+
+Protection events will now be sent to your dashboard.
+Run commands with "dotset run" to start tracking.
 ```
 
 ---
 
-## dotset logout
+## dotset unlink
 
-Sign out of your account.
+Disconnect the current project from cloud.
 
 ```bash
-dotset logout
+dotset unlink
+```
+
+This removes the `.dotset/project.json` configuration file.
+
+---
+
+## dotset status
+
+Check the current cloud connection status.
+
+```bash
+dotset status
 ```
 
 ### Output
 
 ```bash
-$ dotset logout
+$ dotset status
 
-✓ Logged out
+✓ Linked to cloud
+  Project ID: abc123
+  API URL: https://api.dotsetlabs.com
 ```
 
-## Authentication Methods
+---
 
-Shield supports authentication via:
+## dotset sync
 
-- **GitHub OAuth** — Sign in with your GitHub account
+Fetch the latest security policies from the cloud.
 
-## Credentials Storage
+```bash
+dotset sync
+```
 
-Authentication tokens are stored in:
+Policies are cached locally and automatically used during `dotset run`.
 
-| Platform | Location |
-|----------|----------|
-| macOS | `~/.dotset/credentials.json` |
-| Linux | `~/.dotset/credentials.json` |
-| Windows | `%USERPROFILE%\.dotset\credentials.json` |
+---
 
 ## Cloud Features
 
-After authenticating, you can:
+After connecting, you get:
 
-- Sync secrets across machines
-- Share secrets with team members
-- Access the web dashboard
-- View audit logs
+- **Protection Analytics** — View secret exposure stats in your dashboard
+- **Centralized Policies** — Define regex patterns and blocklists in the dashboard
+- **Team Collaboration** — Share projects with team members
+- **Audit Logs** — Track all protection events
 
-## Next Steps
+## Configuration Storage
 
-After logging in:
+Link configuration is stored in `.dotset/project.json` (project-local):
 
-```bash
-# Push secrets to cloud
-dotset secrets sync --push
-
-# Pull secrets from cloud
-dotset secrets sync --pull
+```json
+{
+  "projectId": "abc123",
+  "apiToken": "dss_xxxx..."
+}
 ```
+
+> **Note**: Add `.dotset/` to your `.gitignore` to keep tokens out of version control.

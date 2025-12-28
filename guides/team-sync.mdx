@@ -1,63 +1,110 @@
 ---
-title: Team Sync
-description: 'Share secrets securely with your team'
+title: Team Secret Sharing
+description: 'Share encrypted secrets securely with your team'
 ---
 
 # Team Secret Sharing
 
-Sync secrets across your team using the cloud.
+How to share encrypted secrets securely with team members.
 
-## Prerequisites
+## How Local Secret Storage Works
 
-1. Create an account at [app.dotsetlabs.com](https://app.dotsetlabs.com)
-2. Authenticate: `dotset login`
+Shield stores secrets locally in `.dotset/secrets.enc`, encrypted with a key stored in `.dotset/key`. Team members need both the encrypted file and the key to access secrets.
 
-## Push Secrets to Cloud
+## Sharing Workflow
 
-```bash
-dotset secrets sync --push
-```
+### Initial Setup (Project Owner)
 
-This uploads your encrypted secrets to the cloud. They remain encrypted — we never see your values.
-
-## Pull Secrets from Cloud
+1. Initialize encrypted storage:
 
 ```bash
-dotset secrets sync --pull
+dotset secrets init
 ```
 
-Downloads secrets from the cloud and merges with your local store.
+2. Store your secrets:
 
-## Workflow
+```bash
+dotset secrets set API_KEY "sk-..."
+dotset secrets set DATABASE_URL "postgres://..."
+```
 
-### Setting Up a New Team Member
+3. Share the encryption key securely using a password manager like 1Password, Bitwarden, or Vault.
 
-1. Clone the repository
-2. Initialize native storage: `dotset secrets init`
-3. Get the project key from your team (securely!)
-4. Login: `dotset login`
-5. Pull secrets: `dotset secrets sync --pull`
+### New Team Member Setup
+
+1. Clone the repository (includes `.dotset/secrets.enc`)
+
+2. Get the encryption key from your team (securely!)
+
+3. Save the key to `.dotset/key`:
+
+```bash
+mkdir -p .dotset
+echo "your-key-here" > .dotset/key
+chmod 600 .dotset/key
+```
+
+4. Verify access:
+
+```bash
+dotset secrets list
+```
 
 <Warning>
-**Security First**: Share your project key securely (e.g., 1Password, Bitwarden). Never share it in plaintext channels like Slack or email.
+**Security First**: Share your encryption key via a password manager (1Password, Bitwarden, Vault). 
+Never share it in plaintext channels like Slack or email.
 </Warning>
 
-### Updating Secrets
+## Updating Secrets
+
+When updating secrets, commit the updated `.dotset/secrets.enc` file:
 
 ```bash
-# Add or update secret in native storage
-dotset secrets set NEW_API_KEY "..."
+# Update the secret
+dotset secrets set API_KEY "new-key"
 
-# Push to team
-dotset secrets sync --push
+# Commit the encrypted file
+git add .dotset/secrets.enc
+git commit -m "Update API key"
+git push
 ```
 
-## Why Sync Native Storage?
+Team members pull and immediately have access (since they have the same key).
 
-While Shield can pull secrets from AWS or `.env` files, **Native Storage** with Cloud Sync is the best way to manage environment-specific credentials that need to be shared across a development team without relying on external infrastructure.
+## CI/CD Integration
 
-### Benefits
-- **Zero-Infrastructure**: No need to manage AWS IAM roles for every developer.
-- **Offline Access**: Secrets are encrypted on your local machine.
-- **Audit Logs**: See who updated which secret and when (Business plan).
+Store the encryption key as a repository secret:
 
+```yaml
+# GitHub Actions
+env:
+  DOTSET_KEY: ${{ secrets.DOTSET_KEY }}
+```
+
+Then set the key before running:
+
+```bash
+mkdir -p .dotset
+echo "$DOTSET_KEY" > .dotset/key
+dotset run --mode redact -- npm test
+```
+
+## File Structure
+
+| File | Commit? | Purpose |
+|------|---------|---------|
+| `.dotset/secrets.enc` | ✅ Yes | Encrypted secrets (safe to commit) |
+| `.dotset/key` | ❌ No | Encryption key (never commit) |
+
+## Gitignore Setup
+
+Your `.gitignore` should include:
+
+```
+# Dotset - never commit the key
+.dotset/key
+```
+
+<Note>
+The encrypted secrets file (`.dotset/secrets.enc`) is safe to commit because it's encrypted with your key.
+</Note>
