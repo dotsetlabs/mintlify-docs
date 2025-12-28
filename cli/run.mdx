@@ -1,0 +1,93 @@
+---
+title: dotset run
+description: 'Run commands with secret protection'
+---
+
+# dotset run
+
+Run any command with secrets injected and output protection.
+
+## Usage
+
+```bash
+dotset run [options] -- <command...>
+```
+
+<Note>
+Use `--` to separate dotset options from your command.
+</Note>
+
+## Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `-s, --scope <scope>` | Environment scope | `development` |
+| `-m, --mode <mode>` | Protection mode | `detect` |
+| `--redact-text <text>` | Replacement text | `[REDACTED]` |
+| `-q, --quiet` | Suppress shield output | `false` |
+
+## Protection Modes
+
+- **detect**: Logs exposures without modification
+- **redact**: Replaces secrets with `[REDACTED]`
+- **block**: Suppresses lines containing secrets
+
+## Examples
+
+### Basic Usage
+
+```bash
+dotset run -- npm start
+```
+
+### With Redaction
+
+```bash
+dotset run --mode redact -- npm test
+```
+
+### Production Scope
+
+```bash
+dotset run --scope production -- node server.js
+```
+
+### Custom Redaction Text
+
+```bash
+dotset run --mode redact --redact-text "***" -- npm start
+```
+
+### Quiet Mode (CI)
+
+```bash
+dotset run --mode redact --quiet -- npm test
+```
+
+## Output
+
+```bash
+$ dotset run --mode redact -- node app.js
+
+🛡️  shield | mode: redact | secrets: 2 | scope: development
+
+Starting application...
+Connecting to [REDACTED]
+API key: [REDACTED]
+Server running on port 3000
+
+🛡️  shield | exit: 0 | exposures: 2
+```
+
+## How It Works
+
+1. Loads secrets from `.dotset/manifest.json`
+2. Decrypts using your project key
+3. Injects secrets into the child process environment
+4. Intercepts stdout/stderr
+5. Applies protection mode to output
+6. Passes through to your terminal
+
+## Exit Codes
+
+The exit code matches your command's exit code. Shield itself never fails silently.

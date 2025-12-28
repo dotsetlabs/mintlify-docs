@@ -1,6 +1,6 @@
 {
     "$schema": "https://mintlify.com/schema.json",
-    "name": "dotset labs",
+    "name": "dotset shield",
     "logo": {
         "dark": "/logo/dark.svg",
         "light": "/logo/light.svg"
@@ -12,7 +12,7 @@
         "dark": "#059669",
         "anchors": {
             "from": "#10B981",
-            "to": "#6366F1"
+            "to": "#06B6D4"
         }
     },
     "topbarLinks": [
@@ -25,38 +25,16 @@
         "name": "Get Started",
         "url": "https://dotsetlabs.com"
     },
-    "tabs": [
-        {
-            "name": "Platform",
-            "url": "/"
-        },
-        {
-            "name": "Secrets",
-            "url": "axion"
-        },
-        {
-            "name": "Security",
-            "url": "gluon"
-        },
-        {
-            "name": "Local CI",
-            "url": "hadron"
-        },
-        {
-            "name": "Crash Replay",
-            "url": "lagrangian"
-        }
-    ],
     "anchors": [
         {
             "name": "GitHub",
             "icon": "github",
-            "url": "https://github.com/dotsetlabs"
+            "url": "https://github.com/dotsetlabs/shield"
         },
         {
             "name": "npm",
             "icon": "npm",
-            "url": "https://www.npmjs.com/org/dotsetlabs"
+            "url": "https://www.npmjs.com/package/@dotsetlabs/shield"
         }
     ],
     "navigation": [
@@ -65,50 +43,45 @@
             "pages": [
                 "introduction",
                 "quickstart",
-                "cli-reference"
+                "installation"
             ]
         },
         {
-            "group": "Secrets (Axion)",
+            "group": "Core Concepts",
             "pages": [
-                "axion/quickstart",
-                "axion/cli-reference",
-                "axion/sdk",
-                "axion/secret-templating",
-                "axion/cloud-sync",
-                "axion/team-management",
-                "axion/security",
-                "axion/guides"
+                "concepts/protection-modes",
+                "concepts/secrets",
+                "concepts/scopes"
             ]
         },
         {
-            "group": "Security (Gluon)",
+            "group": "CLI Reference",
             "pages": [
-                "gluon/quickstart",
-                "gluon/cli-reference",
-                "gluon/runtime-monitoring",
-                "gluon/crash-replay",
-                "gluon/sbom",
-                "gluon/guides"
+                "cli/overview",
+                "cli/init",
+                "cli/run",
+                "cli/secrets",
+                "cli/ci",
+                "cli/auth"
             ]
         },
         {
-            "group": "Local CI (Hadron)",
+            "group": "Guides",
             "pages": [
-                "hadron/quickstart",
-                "hadron/cli-reference",
-                "hadron/integration"
+                "guides/github-actions",
+                "guides/local-ci",
+                "guides/team-sync"
             ]
         },
         {
-            "group": "Crash Replay (Lagrangian)",
+            "group": "Security",
             "pages": [
-                "gluon/crash-replay"
+                "security/encryption",
+                "security/best-practices"
             ]
         }
     ],
     "footerSocials": {
-        "github": "https://github.com/dotsetlabs",
-        "twitter": "https://twitter.com/dotsetlabs"
+        "github": "https://github.com/dotsetlabs"
     }
 }

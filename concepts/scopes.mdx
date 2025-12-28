@@ -1,0 +1,70 @@
+---
+title: Scopes
+description: 'Manage secrets for different environments'
+---
+
+# Environment Scopes
+
+Shield supports three scopes for managing secrets across environments.
+
+## Available Scopes
+
+| Scope | Description | Example |
+|-------|-------------|---------|
+| `development` | Local development (default) | Dev API keys |
+| `staging` | Staging/preview environments | Staging database |
+| `production` | Production environment | Live credentials |
+
+## Setting Scoped Secrets
+
+```bash
+# Development (default)
+dotset secrets set API_KEY "dev-key"
+
+# Staging
+dotset secrets set API_KEY "staging-key" --scope staging
+
+# Production
+dotset secrets set API_KEY "prod-key" --scope production
+```
+
+## Running with a Scope
+
+```bash
+# Uses development secrets (default)
+dotset run -- npm start
+
+# Uses staging secrets
+dotset run --scope staging -- npm start
+
+# Uses production secrets
+dotset run --scope production -- npm start
+```
+
+## Listing by Scope
+
+```bash
+dotset secrets list --scope production
+```
+
+## Use Cases
+
+### Local Development
+```bash
+dotset secrets set DATABASE_URL "postgres://localhost/dev"
+dotset run -- npm start
+```
+
+### CI/CD Staging
+```bash
+dotset run --scope staging -- npm test
+```
+
+### Production Deployment
+```bash
+dotset run --scope production -- node server.js
+```
+
+<Tip>
+Keep your production secrets separate. Use different encryption keys for each environment in high-security setups.
+</Tip>

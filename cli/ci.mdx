@@ -1,0 +1,104 @@
+---
+title: dotset ci
+description: 'Run GitHub Actions locally'
+---
+
+# dotset ci
+
+Run GitHub Actions workflow jobs locally with secret protection.
+
+## Usage
+
+```bash
+dotset ci [jobs...] [options]
+```
+
+## Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `-l, --list` | List available jobs | - |
+| `-f, --file <file>` | Workflow file name | First found |
+| `-s, --scope <scope>` | Environment scope | `development` |
+| `-m, --mode <mode>` | Protection mode | `detect` |
+
+## Examples
+
+### List Available Jobs
+
+```bash
+$ dotset ci --list
+
+Available workflows:
+  ci.yml
+    → build: Build
+    → test: Run Tests
+    → deploy: Deploy
+```
+
+### Run All Jobs
+
+```bash
+dotset ci
+```
+
+### Run Specific Jobs
+
+```bash
+dotset ci build test
+```
+
+### Run with Protection
+
+```bash
+dotset ci --mode redact
+```
+
+### Use Specific Workflow
+
+```bash
+dotset ci --file release.yml
+```
+
+## Output
+
+```bash
+$ dotset ci test
+
+Workflow: CI
+
+╭─ Job: Run Tests (test)
+│
+├─ Step 1: Checkout
+│  ✓ Passed (52ms)
+├─ Step 2: Install Dependencies
+│  ✓ Passed (8234ms)
+├─ Step 3: Run Tests
+│  ✓ Passed (4521ms)
+│
+╰─ ✓ Job passed (12807ms)
+```
+
+## Supported Workflow Features
+
+| Feature | Supported |
+|---------|-----------|
+| `run` steps | ✓ |
+| `if` conditions | ✓ |
+| Environment variables | ✓ |
+| Secrets injection | ✓ |
+| Matrix builds | ✗ |
+| Docker actions | ✗ |
+| Reusable workflows | ✗ |
+
+## How It Works
+
+1. Parses `.github/workflows/*.yml`
+2. Loads secrets from your scope
+3. Executes each step with secret injection
+4. Applies protection mode to output
+5. Reports results with timing
+
+<Warning>
+Not all GitHub Actions features are supported locally. Complex workflows may behave differently than in GitHub.
+</Warning>

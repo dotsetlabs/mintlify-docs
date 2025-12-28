@@ -1,0 +1,106 @@
+---
+title: Team Sync
+description: 'Share secrets securely with your team'
+---
+
+# Team Secret Sharing
+
+Sync secrets across your team using the cloud.
+
+## Prerequisites
+
+1. Create an account at [app.dotsetlabs.com](https://app.dotsetlabs.com)
+2. Authenticate: `dotset login`
+
+## Push Secrets to Cloud
+
+```bash
+dotset secrets sync --push
+```
+
+This uploads your encrypted secrets to the cloud. They remain encrypted — we never see your values.
+
+## Pull Secrets from Cloud
+
+```bash
+dotset secrets sync --pull
+```
+
+Downloads secrets from the cloud and merges with your local store.
+
+## Workflow
+
+### Setting Up a New Team Member
+
+1. Clone the repository
+2. Initialize shield: `dotset init`
+3. Get the project key from your team (securely!)
+4. Login: `dotset login`
+5. Pull secrets: `dotset secrets sync --pull`
+
+<Warning>
+Share your project key securely (e.g., 1Password, Vault). Never share it in Slack or email.
+</Warning>
+
+### Updating Secrets
+
+```bash
+# Add or update secret
+dotset secrets set NEW_API_KEY "..."
+
+# Push to team
+dotset secrets sync --push
+```
+
+### Team Members Pull Updates
+
+```bash
+dotset secrets sync --pull
+```
+
+## Key Management
+
+### Project Key
+
+The `.dotset/key` file is shared across your team. Store it in:
+
+- 1Password or LastPass
+- HashiCorp Vault
+- AWS Secrets Manager
+- Your company's secret sharing system
+
+### Never Commit the Key
+
+Ensure `.dotset/key` is in your `.gitignore`:
+
+```bash
+echo ".dotset/key" >> .gitignore
+```
+
+## CI/CD Setup
+
+For CI/CD, store the key as a repository secret:
+
+```yaml
+env:
+  DOTSET_KEY: ${{ secrets.DOTSET_KEY }}
+```
+
+Then pull secrets in your workflow:
+
+```yaml
+- name: Setup secrets
+  run: dotset secrets sync --pull
+```
+
+## Conflict Resolution
+
+If both local and cloud have changes, pull downloads the cloud version. Your local changes are preserved as backups.
+
+## Access Control
+
+| Plan | Features |
+|------|----------|
+| Free | 5 projects, 100 secrets each |
+| Pro | 25 projects, unlimited secrets |
+| Business | Unlimited, audit logs, SSO |

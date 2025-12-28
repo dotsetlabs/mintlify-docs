@@ -1,0 +1,56 @@
+---
+title: dotset init
+description: 'Initialize a shield project'
+---
+
+# dotset init
+
+Initialize a new shield project in the current directory.
+
+## Usage
+
+```bash
+dotset init
+```
+
+## What It Does
+
+1. Creates `.dotset/` directory
+2. Generates a random encryption key
+3. Creates an empty manifest file
+4. Adds `.dotset/key` to `.gitignore` (if present)
+
+## Output
+
+```bash
+$ dotset init
+
+✓ Created .dotset/key (encryption key)
+✓ Created .dotset/manifest.json
+✓ Added .dotset/key to .gitignore
+
+Shield initialized. Keep your key safe!
+```
+
+## Files Created
+
+| File | Description | Commit? |
+|------|-------------|---------|
+| `.dotset/key` | Encryption key | **Never** |
+| `.dotset/manifest.json` | Encrypted secrets | Yes |
+
+<Warning>
+The `.dotset/key` file is your encryption key. If you lose it, you cannot decrypt your secrets. Store it securely.
+</Warning>
+
+## Next Steps
+
+After initializing:
+
+```bash
+# Add your first secret
+dotset secrets set DATABASE_URL "..."
+
+# Run with protection
+dotset run -- npm start
+```

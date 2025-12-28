@@ -1,0 +1,89 @@
+---
+title: GitHub Actions
+description: 'Protect your GitHub Actions workflows'
+---
+
+# GitHub Actions Integration
+
+Shield integrates seamlessly with GitHub Actions to protect your CI builds.
+
+## Basic Setup
+
+Add shield to your workflow:
+
+```yaml
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install shield
+        run: npm install -g @dotsetlabs/shield
+      
+      - name: Run tests with protection
+        run: dotset run --mode redact -- npm test
+        env:
+          DOTSET_KEY: ${{ secrets.DOTSET_KEY }}
+```
+
+## Using Secrets from GitHub
+
+```yaml
+- name: Run with protection
+  run: |
+    dotset secrets set API_KEY "$API_KEY"
+    dotset run --mode redact -- npm test
+  env:
+    DOTSET_KEY: ${{ secrets.DOTSET_KEY }}
+    API_KEY: ${{ secrets.API_KEY }}
+```
+
+## GitHub Action (Coming Soon)
+
+A dedicated GitHub Action will simplify this:
+
+```yaml
+- name: Run with Shield
+  uses: dotsetlabs/shield-action@v1
+  with:
+    mode: redact
+    run: |
+      npm ci
+      npm test
+```
+
+## Storing Your Key
+
+1. Go to your repository **Settings** → **Secrets and variables** → **Actions**
+2. Add a new secret called `DOTSET_KEY`
+3. Paste your `.dotset/key` contents
+
+<Warning>
+Your DOTSET_KEY is your encryption key. Treat it like a password.
+</Warning>
+
+## Matrix Builds
+
+For matrix builds, use the same key across all jobs:
+
+```yaml
+jobs:
+  test:
+    strategy:
+      matrix:
+        node: [18, 20, 22]
+    steps:
+      - name: Run tests
+        run: dotset run --mode redact -- npm test
+        env:
+          DOTSET_KEY: ${{ secrets.DOTSET_KEY }}
+```

@@ -1,0 +1,91 @@
+---
+title: dotset auth
+description: 'Authenticate with cloud services'
+---
+
+# dotset auth
+
+Authenticate with dotset cloud for team sync and dashboard access.
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `dotset login` | Sign in to your account |
+| `dotset logout` | Sign out |
+
+---
+
+## dotset login
+
+Authenticate via browser.
+
+```bash
+dotset login
+```
+
+This opens your browser to complete OAuth authentication.
+
+### Output
+
+```bash
+$ dotset login
+
+Opening browser to authenticate...
+✓ Logged in as user@example.com
+```
+
+---
+
+## dotset logout
+
+Sign out of your account.
+
+```bash
+dotset logout
+```
+
+### Output
+
+```bash
+$ dotset logout
+
+✓ Logged out
+```
+
+## Authentication Methods
+
+Shield supports authentication via:
+
+- **GitHub OAuth** — Sign in with your GitHub account
+
+## Credentials Storage
+
+Authentication tokens are stored in:
+
+| Platform | Location |
+|----------|----------|
+| macOS | `~/.dotset/credentials.json` |
+| Linux | `~/.dotset/credentials.json` |
+| Windows | `%USERPROFILE%\.dotset\credentials.json` |
+
+## Cloud Features
+
+After authenticating, you can:
+
+- Sync secrets across machines
+- Share secrets with team members
+- Access the web dashboard
+- View audit logs
+
+## Next Steps
+
+After logging in:
+
+```bash
+# Push secrets to cloud
+dotset secrets sync --push
+
+# Pull secrets from cloud
+dotset secrets sync --pull
+```

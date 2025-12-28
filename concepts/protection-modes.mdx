@@ -1,0 +1,89 @@
+---
+title: Protection Modes
+description: 'Understand detect, redact, and block modes'
+---
+
+# Protection Modes
+
+Shield offers three protection modes for different use cases.
+
+## Detect Mode
+
+**Logs when secrets appear in output but doesn't modify anything.**
+
+```bash
+dotset run --mode detect -- npm test
+```
+
+Best for:
+- Auditing existing builds
+- Understanding what would be caught
+- Development without surprises
+
+Output:
+```
+⚠️  Secret exposure detected: API_KEY
+⚠️  Secret exposure detected: DATABASE_URL
+```
+
+## Redact Mode (Recommended)
+
+**Replaces secrets with `[REDACTED]` in real-time.**
+
+```bash
+dotset run --mode redact -- npm test
+```
+
+Best for:
+- Production CI/CD pipelines
+- Log storage systems
+- Team debugging sessions
+
+Output:
+```
+Connecting to [REDACTED]
+Using API key: [REDACTED]
+```
+
+<Tip>
+Redact mode is the recommended default for most teams. It prevents exposure while keeping logs readable.
+</Tip>
+
+## Block Mode
+
+**Completely suppresses any output line containing a secret.**
+
+```bash
+dotset run --mode block -- npm test
+```
+
+Best for:
+- Highly sensitive environments
+- Compliance requirements
+- Zero-tolerance policies
+
+Output:
+```
+Starting server...
+[blocked: contained secret]
+Server ready
+```
+
+## Comparison
+
+| Mode | Output | Use Case |
+|------|--------|----------|
+| `detect` | Unchanged | Auditing |
+| `redact` | `[REDACTED]` | Daily use |
+| `block` | Line removed | High security |
+
+## Setting Default Mode
+
+You can set the default mode in your project configuration:
+
+```json
+// .dotset/config.json
+{
+  "mode": "redact"
+}
+```

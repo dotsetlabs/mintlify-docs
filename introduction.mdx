@@ -1,92 +1,70 @@
 ---
-title: 'Introduction'
-description: 'The Secure Developer Runtime'
+title: Introduction
+description: 'Shield your CI from secret leaks'
 ---
 
-# dotset labs
+# dotset shield
 
-**One CLI for secrets, security, CI, and crash replay.**
+**Real-time secret protection for CI/CD build logs.**
 
-dotset is a unified developer platform that combines encrypted secrets management, runtime security, local CI debugging, and instant crash reproduction into a single developer experience.
+Secrets leak in build logs every day. Debug statements, error messages, and verbose logging expose API keys, tokens, and credentials. GitHub's built-in masking can't catch everything. GitGuardian scans *after* the breach.
+
+**dotset shield** intercepts output streams and redacts secrets in real-time — before they're ever exposed.
+
+## The Problem
+
+```bash
+# This happens more than you think
+console.log("Connecting with", process.env.DATABASE_URL);
+# Output: Connecting with postgres://admin:super_secret_password@db.example.com/prod
+```
+
+Your CI logs are public to your team. Sometimes they're public to everyone. One accidental `console.log` and your credentials are compromised.
+
+## The Solution
+
+```bash
+# Run any command with shield protection
+dotset run --mode redact -- npm start
+
+# Output: Connecting with [REDACTED]
+```
+
+Shield wraps your commands, injects secrets into the environment, and redacts them from all output streams.
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="Secret Injection" icon="key">
+    Encrypted secrets injected into your process environment. Never stored in plaintext.
+  </Card>
+  <Card title="Real-Time Redaction" icon="eye-slash">
+    Output streams are filtered before reaching logs. Secrets are replaced with [REDACTED].
+  </Card>
+  <Card title="Three Protection Modes" icon="shield">
+    Detect (audit), Redact (replace), or Block (suppress) — choose your protection level.
+  </Card>
+  <Card title="Local CI" icon="terminal">
+    Run GitHub Actions workflows locally with the same protection as cloud CI.
+  </Card>
+</CardGroup>
 
 ## Quick Install
 
 ```bash
-npm install -g @dotsetlabs/cli
+npm install -g @dotsetlabs/shield
 ```
 
-## The Unified Runtime
+## Next Steps
 
-With one CLI, manage your entire development security stack:
-
-```bash
-# Initialize your project
-dotset init
-
-# Run with secrets + protection
-dotset run --scope prod --mode block -- npm start
-
-# Debug CI locally
-dotset ci build test --scope prod
-```
-
-## Platform Modules
-
-<CardGroup cols={2}>
-  <Card title="Secrets (Axion)" icon="shield" href="/axion/quickstart">
-    Zero-disk encrypted secrets with AES-256-GCM.
+<CardGroup>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Get up and running in 60 seconds
   </Card>
-  <Card title="Security (Gluon)" icon="chart-line" href="/gluon/quickstart">
-    Runtime telemetry that detects and blocks leaks.
+  <Card title="CLI Reference" icon="terminal" href="/cli/overview">
+    Explore all available commands
   </Card>
-  <Card title="Crash Replay (Lagrangian)" icon="repeat" href="/gluon/crash-replay">
-    Reproduce production crashes locally in one command.
+  <Card title="Protection Modes" icon="shield" href="/concepts/protection-modes">
+    Understand detect, redact, and block modes
   </Card>
 </CardGroup>
-
-## Core Commands
-
-| Command | Description |
-|:--------|:------------|
-| `dotset init` | Initialize a new project |
-| `dotset run` | Run with secrets + monitoring |
-| `dotset ci` | Run CI jobs locally |
-| `dotset replay` | Replay crashes locally |
-| `dotset login` | Authenticate with cloud |
-| `dotset status` | Show project status |
-
-## Module Commands
-
-```bash
-# Secrets
-dotset secrets set API_KEY "sk-..."
-dotset secrets list
-
-# Security
-dotset scan
-dotset sbom --static
-
-# Local CI
-dotset ci build test
-dotset ci --list
-
-# Crash Replay (Lagrangian)
-dotset replay <event-id>
-
-# Team & Governance
-dotset team add user@example.com --role member
-dotset audit
-dotset audit verify
-```
-
-## Why dotset?
-
-Most security tools are:
-- **Siloed** — Separate tools for secrets, scanning, CI, and tunneling
-- **Friction-heavy** — Require extensive configuration
-- **Dev-unfriendly** — Designed for ops, not developers
-
-dotset is different:
-- **Unified** — One CLI, one config, one workflow
-- **Zero-config** — Sensible defaults that just work
-- **Dev-first** — Built for the local development workflow

@@ -1,0 +1,60 @@
+---
+title: Installation
+description: 'Install dotset shield'
+---
+
+# Installation
+
+## npm (Recommended)
+
+```bash
+npm install -g @dotsetlabs/shield
+```
+
+## Yarn
+
+```bash
+yarn global add @dotsetlabs/shield
+```
+
+## pnpm
+
+```bash
+pnpm add -g @dotsetlabs/shield
+```
+
+## Verify Installation
+
+```bash
+dotset --version
+```
+
+## Requirements
+
+- Node.js 20 or later
+- npm, yarn, or pnpm
+
+## Project Setup
+
+After installing, initialize shield in your project:
+
+```bash
+cd your-project
+dotset init
+```
+
+<Tip>
+Add `.dotset/key` to your `.gitignore` immediately. This file contains your encryption key and should never be committed.
+</Tip>
+
+## Updating
+
+```bash
+npm update -g @dotsetlabs/shield
+```
+
+## Uninstalling
+
+```bash
+npm uninstall -g @dotsetlabs/shield
+```

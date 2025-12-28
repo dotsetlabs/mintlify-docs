@@ -1,82 +1,99 @@
 ---
-title: 'Quickstart'
-description: 'Get started with dotset in 60 seconds'
+title: Quickstart
+description: 'Get protected in 60 seconds'
 ---
 
 # Quickstart
 
-Get the full security stack running in under a minute.
+This guide gets you from zero to protected in under a minute.
 
-## 1. Install the CLI
+## 1. Install
 
 ```bash
-npm install -g @dotsetlabs/cli
+npm install -g @dotsetlabs/shield
 ```
 
-## 2. Initialize Your Project
+## 2. Initialize
+
+Create a new shield project in your repository:
 
 ```bash
-cd your-project
 dotset init
 ```
 
-This creates a `.dotset/` directory with your project configuration. All modules (Secrets, Security, Local CI, and Crash Replay) are enabled by default and ready to use.
+This creates:
+- `.dotset/key` — Your encryption key (add to `.gitignore`)
+- `.dotset/manifest.json` — Encrypted secrets store (safe to commit)
 
-## 3. Add Your First Secret
+<Warning>
+Never commit your `.dotset/key` file. Add it to `.gitignore` immediately.
+</Warning>
+
+## 3. Add Secrets
 
 ```bash
-dotset secrets set DATABASE_URL "postgres://localhost/mydb"
-dotset secrets set API_KEY "sk-your-api-key"
+dotset secrets set DATABASE_URL "postgres://user:pass@localhost/db"
+dotset secrets set API_KEY "sk-..."
 ```
 
-Secrets are encrypted locally with AES-256-GCM. They never touch disk unencrypted.
+Secrets are encrypted locally with AES-256-GCM. Even if someone reads your manifest, they can't decrypt without your key.
 
-## 4. Run Your App
+## 4. Run with Protection
 
 ```bash
+# Default: detect mode (logs exposures)
 dotset run -- npm start
+
+# Recommended: redact mode (replaces secrets)
+dotset run --mode redact -- npm start
+
+# Strict: block mode (suppresses output)
+dotset run --mode block -- npm test
 ```
 
-This command:
-1. Injects your secrets into `process.env`
-2. Monitors stdout/stderr for leaked secrets
-3. Tracks outbound network connections
-
-## 5. Replay a Production Crash (Optional)
+## Example Output
 
 ```bash
-dotset replay evt_abc123
+$ dotset run --mode redact -- node app.js
+
+🛡️  shield | mode: redact | secrets: 2 | scope: development
+
+Starting server...
+Connecting to database: [REDACTED]
+Using API key: [REDACTED]
+Server running on port 3000
+
+🛡️  shield | exit: 0 | exposures: 2
 ```
 
-This replays a production request context locally to help you reproduce and fix bugs in seconds.
+## 5. Use Different Scopes
 
-## 6. Add Team Members
-
-Invite colleagues to your project with role-based access:
+Shield supports three scopes for different environments:
 
 ```bash
-dotset team add coworker@example.com --role member --scopes development
-```
+# Development (default)
+dotset secrets set API_KEY "dev-key"
 
-This gives them access to your project secrets and audit logs within the specified scope.
+# Staging
+dotset secrets set API_KEY "staging-key" --scope staging
+
+# Production
+dotset secrets set API_KEY "prod-key" --scope production
+
+# Run with specific scope
+dotset run --scope production -- npm start
+```
 
 ## Next Steps
 
-<CardGroup cols={2}>
-  <Card title="Cloud Sync" icon="cloud" href="/axion/cloud-sync">
-    Sync secrets with your team
+<CardGroup>
+  <Card title="Protection Modes" icon="shield" href="/concepts/protection-modes">
+    Learn about detect, redact, and block
   </Card>
-  <Card title="Crash Replay" icon="repeat" href="/gluon/crash-replay">
-    Reproduce production errors locally
+  <Card title="Local CI" icon="terminal" href="/guides/local-ci">
+    Run GitHub Actions locally
+  </Card>
+  <Card title="Team Sync" icon="cloud" href="/guides/team-sync">
+    Share secrets with your team
   </Card>
 </CardGroup>
-
-## Gitignore
-
-Add this to your `.gitignore`:
-
-```
-.dotset/
-```
-
-The `.dotset/` directory contains your encrypted secrets and local configuration. Don't commit it to version control.

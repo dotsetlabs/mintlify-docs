@@ -1,0 +1,116 @@
+---
+title: Best Practices
+description: 'Security best practices for using shield'
+---
+
+# Security Best Practices
+
+Follow these guidelines to maximize your security.
+
+## Key Management
+
+<Warning>
+Your `.dotset/key` file is the only way to decrypt your secrets. Treat it like a password.
+</Warning>
+
+### Do
+
+- ✓ Store the key in a password manager (1Password, Vault)
+- ✓ Add `.dotset/key` to `.gitignore`
+- ✓ Use different keys for different environments
+- ✓ Store CI keys as repository secrets
+
+### Don't
+
+- ✗ Commit the key to version control
+- ✗ Share the key via Slack, email, or plaintext
+- ✗ Use the same key across all projects
+- ✗ Store the key in environment variables on shared systems
+
+## Secret Hygiene
+
+### Use Scopes
+
+```bash
+# Keep production separate
+dotset secrets set API_KEY "dev-key" --scope development
+dotset secrets set API_KEY "prod-key" --scope production
+```
+
+### Rotate Regularly
+
+```bash
+# Update a secret
+dotset secrets set API_KEY "new-key"
+
+# Push to team
+dotset secrets sync --push
+```
+
+### Delete Unused Secrets
+
+```bash
+dotset secrets delete OLD_KEY
+```
+
+## CI/CD Security
+
+### Use Redact Mode
+
+```bash
+dotset run --mode redact -- npm test
+```
+
+### Use Quiet Mode in CI
+
+```bash
+dotset run --mode redact --quiet -- npm test
+```
+
+### Store Keys Securely
+
+```yaml
+env:
+  DOTSET_KEY: ${{ secrets.DOTSET_KEY }}
+```
+
+## Audit Your Logs
+
+### Check for Exposures
+
+```bash
+# Run with detect mode to audit
+dotset run --mode detect -- npm start
+```
+
+### Review CI Logs
+
+After enabling shield, review your existing CI logs for any historical exposure.
+
+## Defense in Depth
+
+Shield is one layer of protection. Also consider:
+
+| Layer | Tool |
+|-------|------|
+| Secrets in code | GitLeaks, TruffleHog |
+| Runtime protection | dotset shield |
+| Log monitoring | GitGuardian, Datadog |
+| Access control | IAM, RBAC |
+
+## Incident Response
+
+If you suspect a secret leak:
+
+1. **Rotate immediately** — Generate new credentials
+2. **Revoke old secrets** — Invalidate compromised tokens
+3. **Audit access** — Check logs for unauthorized use
+4. **Update shield** — Ensure the new secret is protected
+
+## Reporting Issues
+
+Security issues should be reported to:
+
+**hello@dotsetlabs.com**
+
+We follow responsible disclosure practices.

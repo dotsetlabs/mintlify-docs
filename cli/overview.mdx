@@ -1,0 +1,41 @@
+---
+title: CLI Overview
+description: 'dotset shield command-line interface'
+---
+
+# CLI Reference
+
+The shield CLI provides five core commands for secret management and protection.
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| [`dotset init`](/cli/init) | Initialize a new shield project |
+| [`dotset run`](/cli/run) | Run commands with protection |
+| [`dotset secrets`](/cli/secrets) | Manage secrets |
+| [`dotset ci`](/cli/ci) | Run CI jobs locally |
+| [`dotset auth`](/cli/auth) | Authenticate with cloud |
+
+## Global Options
+
+```bash
+dotset --version    # Show version
+dotset --help       # Show help
+```
+
+## Quick Examples
+
+```bash
+# Initialize
+dotset init
+
+# Set a secret
+dotset secrets set API_KEY "sk-..."
+
+# Run with protection
+dotset run --mode redact -- npm start
+
+# Run CI locally
+dotset ci
+```
