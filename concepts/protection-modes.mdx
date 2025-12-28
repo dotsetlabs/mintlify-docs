@@ -69,21 +69,16 @@ Starting server...
 Server ready
 ```
 
-## Comparison
+## Streaming Reliability
 
-| Mode | Output | Use Case |
-|------|--------|----------|
-| `detect` | Unchanged | Auditing |
-| `redact` | `[REDACTED]` | Daily use |
-| `block` | Line removed | High security |
+Regardless of the protection mode chosen, Shield uses a sophisticated **Streaming Redaction Engine** to ensure reliability.
 
-## Setting Default Mode
+### Line-Buffered Processing
+Standard stream processing can miss secrets if they happen to be split between two data chunks (e.g., a 1500-byte packet ending halfway through an API key). Shield's engine is **line-buffered**, meaning it reconstructs complete lines before scanning, ensuring that secrets are caught regardless of how they are chunked.
 
-You can set the default mode in your project configuration:
+### Overlapping Match Merging
+Commonly, a specific secret value might also match a broader pattern (e.g., an API key within an "Authorization" header). Shield intelligently merges these overlapping matches into a single redaction range to prevent corrupted or partial output in your logs.
 
-```json
-// .dotset/config.json
-{
-  "mode": "redact"
-}
-```
+### Independent Stream Buffering
+Shield maintains separate buffers for `stdout` and `stderr`. This ensures that interleaved output from different streams doesn't intermingle and interfere with the redaction process.
+

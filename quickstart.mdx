@@ -13,42 +13,49 @@ This guide gets you from zero to protected in under a minute.
 npm install -g @dotsetlabs/shield
 ```
 
-## 2. Initialize
+## 2. Zero-Migration Setup
 
-Create a new shield project in your repository:
-
-```bash
-dotset init
-```
-
-This creates:
-- `.dotset/key` — Your encryption key (add to `.gitignore`)
-- `.dotset/manifest.json` — Encrypted secrets store (safe to commit)
-
-<Warning>
-Never commit your `.dotset/key` file. Add it to `.gitignore` immediately.
-</Warning>
-
-## 3. Add Secrets
+Shield automatically detects `.env` files. If you already have one, you're ready to go:
 
 ```bash
-dotset secrets set DATABASE_URL "postgres://user:pass@localhost/db"
-dotset secrets set API_KEY "sk-..."
-```
-
-Secrets are encrypted locally with AES-256-GCM. Even if someone reads your manifest, they can't decrypt without your key.
-
-## 4. Run with Protection
-
-```bash
-# Default: detect mode (logs exposures)
+# Run with automatic protection
 dotset run -- npm start
+```
 
-# Recommended: redact mode (replaces secrets)
-dotset run --mode redact -- npm start
+## 3. Using Multiple Providers
 
-# Strict: block mode (suppresses output)
-dotset run --mode block -- npm test
+Shield can aggregate secrets from multiple sources. For example, to use both `.env` files and AWS Secrets Manager:
+
+```bash
+dotset run --providers dotenv,aws-sm -- node server.js
+```
+
+## 4. Native Encrypted Storage
+
+If you want to use Shield's native encrypted storage (for cloud sync and team sharing):
+
+### Initialize
+```bash
+dotset secrets init
+```
+
+### Add Secrets
+```bash
+dotset secrets set DATABASE_URL "..."
+dotset secrets set API_KEY "..." --scope production
+```
+
+## 5. Protection Modes
+
+| Mode | Behavior | Use Case |
+|:-----|:---------|:---------|
+| `detect` | Warning in logs | Auditing |
+| `redact` | Replaces secrets | **Recommended** |
+| `block` | Suppresses lines | High Privacy |
+
+```bash
+# Redact secrets in real-time
+dotset run --mode redact -- npm test
 ```
 
 ## Example Output
@@ -56,7 +63,7 @@ dotset run --mode block -- npm test
 ```bash
 $ dotset run --mode redact -- node app.js
 
-🛡️  shield | mode: redact | secrets: 2 | scope: development
+🛡️  shield | mode: redact | secrets: 5 | providers: dotenv, environment
 
 Starting server...
 Connecting to database: [REDACTED]
@@ -64,24 +71,6 @@ Using API key: [REDACTED]
 Server running on port 3000
 
 🛡️  shield | exit: 0 | exposures: 2
-```
-
-## 5. Use Different Scopes
-
-Shield supports three scopes for different environments:
-
-```bash
-# Development (default)
-dotset secrets set API_KEY "dev-key"
-
-# Staging
-dotset secrets set API_KEY "staging-key" --scope staging
-
-# Production
-dotset secrets set API_KEY "prod-key" --scope production
-
-# Run with specific scope
-dotset run --scope production -- npm start
 ```
 
 ## Next Steps
@@ -97,3 +86,4 @@ dotset run --scope production -- npm start
     Share secrets with your team
   </Card>
 </CardGroup>
+

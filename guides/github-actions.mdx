@@ -7,83 +7,40 @@ description: 'Protect your GitHub Actions workflows'
 
 Shield integrates seamlessly with GitHub Actions to protect your CI builds.
 
-## Basic Setup
+## Basic Setup (Zero-Migration)
 
-Add shield to your workflow:
+If your secrets are already in a `.env` file (e.g., created by a previous step), Shield works automatically:
 
 ```yaml
-name: CI
-
-on: [push, pull_request]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      
-      - name: Install shield
-        run: npm install -g @dotsetlabs/shield
-      
-      - name: Run tests with protection
-        run: dotset run --mode redact -- npm test
-        env:
-          DOTSET_KEY: ${{ secrets.DOTSET_KEY }}
+- name: Run tests with protection
+  run: dotset run --mode redact -- npm test
 ```
 
-## Using Secrets from GitHub
+## Using AWS Secrets Manager
+
+Shield can pull secrets directly from AWS during your build. Ensure your runner has the correct IAM permissions:
 
 ```yaml
-- name: Run with protection
-  run: |
-    dotset secrets set API_KEY "$API_KEY"
-    dotset run --mode redact -- npm test
+- name: Run with AWS Secrets
+  run: dotset run --providers aws-sm --mode redact -- npm deploy
+  env:
+    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    AWS_REGION: us-east-1
+```
+
+## Using Native Protected Storage
+
+If you use Shield's native encrypted storage, provide your project key:
+
+```yaml
+- name: Run with native secrets
+  run: dotset run --mode redact -- npm test
   env:
     DOTSET_KEY: ${{ secrets.DOTSET_KEY }}
-    API_KEY: ${{ secrets.API_KEY }}
 ```
 
-## GitHub Action (Coming Soon)
+<Tip>
+To initialize a project for native storage, use `dotset secrets init` locally before pushing.
+</Tip>
 
-A dedicated GitHub Action will simplify this:
-
-```yaml
-- name: Run with Shield
-  uses: dotsetlabs/shield-action@v1
-  with:
-    mode: redact
-    run: |
-      npm ci
-      npm test
-```
-
-## Storing Your Key
-
-1. Go to your repository **Settings** → **Secrets and variables** → **Actions**
-2. Add a new secret called `DOTSET_KEY`
-3. Paste your `.dotset/key` contents
-
-<Warning>
-Your DOTSET_KEY is your encryption key. Treat it like a password.
-</Warning>
-
-## Matrix Builds
-
-For matrix builds, use the same key across all jobs:
-
-```yaml
-jobs:
-  test:
-    strategy:
-      matrix:
-        node: [18, 20, 22]
-    steps:
-      - name: Run tests
-        run: dotset run --mode redact -- npm test
-        env:
-          DOTSET_KEY: ${{ secrets.DOTSET_KEY }}
-```

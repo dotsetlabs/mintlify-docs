@@ -1,11 +1,11 @@
 ---
 title: dotset run
-description: 'Run commands with secret protection'
+description: 'Run commands with multi-provider secret protection'
 ---
 
 # dotset run
 
-Run any command with secrets injected and output protection.
+Run any command with secrets injected from multiple providers and output protection.
 
 ## Usage
 
@@ -21,73 +21,53 @@ Use `--` to separate dotset options from your command.
 
 | Option | Description | Default |
 |--------|-------------|---------|
+| `-p, --providers <list>` | Comma-separated providers | `auto` |
 | `-s, --scope <scope>` | Environment scope | `development` |
 | `-m, --mode <mode>` | Protection mode | `detect` |
 | `--redact-text <text>` | Replacement text | `[REDACTED]` |
 | `-q, --quiet` | Suppress shield output | `false` |
 
-## Protection Modes
+## Secret Resolution
 
-- **detect**: Logs exposures without modification
-- **redact**: Replaces secrets with `[REDACTED]`
-- **block**: Suppresses lines containing secrets
+Shield aggregates secrets from configured providers. By default, it uses `auto` which attempts to detect all available sources.
+
+### Supported Providers
+
+- **dotenv**: Loads from `.env` and `.env.local`
+- **environment**: Shell environment variables (prefixed with `SHIELD_`)
+- **aws-sm**: AWS Secrets Manager
+- **dotset**: Native encrypted storage
 
 ## Examples
 
-### Basic Usage
-
+### Zero-Setup (.env auto-detection)
 ```bash
 dotset run -- npm start
 ```
 
-### With Redaction
+### Explicit Providers
+```bash
+dotset run --providers dotenv,aws-sm -- node server.js
+```
 
+### With Redaction
 ```bash
 dotset run --mode redact -- npm test
 ```
 
-### Production Scope
-
+### Production Scope (Dotset Provider)
 ```bash
 dotset run --scope production -- node server.js
 ```
 
-### Custom Redaction Text
-
-```bash
-dotset run --mode redact --redact-text "***" -- npm start
-```
-
-### Quiet Mode (CI)
-
-```bash
-dotset run --mode redact --quiet -- npm test
-```
-
-## Output
-
-```bash
-$ dotset run --mode redact -- node app.js
-
-🛡️  shield | mode: redact | secrets: 2 | scope: development
-
-Starting application...
-Connecting to [REDACTED]
-API key: [REDACTED]
-Server running on port 3000
-
-🛡️  shield | exit: 0 | exposures: 2
-```
-
 ## How It Works
 
-1. Loads secrets from `.dotset/manifest.json`
-2. Decrypts using your project key
-3. Injects secrets into the child process environment
-4. Intercepts stdout/stderr
-5. Applies protection mode to output
-6. Passes through to your terminal
+1. **Resolution**: Aggregates secrets from all specified providers.
+2. **Injection**: Injects discovered secrets into the child process environment.
+3. **Redaction**: Intercepts `stdout`/`stderr` using a **streaming line-buffered engine**. This ensures secrets are caught even if split across output chunks.
+4. **Flush**: Flushes any remaining buffered text before exiting.
 
 ## Exit Codes
 
 The exit code matches your command's exit code. Shield itself never fails silently.
+

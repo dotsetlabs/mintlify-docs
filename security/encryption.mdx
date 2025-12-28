@@ -85,16 +85,24 @@ Shield protects against:
 
 ## Key Rotation
 
-To rotate your encryption key:
+To rotate your encryption key for the native provider:
 
 ```bash
-# Export current secrets
-dotset secrets list > backup.txt
+# Export current secrets (keys only)
+dotset secrets list 
 
-# Delete and reinitialize
+# Reinitialize with a fresh key
 rm -rf .dotset
-dotset init
+dotset secrets init
 
 # Re-add secrets
 dotset secrets set KEY "value"
 ```
+
+## Other Providers
+
+Secrets pulled from external providers like **AWS Secrets Manager**, **Environment Variables**, or **.env files** are:
+1. **Never stored in plaintext** by Shield.
+2. **Processed in-memory only** during the execution of `dotset run`.
+3. **Automatically tracked** by the redaction engine.
+

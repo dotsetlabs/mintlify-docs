@@ -36,16 +36,23 @@ dotset --version
 
 ## Project Setup
 
-After installing, initialize shield in your project:
+Shield is designed for zero-migration. If you use `.env` files, you can start using it immediately:
 
 ```bash
 cd your-project
-dotset init
+dotset run -- npm start
+```
+
+If you want to use Shield's native encrypted storage (required for cloud sync), initialize your project:
+
+```bash
+dotset secrets init
 ```
 
 <Tip>
-Add `.dotset/key` to your `.gitignore` immediately. This file contains your encryption key and should never be committed.
+When using native storage, add `.dotset/key` to your `.gitignore` immediately. This file contains your encryption key and should never be committed.
 </Tip>
+
 
 ## Updating
 
