@@ -1,0 +1,57 @@
+---
+title: Security Policies
+description: 'How Shield detects and protects your secrets'
+---
+
+# Security Policies
+
+Shield uses a rule-based engine to identify secrets in your application logs and build output. These rules are called **Security Policies**.
+
+## Default Protection (Offline)
+
+When using the Shield CLI without a cloud-linked project, it comes pre-configured with a baseline of high-accuracy detection patterns. This ensures every user gets immediate protection without any configuration.
+
+### Supported Default Patterns
+
+| Name | Description | Severity |
+| :--- | :--- | :--- |
+| **AWS Access Key** | Standard AWS Access Key IDs (AKIA...) | `critical` |
+| **GitHub Tokens** | Classic, OAuth, and Fine-grained Personal Access Tokens | `critical` |
+| **Stripe Keys** | Live and Test Secret Keys | `critical` / `high` |
+| **Google API Key** | Google Cloud Platform API keys | `critical` |
+| **Private Keys** | RSA, EC, and SSH private key blocks | `critical` |
+| **Azure Connection String** | Azure Storage account keys | `critical` |
+| **OpenAI API Key** | OpenAI API keys (sk-...) | `critical` |
+| **NPM Token** | NPM access tokens | `critical` |
+| **GitLab Personal Token** | GitLab Personal Access Tokens (glpat-...) | `critical` |
+| **PyPI API Token** | Python Package Index API tokens | `critical` |
+| **JWT Tokens** | JSON Web Tokens (base64 encoded) | `high` |
+| **Slack Webhooks** | Incoming Webhook URLs | `high` |
+| **Twilio Auth Token** | Twilio authentication tokens | `high` |
+| **SendGrid Keys** | SendGrid API credentials | `medium` |
+| **Generic Detectors** | Broad patterns for `api_key`, `secret`, and `password` | `medium` |
+
+<Note>
+Default patterns are hardcoded in the CLI and cannot be modified or disabled while offline.
+</Note>
+
+## Cloud-Managed Policies (Linked)
+
+Once you [link your project](/cli/link) to the Dotset Dashboard, your security architecture upgrades to a **Cloud-Managed** model.
+
+### Centralized Source of Truth
+When a project is linked, the CLI **discards its local hardcoded defaults** and fetches your project's specific policies from the Cloud. This gives you absolute control over the redaction engine.
+
+### Advanced Features
+Linking your project unlocks the full power of the Shield engine:
+
+- **Custom Regex Patterns**: Create your own detection rules for proprietary token formats or internal secrets.
+- **Enable/Disable Rules**: Easily toggle specific default rules if they cause false positives in your particular environment.
+- **Adjust Severity**: Change the severity level (Critical, High, Medium, Low) for any pattern to match your team's risk profile.
+- **Blocked Strings**: Add specific sensitive strings (like internal project IDs or employee names) that should always be redacted.
+- **Allowlisting**: Define patterns or specific values that should be ignored by the redactor, preventing redundant alerts for public information.
+
+### Priority and Overrides
+If a value matches multiple policies, Shield intelligently merges the redaction ranges and reports the pattern with the highest severity. 
+
+By managing policies in the Cloud, you ensure that every developer and CI runner in your organization is using the exact same security rules, synced in real-time.

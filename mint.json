@@ -50,6 +50,8 @@
             "group": "Core Concepts",
             "pages": [
                 "concepts/protection-modes",
+                "concepts/reliability",
+                "concepts/security-policies",
                 "concepts/secrets",
                 "concepts/scopes",
                 "concepts/pricing"

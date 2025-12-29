@@ -23,9 +23,10 @@ Use `--` to separate dotset options from your command.
 |--------|-------------|---------|
 | `-p, --providers <list>` | Comma-separated providers | `auto` |
 | `-s, --scope <scope>` | Environment scope | `development` |
-| `-m, --mode <mode>` | Protection mode | `detect` |
+| `-m, --mode <mode>` | Protection mode | `redact` |
 | `--redact-text <text>` | Replacement text | `[REDACTED]` |
 | `-q, --quiet` | Suppress shield output | `false` |
+| `--report` | Generate HTML protection report | `false` |
 | `--no-telemetry` | Disable cloud reporting | `false` |
 
 ## Secret Resolution
@@ -60,6 +61,15 @@ dotset run --mode redact -- npm test
 ```bash
 dotset run --scope production -- node server.js
 ```
+
+## Security Policies
+
+By default, `run` uses a hardcoded list of high-accuracy patterns (AWS keys, GitHub tokens, etc.) to scan your output. 
+
+### Linking for Customization
+To use custom regex patterns or disable specific default rules, you must [link your project](/cli/link) to the Cloud. When linked, the CLI fetches your project-specific policies from the Dashboard, which completely override the local defaults.
+
+See the [Security Policies](/concepts/security-policies) guide for a full list of default patterns.
 
 ## How It Works
 

@@ -11,38 +11,52 @@ Shield offers flexible pricing to fit teams of all sizes.
 
 | Feature | Free | Pro | Business |
 |---------|------|-----|----------|
-| **Price** | $0 | $12/mo | $29/mo |
-| **Projects** | 3 | 10 | Unlimited |
+| **Price** | $0 | $15/mo | $39/mo |
+| **Projects** | 1 | 5 | Unlimited |
 | **Team Members** | 3 | 10 | Unlimited |
+| **Runs/Month** | 100 | Unlimited | Unlimited |
 | **API Tokens** | 1 | 5 | Unlimited |
 | **Analytics Retention** | 7 days | 90 days | 1 year |
 | **Audit Log Retention** | 7 days | 90 days | 1 year |
 | **CI Hygiene Reports** | ❌ | ✅ | ✅ |
+| **Email Alerts** | ❌ | ✅ | ✅ |
 | **Webhook Alerts** | ❌ | ❌ | ✅ |
+| **Custom Detection Patterns** | ❌ | ❌ | ✅ |
 | **Priority Support** | ❌ | ❌ | ✅ |
 
 ## Free Plan
 
-Perfect for solo developers evaluating shield:
+Perfect for solo developers evaluating Shield:
 
+- 1 project
+- 100 runs per month
 - Full CLI functionality
 - All protection modes (detect, redact, block)
 - 7-day analytics in dashboard
+- "Protected by Dotset" badge in logs
 
-## Pro Plan — $12/month
+<Note>
+Free tier logs include a small "Protected by Dotset" badge. Upgrading to Pro or Business removes this.
+</Note>
 
-Best for small teams that want visibility:
+## Pro Plan — $15/month
 
-- 10 projects, 10 team members
+Best for small teams that want visibility and collaboration:
+
+- 5 projects
+- 10 team members
+- **Unlimited runs**
 - 90-day analytics retention
 - CI hygiene reports
+- **Email alerts** for security events
 
-## Business Plan — $29/month
+## Business Plan — $39/month
 
-For teams that need compliance and scale:
+For teams that need compliance, scale, and customization:
 
 - Unlimited projects and members
 - **1-year retention** (SOC 2 compliant)
+- **Custom detection patterns** for proprietary secrets
 - Webhook alerts for security events
 - Priority support
 
@@ -56,10 +70,18 @@ All plans include **annual billing** option with 2 months free.
 
 Yes. The CLI is open source and free forever. Paid plans add cloud features like analytics, team collaboration, and extended retention.
 
+### What counts as a run?
+
+Each execution of `dotset run` or `dotset ci` counts as one run. Free users get 100 runs/month, which is plenty for most hobby projects.
+
+### What are custom detection patterns?
+
+Business users can create custom regex patterns via the dashboard to detect proprietary secrets specific to their organization.
+
 ### Can I self-host?
 
 Enterprise customers can self-host the platform. Contact us for details.
 
 ### How is pricing calculated?
 
-Flat per-month pricing, not per-seat. A team of 10 on Business pays $29/month total.
+Flat per-month pricing, not per-seat. A team of 10 on Business pays $39/month total.
