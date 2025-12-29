@@ -35,10 +35,9 @@ Shield aggregates secrets from configured providers. By default, it uses `auto` 
 
 ### Supported Providers
 
-- **dotenv**: Loads from `.env` and `.env.local`
-- **environment**: Shell environment variables (prefixed with `SHIELD_`)
+- **dotenv**: Loads from `.env`, `.env.local`, `.env.development`, etc.
+- **environment**: Shell environment variables (with common prefixes like `API_`, `SECRET_`, `TOKEN_`)
 - **aws-sm**: AWS Secrets Manager
-- **dotset**: Native encrypted storage
 
 ## Examples
 
@@ -57,14 +56,47 @@ dotset run --providers dotenv,aws-sm -- node server.js
 dotset run --mode redact -- npm test
 ```
 
-### Production Scope (Dotset Provider)
+### Production Scope
 ```bash
 dotset run --scope production -- node server.js
 ```
 
+## Compliance Reports
+
+Use the `--report` flag to generate a standalone HTML report after each run. This is useful for:
+
+- **Audit trails**: Document what protection was applied
+- **Compliance evidence**: SOC 2, ISO 27001 artifact generation
+- **CI artifacts**: Upload to your build system for review
+
+```bash
+dotset run --report -- npm test
+# Generates: shield-report.html
+```
+
+The report includes:
+- Run summary (command, mode, duration)
+- Secrets protected (count by provider)
+- Exposures detected and blocked
+- Pattern matches with severity levels
+
+<Tip>
+In CI, upload the report as a build artifact for compliance auditing.
+</Tip>
+
 ## Security Policies
 
 By default, `run` uses a hardcoded list of high-accuracy patterns (AWS keys, GitHub tokens, etc.) to scan your output. 
+
+### Auto-Updating Patterns
+
+When your project is [linked to the cloud](/cli/link), Shield automatically syncs your security policies:
+
+- Patterns are refreshed **every hour** in the background
+- Custom patterns you add in the Dashboard are applied immediately
+- If the cloud is unreachable, Shield falls back to cached policies
+
+This means your team always has the latest protection without manual updates.
 
 ### Linking for Customization
 To use custom regex patterns or disable specific default rules, you must [link your project](/cli/link) to the Cloud. When linked, the CLI fetches your project-specific policies from the Dashboard, which completely override the local defaults.
@@ -81,4 +113,3 @@ See the [Security Policies](/concepts/security-policies) guide for a full list o
 ## Exit Codes
 
 The exit code matches your command's exit code. Shield itself never fails silently.
-

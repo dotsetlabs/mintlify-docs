@@ -30,22 +30,7 @@ Shield can aggregate secrets from multiple sources. For example, to use both `.e
 dotset run --providers dotenv,aws-sm -- node server.js
 ```
 
-## 4. Native Encrypted Storage
-
-If you want to use Shield's native encrypted storage (for cloud sync and team sharing):
-
-### Initialize
-```bash
-dotset secrets init
-```
-
-### Add Secrets
-```bash
-dotset secrets set DATABASE_URL "..."
-dotset secrets set API_KEY "..." --scope production
-```
-
-## 5. Protection Modes
+## 4. Protection Modes
 
 | Mode | Behavior | Use Case |
 |:-----|:---------|:---------|
@@ -82,8 +67,7 @@ Server running on port 3000
   <Card title="Local CI" icon="terminal" href="/guides/local-ci">
     Run GitHub Actions locally
   </Card>
-  <Card title="Team Sync" icon="cloud" href="/guides/team-sync">
-    Share secrets with your team
+  <Card title="Cloud Analytics" icon="cloud" href="/guides/analytics">
+    Track protection events in the dashboard
   </Card>
 </CardGroup>
-

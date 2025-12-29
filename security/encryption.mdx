@@ -1,76 +1,60 @@
 ---
-title: Encryption
+title: Security Architecture
 description: 'How shield protects your secrets'
 ---
 
-# Encryption & Security
+# Security Architecture
 
-Shield uses industry-standard cryptography to protect your secrets.
+Shield is designed with security-first principles. It never stores your secrets — it only protects them in transit through your build logs.
 
-## Encryption Algorithm
+## Zero Storage Architecture
 
-**AES-256-GCM** (Galois/Counter Mode)
-
-- 256-bit key length
-- Authenticated encryption
-- Prevents tampering
-
-## Key Derivation
-
-**Argon2id** — Winner of the Password Hashing Competition
-
-Parameters:
-- Memory: 64 MB
-- Iterations: 3
-- Parallelism: 4
-
-These settings are resistant to GPU and ASIC attacks.
-
-## How It Works
+Shield doesn't store secrets. It operates purely as a runtime protection layer:
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│  Your Secret: "sk-abc123..."                        │
+│  Your Secrets (from .env, AWS SM, CI secrets)       │
 │                    │                                │
 │                    ▼                                │
 │  ┌────────────────────────────────────┐            │
-│  │  Argon2id Key Derivation           │            │
-│  │  (from .dotset/key)                │            │
+│  │  Secret Resolver                   │            │
+│  │  (aggregates from all providers)   │            │
 │  └────────────────────────────────────┘            │
 │                    │                                │
 │                    ▼                                │
 │  ┌────────────────────────────────────┐            │
-│  │  AES-256-GCM Encryption            │            │
-│  │  + Random IV                       │            │
-│  │  + Authentication Tag              │            │
+│  │  Redaction Engine                  │            │
+│  │  (tracks values in-memory)         │            │
 │  └────────────────────────────────────┘            │
 │                    │                                │
 │                    ▼                                │
-│  Encrypted: "aes256-gcm:iv:ciphertext:tag"         │
+│  ┌────────────────────────────────────┐            │
+│  │  Protected Output                  │            │
+│  │  [REDACTED] in logs                │            │
+│  └────────────────────────────────────┘            │
 └─────────────────────────────────────────────────────┘
 ```
 
-## File Security
+## Provider Security
 
-| File | Contains | Commit? |
-|------|----------|---------|
-| `.dotset/key` | Random bytes | **Never** |
-| `.dotset/manifest.json` | Encrypted blobs | Yes |
+Secrets are pulled from your existing providers and processed in-memory only:
 
-## Zero-Knowledge Architecture
+| Provider | Source | Storage |
+|----------|--------|---------|
+| `.env` files | Your repository | You control |
+| AWS Secrets Manager | AWS infrastructure | AWS manages |
+| Environment variables | CI/CD platform | Platform manages |
 
-1. **Local encryption only** — We never see your plaintext secrets
-2. **Client-side keys** — Your key never leaves your machine
-3. **Encrypted sync** — Cloud stores only encrypted blobs
+Shield never writes these secrets to disk. They exist only in process memory during execution.
 
-## Cloud Security
+## Cloud Features Security
 
-When using cloud sync:
+When using cloud analytics (after `dotset link`):
 
-- TLS 1.3 in transit
-- AES-256 at rest
-- SOC 2 Type II infrastructure
-- Regular security audits
+- **What we store**: Protection event metadata (counts, timestamps, patterns)
+- **What we don't store**: Your actual secret values
+- **Transport**: TLS 1.3
+- **Infrastructure**: SOC 2 compliant providers
 
 ## Threat Model
 
@@ -78,31 +62,21 @@ Shield protects against:
 
 | Threat | Protection |
 |--------|------------|
-| Log exposure | Real-time redaction |
-| Manifest theft | AES-256 encryption |
-| Brute force | Argon2id key derivation |
-| Tampering | GCM authentication |
+| Log exposure | Real-time streaming redaction |
+| Split-chunk secrets | Line-buffered detection |
+| Pattern detection | Regex + exact value matching |
+| CI log scraping | Secrets redacted before logging |
 
-## Key Rotation
+## Runtime Guarantees
 
-To rotate your encryption key for the native provider:
+1. **In-memory only** — Secret values never written to disk by Shield
+2. **Process isolation** — Secrets scoped to child process environment
+3. **Stream interception** — stdout/stderr monitored before output
+4. **Line buffering** — Handles secrets split across chunks
 
-```bash
-# Export current secrets (keys only)
-dotset secrets list 
+## Best Practices
 
-# Reinitialize with a fresh key
-rm -rf .dotset
-dotset secrets init
-
-# Re-add secrets
-dotset secrets set KEY "value"
-```
-
-## Other Providers
-
-Secrets pulled from external providers like **AWS Secrets Manager**, **Environment Variables**, or **.env files** are:
-1. **Never stored in plaintext** by Shield.
-2. **Processed in-memory only** during the execution of `dotset run`.
-3. **Automatically tracked** by the redaction engine.
-
+1. Use your existing secrets infrastructure (CI secrets, AWS SM, etc.)
+2. Run Shield in `redact` mode in production CI
+3. Use `detect` mode for auditing existing pipelines
+4. Link to cloud for analytics and alerting

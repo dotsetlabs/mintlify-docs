@@ -11,6 +11,9 @@ Secrets leak in build logs every day. Debug statements, error messages, and verb
 
 **dotset shield** intercepts output streams and redacts secrets in real-time — with **zero migration** and **multi-provider support**.
 
+> [!NOTE]
+> **Your secrets never leave your machine.** Shield processes secrets locally and only sends anonymous metadata to the cloud. The CLI is [open source](https://github.com/dotsetlabs/shield) and fully auditable. [Learn more →](/security/trust)
+
 ## Zero Migration
 
 Shield works with your existing workflow. If you use `.env` files, you can start protecting your logs instantly without moving a single secret.
@@ -27,7 +30,6 @@ Stop worrying about where your secrets live. Shield aggregates secrets from mult
 - **Ecosystem**: `.env`, `.env.local`, etc.
 - **Infrastructure**: AWS Secrets Manager
 - **Environment**: Shell environment variables
-- **Dotset**: Native encrypted, cloud-synced storage
 
 ## Key Features
 

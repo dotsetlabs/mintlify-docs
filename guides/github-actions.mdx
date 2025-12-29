@@ -7,18 +7,38 @@ description: 'Protect your GitHub Actions workflows'
 
 Shield integrates seamlessly with GitHub Actions to protect your CI builds.
 
-## Basic Setup (Zero-Migration)
+## Basic Setup
 
-If your secrets are already in a `.env` file (e.g., created by a previous step), Shield works automatically:
+Shield auto-detects secrets from environment variables injected by GitHub Actions:
 
 ```yaml
+- name: Install Shield
+  run: npm install -g @dotsetlabs/shield
+
 - name: Run tests with protection
+  run: dotset run --mode redact -- npm test
+  env:
+    DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    API_KEY: ${{ secrets.API_KEY }}
+```
+
+## Using with .env Files
+
+If your workflow creates a `.env` file from secrets, Shield picks it up automatically:
+
+```yaml
+- name: Create .env from secrets
+  run: |
+    echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+    echo "API_KEY=${{ secrets.API_KEY }}" >> .env
+
+- name: Run with protection
   run: dotset run --mode redact -- npm test
 ```
 
 ## Using AWS Secrets Manager
 
-Shield can pull secrets directly from AWS during your build. Ensure your runner has the correct IAM permissions:
+Shield can pull secrets directly from AWS during your build:
 
 ```yaml
 - name: Run with AWS Secrets
@@ -29,18 +49,17 @@ Shield can pull secrets directly from AWS during your build. Ensure your runner 
     AWS_REGION: us-east-1
 ```
 
-## Using Native Protected Storage
+## Cloud Analytics
 
-If you use Shield's native encrypted storage, provide your project key:
+Link your project to track protection events:
 
 ```yaml
-- name: Run with native secrets
+- name: Run with analytics
   run: dotset run --mode redact -- npm test
   env:
-    DOTSET_KEY: ${{ secrets.DOTSET_KEY }}
+    DOTSET_API_TOKEN: ${{ secrets.DOTSET_API_TOKEN }}
 ```
 
 <Tip>
-To initialize a project for native storage, use `dotset secrets init` locally before pushing.
+Create an API token in the Dotset dashboard and store it as a GitHub secret. Shield will automatically report protection events.
 </Tip>
-

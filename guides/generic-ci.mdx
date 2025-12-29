@@ -1,0 +1,176 @@
+---
+title: Any CI System
+description: 'Integrate Shield with any CI/CD platform'
+---
+
+# Generic CI Integration
+
+Shield works with any CI/CD system that can run Node.js. This guide covers the universal approach.
+
+## Requirements
+
+- Node.js 18+ available in your CI environment
+- npm or ability to run global npm packages
+
+## Universal Setup
+
+The pattern is the same for any CI system:
+
+```bash
+# 1. Install Shield globally
+npm install -g @dotsetlabs/shield
+
+# 2. Run your command with protection
+dotset run --mode redact -- your-command-here
+```
+
+## Environment Variables
+
+Shield automatically detects secrets from environment variables with common prefixes:
+
+| Prefix | Examples |
+|--------|----------|
+| `API_` | `API_KEY`, `API_SECRET` |
+| `SECRET_` | `SECRET_KEY`, `SECRET_TOKEN` |
+| `TOKEN_` | `TOKEN_AUTH`, `TOKEN_DEPLOY` |
+| `KEY_` | `KEY_PRIVATE`, `KEY_API` |
+| `PASSWORD` | `PASSWORD`, `DB_PASSWORD` |
+| `PRIVATE_` | `PRIVATE_KEY` |
+| `AWS_` | `AWS_SECRET_ACCESS_KEY` |
+
+<Note>
+Shield also detects secrets by pattern matching (AWS keys, GitHub tokens, etc.) regardless of variable names.
+</Note>
+
+## Using .env Files
+
+If your CI creates a `.env` file, Shield detects it automatically:
+
+```bash
+# Create .env from CI secrets
+echo "DATABASE_URL=$DATABASE_URL" > .env
+echo "API_KEY=$API_KEY" >> .env
+
+# Shield reads .env automatically
+dotset run --mode redact -- npm test
+```
+
+## Cloud Analytics
+
+Set the `DOTSET_API_TOKEN` environment variable to report events:
+
+```bash
+export DOTSET_API_TOKEN="your-api-token"
+dotset run --mode redact -- npm test
+```
+
+Or link your project first (one-time setup in your repo):
+
+```bash
+dotset link <project-id> --token <api-token>
+```
+
+After linking, Shield uses the cached credentials from `.dotset/project.json`.
+
+## Docker-Based CI
+
+If your CI uses Docker, include Shield in your image or install during build:
+
+```dockerfile
+FROM node:20-alpine
+
+# Install Shield globally
+RUN npm install -g @dotsetlabs/shield
+
+WORKDIR /app
+COPY . .
+RUN npm ci
+
+# Run with protection
+CMD ["dotset", "run", "--mode", "redact", "--", "npm", "start"]
+```
+
+Or in your CI config:
+
+```yaml
+# Generic CI config structure
+steps:
+  - name: Build and Test
+    image: node:20
+    commands:
+      - npm install -g @dotsetlabs/shield
+      - npm ci
+      - dotset run --mode redact -- npm test
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      DOTSET_API_TOKEN: ${DOTSET_API_TOKEN}
+```
+
+## Protection Modes
+
+| Mode | Behavior | Use Case |
+|------|----------|----------|
+| `detect` | Warn but show secrets | Audit existing logs |
+| `redact` | Replace with `[REDACTED]` | **Recommended** for most CI |
+| `block` | Suppress entire line | High-security environments |
+
+```bash
+# Detection only (audit mode)
+dotset run --mode detect -- npm test
+
+# Redaction (recommended)
+dotset run --mode redact -- npm test
+
+# Full blocking
+dotset run --mode block -- npm test
+```
+
+## Generating Compliance Reports
+
+Add `--report` to generate an HTML audit artifact:
+
+```bash
+dotset run --mode redact --report -- npm test
+# Creates: shield-report.html
+```
+
+Upload this as a build artifact for compliance auditing.
+
+## Offline / Air-Gapped Environments
+
+Shield works fully offline. Cloud features are optional:
+
+```bash
+# Disable telemetry entirely
+dotset run --no-telemetry --mode redact -- npm test
+```
+
+When offline:
+- Protection still works using built-in patterns
+- Cached policies (if previously synced) are used
+- No data is sent anywhere
+
+## Troubleshooting
+
+### Shield not detecting secrets
+
+1. Check that secrets are available as environment variables
+2. Try explicit provider selection: `--providers dotenv,environment`
+3. Verify secret values are long enough (minimum 8 characters)
+
+### CI times out during install
+
+Cache the npm global packages directory. Most CI systems support caching `~/.npm`.
+
+### Exit code issues
+
+Shield preserves the exit code of your command. If your command fails, Shield exits with the same code.
+
+## Platform-Specific Guides
+
+For detailed examples, see our platform-specific guides:
+
+- [GitHub Actions](/guides/github-actions)
+- [GitLab CI](/guides/gitlab-ci)
+- [CircleCI](/guides/circleci)
+- [Jenkins](/guides/jenkins)

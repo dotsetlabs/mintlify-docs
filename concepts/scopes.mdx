@@ -5,7 +5,7 @@ description: 'Manage secrets for different environments'
 
 # Environment Scopes
 
-Shield supports three scopes for managing secrets across environments.
+Shield supports scopes for managing secrets across different environments. This is primarily useful when working with different `.env` files.
 
 ## Available Scopes
 
@@ -15,20 +15,27 @@ Shield supports three scopes for managing secrets across environments.
 | `staging` | Staging/preview environments | Staging database |
 | `production` | Production environment | Live credentials |
 
-## Setting Scoped Secrets
+## How Scopes Work with Providers
+
+### Dotenv Provider
+
+The dotenv provider automatically loads scope-specific files:
 
 ```bash
-# Development (default)
-dotset secrets set API_KEY "dev-key"
+# development scope (default)
+.env                    # Always loaded
+.env.local              # Always loaded (overrides .env)
+.env.development        # Loaded for development scope
+.env.development.local  # Loaded for development scope
 
-# Staging
-dotset secrets set API_KEY "staging-key" --scope staging
-
-# Production
-dotset secrets set API_KEY "prod-key" --scope production
+# production scope
+.env                    # Always loaded
+.env.local              # Always loaded
+.env.production         # Loaded for production scope
+.env.production.local   # Loaded for production scope
 ```
 
-## Running with a Scope
+### Running with a Scope
 
 ```bash
 # Uses development secrets (default)
@@ -37,21 +44,15 @@ dotset run -- npm start
 # Uses staging secrets
 dotset run --scope staging -- npm start
 
-# Uses production secrets
+# Uses production secrets  
 dotset run --scope production -- npm start
-```
-
-## Listing by Scope
-
-```bash
-dotset secrets list --scope production
 ```
 
 ## Use Cases
 
 ### Local Development
 ```bash
-dotset secrets set DATABASE_URL "postgres://localhost/dev"
+# .env.development contains local dev values
 dotset run -- npm start
 ```
 
@@ -66,5 +67,5 @@ dotset run --scope production -- node server.js
 ```
 
 <Tip>
-Keep your production secrets separate. Use different encryption keys for each environment in high-security setups.
+In production CI/CD, you typically don't need scopes since your CI platform injects the correct secrets as environment variables. Scopes are most useful for local development with `.env` files.
 </Tip>

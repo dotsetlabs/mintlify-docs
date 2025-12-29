@@ -7,52 +7,38 @@ description: 'Security best practices for using shield'
 
 Follow these guidelines to maximize your security.
 
-## Key Management
-
-<Warning>
-Your `.dotset/key` file is the only way to decrypt your secrets. Treat it like a password.
-</Warning>
-
-### Do
-
-- ✓ Store the key in a password manager (1Password, Vault)
-- ✓ Add `.dotset/key` to `.gitignore`
-- ✓ Use different keys for different environments
-- ✓ Store CI keys as repository secrets
-
-### Don't
-
-- ✗ Commit the key to version control
-- ✗ Share the key via Slack, email, or plaintext
-- ✗ Use the same key across all projects
-- ✗ Store the key in environment variables on shared systems
-
 ## Secret Hygiene
 
-### Use Scopes
+### Use Environment Variables in CI
+
+Most CI/CD systems (GitHub Actions, GitLab CI, CircleCI) have built-in secret management. Store your secrets there:
+
+```yaml
+# GitHub Actions
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  API_KEY: ${{ secrets.API_KEY }}
+```
+
+Shield will automatically detect and protect these environment variables.
+
+### Use .env Files Locally
+
+For local development, use `.env` files:
 
 ```bash
-# Keep production separate
-dotset secrets set API_KEY "dev-key" --scope development
-dotset secrets set API_KEY "prod-key" --scope production
+# .env.development
+DATABASE_URL=postgres://localhost/myapp_dev
+API_KEY=dev-api-key
 ```
+
+<Warning>
+Never commit `.env` files with real secrets to version control. Add them to `.gitignore`.
+</Warning>
 
 ### Rotate Regularly
 
-```bash
-# Update a secret
-dotset secrets set API_KEY "new-key"
-
-# Commit the updated encrypted file
-git add .dotset/secrets.enc
-git commit -m "Rotate API key"
-```
-
-### Delete Unused Secrets
-
-```bash
-dotset secrets delete OLD_KEY
-```
+Rotate your secrets periodically and update them in your secret storage (CI secrets, AWS SM, etc.).
 
 ## CI/CD Security
 
@@ -66,13 +52,6 @@ dotset run --mode redact -- npm test
 
 ```bash
 dotset run --mode redact --quiet -- npm test
-```
-
-### Store Keys Securely
-
-```yaml
-env:
-  DOTSET_KEY: ${{ secrets.DOTSET_KEY }}
 ```
 
 ## Audit Your Logs

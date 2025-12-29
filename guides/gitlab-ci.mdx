@@ -1,0 +1,146 @@
+---
+title: GitLab CI
+description: 'Protect your GitLab CI/CD pipelines'
+---
+
+# GitLab CI Integration
+
+Shield integrates seamlessly with GitLab CI/CD to protect your pipeline logs from secret exposure.
+
+## Basic Setup
+
+Add Shield to your `.gitlab-ci.yml`:
+
+```yaml
+stages:
+  - test
+
+test:
+  stage: test
+  image: node:20
+  before_script:
+    - npm install -g @dotsetlabs/shield
+  script:
+    - dotset run --mode redact -- npm test
+  variables:
+    DATABASE_URL: $DATABASE_URL
+    API_KEY: $API_KEY
+```
+
+<Note>
+GitLab CI variables are automatically available as environment variables. Shield's `environment` provider detects them.
+</Note>
+
+## Using Protected Variables
+
+GitLab's [protected and masked variables](https://docs.gitlab.com/ee/ci/variables/#protect-a-cicd-variable) are passed to your jobs as environment variables:
+
+```yaml
+deploy:
+  stage: deploy
+  before_script:
+    - npm install -g @dotsetlabs/shield
+  script:
+    - dotset run --mode redact -- ./deploy.sh
+  variables:
+    DEPLOY_TOKEN: $DEPLOY_TOKEN
+    AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+  only:
+    - main
+```
+
+## Using with .env Files
+
+Create a `.env` file from CI variables:
+
+```yaml
+test:
+  before_script:
+    - npm install -g @dotsetlabs/shield
+    - echo "DATABASE_URL=$DATABASE_URL" >> .env
+    - echo "API_KEY=$API_KEY" >> .env
+  script:
+    - dotset run --mode redact -- npm test
+```
+
+## Cloud Analytics
+
+Link your project to track protection events across all pipeline runs:
+
+```yaml
+test:
+  before_script:
+    - npm install -g @dotsetlabs/shield
+  script:
+    - dotset run --mode redact -- npm test
+  variables:
+    DOTSET_API_TOKEN: $DOTSET_API_TOKEN
+```
+
+<Tip>
+Store your Dotset API token as a [protected variable](https://docs.gitlab.com/ee/ci/variables/#protect-a-cicd-variable) in GitLab.
+</Tip>
+
+## Caching Shield Installation
+
+Speed up your pipelines by caching the global npm packages:
+
+```yaml
+variables:
+  npm_config_cache: "$CI_PROJECT_DIR/.npm"
+
+cache:
+  paths:
+    - .npm/
+
+test:
+  before_script:
+    - npm install -g @dotsetlabs/shield
+  script:
+    - dotset run --mode redact -- npm test
+```
+
+## Complete Example
+
+```yaml
+stages:
+  - test
+  - deploy
+
+variables:
+  npm_config_cache: "$CI_PROJECT_DIR/.npm"
+
+cache:
+  paths:
+    - .npm/
+    - node_modules/
+
+.shield-setup: &shield-setup
+  before_script:
+    - npm install -g @dotsetlabs/shield
+
+test:
+  <<: *shield-setup
+  stage: test
+  image: node:20
+  script:
+    - npm ci
+    - dotset run --mode redact -- npm test
+  variables:
+    DATABASE_URL: $DATABASE_URL
+    DOTSET_API_TOKEN: $DOTSET_API_TOKEN
+
+deploy:
+  <<: *shield-setup
+  stage: deploy
+  image: node:20
+  script:
+    - dotset run --mode redact -- ./scripts/deploy.sh
+  variables:
+    AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+    DOTSET_API_TOKEN: $DOTSET_API_TOKEN
+  only:
+    - main
+```

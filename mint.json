@@ -63,7 +63,6 @@
                 "cli/overview",
                 "cli/run",
                 "cli/link",
-                "cli/secrets",
                 "cli/ci",
                 "cli/auth"
             ]
@@ -72,6 +71,10 @@
             "group": "Guides",
             "pages": [
                 "guides/github-actions",
+                "guides/gitlab-ci",
+                "guides/circleci",
+                "guides/jenkins",
+                "guides/generic-ci",
                 "guides/local-ci",
                 "guides/analytics",
                 "guides/api-tokens"
@@ -80,6 +83,7 @@
         {
             "group": "Security",
             "pages": [
+                "security/trust",
                 "security/encryption",
                 "security/best-practices"
             ]

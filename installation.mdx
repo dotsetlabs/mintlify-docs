@@ -43,16 +43,9 @@ cd your-project
 dotset run -- npm start
 ```
 
-If you want to use Shield's native encrypted storage (required for cloud sync), initialize your project:
-
-```bash
-dotset secrets init
-```
-
 <Tip>
-When using native storage, add `.dotset/key` to your `.gitignore` immediately. This file contains your encryption key and should never be committed.
+Shield auto-detects secrets from `.env` files and environment variables. No additional configuration required.
 </Tip>
-
 
 ## Updating
 
