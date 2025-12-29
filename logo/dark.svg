@@ -1,5 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="120" height="32" viewBox="0 0 120 32" fill="none">
-  <circle cx="8" cy="18" r="4" fill="#10B981"/>
-  <text x="18" y="24" fill="white" style="font-family: inherit; font-size: 22px; font-weight: 700; letter-spacing: -0.02em;">set</text>
-  <text x="54" y="24" fill="#94A3B8" style="font-family: inherit; font-size: 22px; font-weight: 700; letter-spacing: -0.02em;">labs</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="32" viewBox="0 0 160 32" fill="none">
+  <!-- Shield icon with gradient -->
+  <defs>
+    <linearGradient id="shieldGradientDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981"/>
+      <stop offset="100%" style="stop-color:#06B6D4"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="6" width="20" height="20" rx="5" fill="url(#shieldGradientDark)"/>
+  <!-- Shield icon path -->
+  <path d="M12 10.5L12 10.5C12 10.5 9 11.5 7.5 12V16C7.5 18.5 9.5 20.5 12 21.5C14.5 20.5 16.5 18.5 16.5 16V12C15 11.5 12 10.5 12 10.5Z" fill="white" stroke="white" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- "dotset" text -->
+  <text x="28" y="22" fill="white" style="font-family: system-ui, -apple-system, sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -0.02em;">dotset</text>
+  <!-- "shield" text -->
+  <text x="87" y="22" fill="#10B981" style="font-family: system-ui, -apple-system, sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -0.02em;">shield</text>
 </svg>
