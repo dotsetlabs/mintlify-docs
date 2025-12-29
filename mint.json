@@ -1,6 +1,6 @@
 {
     "$schema": "https://mintlify.com/schema.json",
-    "name": "dotset shield",
+    "name": "Dotset Labs",
     "logo": {
         "dark": "/logo/dark.svg",
         "light": "/logo/light.svg"
@@ -63,7 +63,6 @@
                 "cli/overview",
                 "cli/run",
                 "cli/link",
-                "cli/ci",
                 "cli/auth"
             ]
         },
@@ -75,7 +74,6 @@
                 "guides/circleci",
                 "guides/jenkins",
                 "guides/generic-ci",
-                "guides/local-ci",
                 "guides/analytics",
                 "guides/api-tokens"
             ]
