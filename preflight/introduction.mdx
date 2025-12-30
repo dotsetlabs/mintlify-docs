@@ -1,0 +1,46 @@
+---
+title: "Introduction"
+description: "Ensure your infrastructure is reachable before you deploy."
+---
+
+**Preflight** is an infrastructure smoke-testing tool integrated into the Dotset CLI. While existing tools (like Zod or Envalid) check your **types**, Preflight checks your **connections**.
+
+It runs "Active Probes" against your environment variables to verify that your databases, caches, and APIs are actually reachable and authenticated correctly.
+
+## The Problem
+Deployment failures often occur because:
+*   `DATABASE_URL` has a typo in the hostname.
+*   The production database is behind a firewall that hasn't been opened for your runner.
+*   AWS credentials have expired.
+*   A required environment variable is simply missing.
+
+## The Solution
+Preflight runs a suite of "Active Probes" pre-deployment. If a connection fails, Preflight exits with an error, preventing a broken build from reaching production.
+
+```bash
+# Validates presence AND tests connectivity
+dotset preflight check
+```
+
+## Supported Probes
+
+We support the most common infrastructure dependencies out of the box:
+
+<CardGroup cols={2}>
+  <Card title="Databases" icon="database">
+    PostgreSQL and MongoDB (authentication + connectivity).
+  </Card>
+  <Card title="Caches" icon="bolt">
+    Redis (connectivity + PING).
+  </Card>
+  <Card title="Cloud & APIs" icon="cloud">
+    AWS (STS) and HTTP/HTTPS endpoints.
+  </Card>
+  <Card title="Network" icon="network-wired">
+    Generic TCP port checks.
+  </Card>
+</CardGroup>
+
+## Getting Started
+
+Ready to add safety to your deployments? Follow the [Quickstart](/preflight/quickstart).

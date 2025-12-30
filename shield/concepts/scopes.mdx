@@ -39,13 +39,13 @@ The dotenv provider automatically loads scope-specific files:
 
 ```bash
 # Uses development secrets (default)
-dotset run -- npm start
+dotset shield run -- npm start
 
 # Uses staging secrets
-dotset run --scope staging -- npm start
+dotset shield run --scope staging -- npm start
 
 # Uses production secrets  
-dotset run --scope production -- npm start
+dotset shield run --scope production -- npm start
 ```
 
 ## Use Cases
@@ -53,17 +53,17 @@ dotset run --scope production -- npm start
 ### Local Development
 ```bash
 # .env.development contains local dev values
-dotset run -- npm start
+dotset shield run -- npm start
 ```
 
 ### CI/CD Staging
 ```bash
-dotset run --scope staging -- npm test
+dotset shield run --scope staging -- npm test
 ```
 
 ### Production Deployment
 ```bash
-dotset run --scope production -- node server.js
+dotset shield run --scope production -- node server.js
 ```
 
 <Tip>

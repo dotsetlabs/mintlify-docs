@@ -1,0 +1,76 @@
+---
+title: "Quickstart"
+description: "Start active-validating your environment in under 2 minutes."
+---
+
+## 1. Setup Preflight
+
+If you already have a `.env` file, Preflight can automatically infer a schema for you.
+
+```bash
+dotset preflight init
+```
+
+This creates a `.preflight.yaml` file in your root directory.
+
+## 2. Configure a Probe
+
+Open the generated `.preflight.yaml` and add a `probe` to your critical variables:
+
+```yaml
+variables:
+  DATABASE_URL:
+    required: true
+    probe:
+      type: postgres
+  
+  REDIS_URL:
+    probe:
+      type: redis
+```
+
+## 3. Run the Check
+
+Run the `check` command to verify your environment:
+
+```bash
+dotset preflight check
+```
+
+### Example Success Output
+
+```bash
+🔍 Preflight Check
+
+📡 Running Active Probes...
+   • DATABASE_URL (postgres)... OK
+   • REDIS_URL (redis)... OK
+
+✅ All 2 variables passed connectivity probes
+```
+
+### Example Failure Output
+
+```bash
+🔍 Preflight Check
+
+📡 Running Active Probes...
+   • DATABASE_URL (postgres)... FAILED
+     password authentication failed for user "postgres"
+
+❌ Preflight failed: 1 issue
+```
+
+## 4. Integrate into CI/CD
+
+To use Preflight in your CI/CD pipeline, use the `--ci` flag. This will exit with code `1` if any validation or probe fails.
+
+```bash
+# Example GitHub Actions step
+- name: Preflight Check
+  run: dotset preflight check --ci
+```
+
+## Next Steps
+
+Explore the [Active Probes Reference](/preflight/probes) to see all supported probe types and configurations.

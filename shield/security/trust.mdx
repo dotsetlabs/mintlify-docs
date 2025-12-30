@@ -13,7 +13,7 @@ We understand that feeding your secrets through any tool requires trust. This pa
 **TL;DR**: Secret values are processed entirely locally. We never see, store, or transmit your actual secrets.
 </Warning>
 
-Here's exactly what happens when you run `dotset run`:
+Here's exactly what happens when you run `dotset shield run`:
 
 ```mermaid
 graph TD
@@ -60,7 +60,7 @@ When you use `dotset link` to enable cloud analytics, we send **only metadata**:
 | `exitCode` | `0` | Track command success |
 
 <Tip>
-You can verify this yourself by reading [telemetry.ts on GitHub](https://github.com/dotsetlabs/shield/blob/main/src/telemetry.ts#L34).
+You can verify this yourself by reading [telemetry.ts on GitHub](https://github.com/dotsetlabs/cli/blob/main/src/telemetry.ts#L34).
 </Tip>
 
 ---
@@ -83,7 +83,7 @@ Shield is designed to work **100% offline**. Cloud features are completely optio
 
 ```bash
 # Run with no telemetry sent
-dotset run --no-telemetry -- npm start
+dotset shield run --no-telemetry -- npm start
 ```
 
 Or never link your project — Shield works without any account.
@@ -95,16 +95,16 @@ Or never link your project — Shield works without any account.
 The entire Shield CLI is **open source** under the MIT license. You can:
 
 <CardGroup cols={2}>
-  <Card title="View Source Code" icon="github" href="https://github.com/dotsetlabs/shield">
+  <Card title="View Source Code" icon="github" href="https://github.com/dotsetlabs/cli">
     Full source on GitHub
   </Card>
-  <Card title="Audit Telemetry" icon="magnifying-glass" href="https://github.com/dotsetlabs/shield/blob/main/src/telemetry.ts">
+  <Card title="Audit Telemetry" icon="magnifying-glass" href="https://github.com/dotsetlabs/cli/blob/main/src/telemetry.ts">
     See exactly what data is sent
   </Card>
   <Card title="Build From Source" icon="hammer">
     Clone and build locally instead of using npm
   </Card>
-  <Card title="Report Issues" icon="bug" href="https://github.com/dotsetlabs/shield/issues">
+  <Card title="Report Issues" icon="bug" href="https://github.com/dotsetlabs/cli/issues">
     Security issues welcome via responsible disclosure
   </Card>
 </CardGroup>
@@ -143,20 +143,20 @@ Run with `--no-telemetry` and watch for network activity:
 
 ```bash
 # No network requests will be made
-dotset run --no-telemetry -- npm start
+dotset shield run --no-telemetry -- npm start
 ```
 
 ### 3. Build From Source
 
 ```bash
-git clone https://github.com/dotsetlabs/shield
+git clone https://github.com/dotsetlabs/cli
 cd shield
 npm install
 npm run build
 npm link
 
 # Now use your locally-built version
-dotset run -- npm start
+dotset shield run -- npm start
 ```
 
 ---

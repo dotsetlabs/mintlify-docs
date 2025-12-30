@@ -2,8 +2,8 @@
     "$schema": "https://mintlify.com/schema.json",
     "name": "Dotset Labs",
     "logo": {
-        "dark": "/logo/dark.svg",
-        "light": "/logo/light.svg"
+        "dark": "/logo.svg",
+        "light": "/logo.svg"
     },
     "favicon": "/favicon.svg",
     "colors": {
@@ -34,12 +34,12 @@
         {
             "name": "npm",
             "icon": "npm",
-            "url": "https://www.npmjs.com/package/@dotsetlabs/shield"
+            "url": "https://www.npmjs.com/package/@dotsetlabs/cli"
         }
     ],
     "navigation": [
         {
-            "group": "Getting Started",
+            "group": "Introduction",
             "pages": [
                 "introduction",
                 "quickstart",
@@ -47,43 +47,63 @@
             ]
         },
         {
-            "group": "Core Concepts",
-            "pages": [
-                "concepts/protection-modes",
-                "concepts/reliability",
-                "concepts/security-policies",
-                "concepts/secrets",
-                "concepts/scopes",
-                "concepts/pricing"
-            ]
-        },
-        {
             "group": "CLI Reference",
             "pages": [
-                "cli/overview",
-                "cli/run",
-                "cli/link",
-                "cli/auth"
+                "cli/link"
             ]
         },
         {
-            "group": "Guides",
+            "group": "Preflight",
             "pages": [
-                "guides/github-actions",
-                "guides/gitlab-ci",
-                "guides/circleci",
-                "guides/jenkins",
-                "guides/generic-ci",
-                "guides/analytics",
-                "guides/api-tokens"
+                "preflight/introduction",
+                "preflight/quickstart",
+                {
+                    "group": "CLI Commands",
+                    "pages": [
+                        "preflight/cli/init",
+                        "preflight/cli/check",
+                        "preflight/cli/wait",
+                        "preflight/cli/discover",
+                        "preflight/cli/generate",
+                        "preflight/cli/push"
+                    ]
+                },
+                "preflight/probes",
+                "preflight/managed-schemas"
             ]
         },
         {
-            "group": "Security",
+            "group": "Shield",
             "pages": [
-                "security/trust",
-                "security/encryption",
-                "security/best-practices"
+                {
+                    "group": "CLI Commands",
+                    "pages": [
+                        "shield/cli/overview",
+                        "shield/cli/auth",
+                        "shield/cli/run"
+                    ]
+                },
+                {
+                    "group": "Security",
+                    "pages": [
+                        "shield/security/encryption",
+                        "shield/security/trust"
+                    ]
+                },
+                {
+                    "group": "Guides",
+                    "pages": [
+                        "shield/guides/api-tokens",
+                        "shield/guides/analytics",
+                        "shield/guides/generic-ci"
+                    ]
+                },
+                {
+                    "group": "Concepts",
+                    "pages": [
+                        "shield/concepts/reliability"
+                    ]
+                }
             ]
         }
     ],

@@ -12,9 +12,9 @@ Connect your projects to dotset cloud for analytics, team sync, and centralized 
 | Command | Description |
 |---------|-------------|
 | `dotset link <id> --token <t>` | Connect project to cloud |
-| `dotset unlink` | Disconnect from cloud |
-| `dotset status` | Show connection status |
-| `dotset sync` | Sync security policies |
+| `dotset shield unlink` | Disconnect from cloud |
+| `dotset shield status` | Show connection status |
+| `dotset shield sync` | Sync security policies |
 
 ---
 
@@ -48,35 +48,35 @@ Connecting to dotset cloud...
 ✓ Project linked successfully
 
 Protection events will now be sent to your dashboard.
-Run commands with "dotset run" to start tracking.
+Run commands with "dotset shield run" to start tracking.
 ```
 
 ---
 
-## dotset unlink
+## dotset shield unlink
 
 Disconnect the current project from cloud.
 
 ```bash
-dotset unlink
+dotset shield unlink
 ```
 
 This removes the `.dotset/project.json` configuration file.
 
 ---
 
-## dotset status
+## dotset shield status
 
 Check the current cloud connection status.
 
 ```bash
-dotset status
+dotset shield status
 ```
 
 ### Output
 
 ```bash
-$ dotset status
+$ dotset shield status
 
 ✓ Linked to cloud
   Project ID: abc123
@@ -85,15 +85,15 @@ $ dotset status
 
 ---
 
-## dotset sync
+## dotset shield sync
 
 Fetch the latest security policies from the cloud.
 
 ```bash
-dotset sync
+dotset shield sync
 ```
 
-Policies are cached locally and automatically used during `dotset run`.
+Policies are cached locally and automatically used during `dotset shield run`.
 
 ---
 

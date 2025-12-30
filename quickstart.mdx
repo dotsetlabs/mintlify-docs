@@ -10,7 +10,7 @@ This guide gets you from zero to protected in under a minute.
 ## 1. Install
 
 ```bash
-npm install -g @dotsetlabs/shield
+npm install -g @dotsetlabs/cli
 ```
 
 ## 2. Zero-Migration Setup
@@ -19,7 +19,7 @@ Shield automatically detects `.env` files. If you already have one, you're ready
 
 ```bash
 # Run with automatic protection
-dotset run -- npm start
+dotset shield run -- npm start
 ```
 
 ## 3. Using Multiple Providers
@@ -27,7 +27,7 @@ dotset run -- npm start
 Shield can aggregate secrets from multiple sources. For example, to use both `.env` files and AWS Secrets Manager:
 
 ```bash
-dotset run --providers dotenv,aws-sm -- node server.js
+dotset shield run --providers dotenv,aws-sm -- node server.js
 ```
 
 ## 4. Protection Modes
@@ -40,13 +40,13 @@ dotset run --providers dotenv,aws-sm -- node server.js
 
 ```bash
 # Redact secrets in real-time
-dotset run --mode redact -- npm test
+dotset shield run --mode redact -- npm test
 ```
 
 ## Example Output
 
 ```bash
-$ dotset run --mode redact -- node app.js
+$ dotset shield run --mode redact -- node app.js
 
 🛡️  shield | mode: redact | secrets: 5 | providers: dotenv, environment
 
@@ -61,13 +61,13 @@ Server running on port 3000
 ## Next Steps
 
 <CardGroup>
-  <Card title="Protection Modes" icon="shield" href="/concepts/protection-modes">
+  <Card title="Protection Modes" icon="shield" href="/shield/concepts/protection-modes">
     Learn about detect, redact, and block
   </Card>
-  <Card title="GitHub Actions" icon="github" href="/guides/github-actions">
+  <Card title="GitHub Actions" icon="github" href="/shield/guides/github-actions">
     Protect your GitHub Actions workflows
   </Card>
-  <Card title="Cloud Analytics" icon="cloud" href="/guides/analytics">
+  <Card title="Cloud Analytics" icon="cloud" href="/shield/guides/analytics">
     Track protection events in the dashboard
   </Card>
 </CardGroup>

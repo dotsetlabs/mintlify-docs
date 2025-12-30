@@ -17,7 +17,7 @@ When your project is linked to the cloud, shield automatically reports protectio
 
 | Metric | Description |
 |--------|-------------|
-| **Total Runs** | Number of `dotset run` executions |
+| **Total Runs** | Number of `dotset shield run` executions |
 | **Exposures Blocked** | Secrets caught before they leaked |
 | **Protection Rate** | Percentage of runs without exposures |
 | **Top Exposed Secrets** | Most frequently blocked secret keys |
@@ -60,14 +60,14 @@ Each protection event includes:
 dotset link <project-id> --token <token>
 
 # Verify
-dotset status
+dotset shield status
 ```
 
 ## Disabling Telemetry
 
 For individual runs:
 ```bash
-dotset run --no-telemetry -- npm start
+dotset shield run --no-telemetry -- npm start
 ```
 
 Or unlink entirely:

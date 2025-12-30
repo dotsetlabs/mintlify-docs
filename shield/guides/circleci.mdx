@@ -22,13 +22,13 @@ jobs:
       - checkout
       - run:
           name: Install Shield
-          command: npm install -g @dotsetlabs/shield
+          command: npm install -g @dotsetlabs/cli
       - run:
           name: Install dependencies
           command: npm ci
       - run:
           name: Run tests with protection
-          command: dotset run --mode redact -- npm test
+          command: dotset shield run --mode redact -- npm test
 
 workflows:
   main:
@@ -51,10 +51,10 @@ jobs:
       - checkout
       - run:
           name: Install Shield
-          command: npm install -g @dotsetlabs/shield
+          command: npm install -g @dotsetlabs/cli
       - run:
           name: Deploy with protection
-          command: dotset run --mode redact -- ./deploy.sh
+          command: dotset shield run --mode redact -- ./deploy.sh
 
 workflows:
   main:
@@ -84,8 +84,8 @@ jobs:
       API_KEY: $API_KEY
     steps:
       - checkout
-      - run: npm install -g @dotsetlabs/shield
-      - run: dotset run --mode redact -- npm test
+      - run: npm install -g @dotsetlabs/cli
+      - run: dotset shield run --mode redact -- npm test
 ```
 
 ## Using with .env Files
@@ -106,10 +106,10 @@ jobs:
             echo "API_KEY=$API_KEY" >> .env
       - run:
           name: Install Shield
-          command: npm install -g @dotsetlabs/shield
+          command: npm install -g @dotsetlabs/cli
       - run:
           name: Run tests
-          command: dotset run --mode redact -- npm test
+          command: dotset shield run --mode redact -- npm test
 ```
 
 ## Cloud Analytics
@@ -123,8 +123,8 @@ jobs:
       - image: cimg/node:20.0
     steps:
       - checkout
-      - run: npm install -g @dotsetlabs/shield
-      - run: dotset run --mode redact -- npm test
+      - run: npm install -g @dotsetlabs/cli
+      - run: dotset shield run --mode redact -- npm test
     # DOTSET_API_TOKEN should be set in project settings or context
 ```
 
@@ -151,13 +151,13 @@ jobs:
             - npm-global-v1-
       - run:
           name: Install Shield
-          command: npm install -g @dotsetlabs/shield
+          command: npm install -g @dotsetlabs/cli
       - save_cache:
           paths:
             - ~/.npm
           key: npm-global-v1-{{ checksum "package-lock.json" }}
       - run: npm ci
-      - run: dotset run --mode redact -- npm test
+      - run: dotset shield run --mode redact -- npm test
 ```
 
 ## Complete Example
@@ -177,10 +177,10 @@ jobs:
       - node/install-packages
       - run:
           name: Install Shield
-          command: npm install -g @dotsetlabs/shield
+          command: npm install -g @dotsetlabs/cli
       - run:
           name: Run tests with protection
-          command: dotset run --mode redact -- npm test
+          command: dotset shield run --mode redact -- npm test
 
   deploy:
     docker:
@@ -189,10 +189,10 @@ jobs:
       - checkout
       - run:
           name: Install Shield
-          command: npm install -g @dotsetlabs/shield
+          command: npm install -g @dotsetlabs/cli
       - run:
           name: Deploy with protection
-          command: dotset run --mode redact -- ./scripts/deploy.sh
+          command: dotset shield run --mode redact -- ./scripts/deploy.sh
 
 workflows:
   build-and-deploy:

@@ -1,0 +1,54 @@
+---
+title: CLI Overview
+description: 'Dotset Shield command-line interface'
+---
+
+# CLI Reference
+
+The shield CLI provides a unified interface for secret protection and cloud analytics.
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| [`run`](/shield/cli/run) | Run commands with protection |
+| [`link`](/shield/cli/link) | Connect project to cloud |
+| [`secrets`](/shield/cli/secrets) | Manage local encrypted storage |
+| [`ci`](/shield/cli/ci) | Run local CI (GitHub Actions) |
+| [`auth`](/shield/cli/auth) | Authenticate with cloud |
+
+## Cloud Commands
+
+| Command | Description |
+|---------|-------------|
+| `dotset link <id> --token <t>` | Connect to dashboard |
+| `dotset shield unlink` | Disconnect from cloud |
+| `dotset shield status` | Show connection status |
+| `dotset shield sync` | Fetch security policies from cloud |
+
+## Global Options
+
+```bash
+dotset shield --version    # Show version
+dotset shield --help       # Show help
+```
+
+## Quick Examples
+
+```bash
+# Zero-setup protection
+dotset shield run -- npm start
+
+# Redact secrets from output
+dotset shield run --mode redact -- npm test
+
+# Link to cloud for analytics
+dotset link proj_123 --token dss_xxx
+
+# Run with telemetry
+dotset shield run --mode redact -- npm start
+# Analytics appear at app.dotsetlabs.com
+
+# Disable telemetry for a run
+dotset shield run --no-telemetry -- npm start
+```

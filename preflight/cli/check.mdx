@@ -1,0 +1,42 @@
+---
+title: "check"
+description: "Validate environment and connectivity"
+---
+
+The `check` command is the heart of Preflight. It validates your current environment (usually `.env`) against the defined schema and runs all active infrastructure probes.
+
+## Usage
+
+```bash
+dotset preflight check [options]
+```
+
+## Options
+
+| Option | Description | Default |
+| :--- | :--- | :--- |
+| `-e, --env <name>` | Environment to validate (maps to `.env.<name>`) | `default` |
+| `-s, --schema <path>` | Path to the schema file | `.preflight.yaml` |
+| `--ci` | CI mode: exit with non-zero code on failure | - |
+| `-q, --quiet` | Minimal output: only report errors | - |
+
+## Automatic Remediation (MVP Feature)
+
+When an active probe fails (e.g., Postgres connection refused), Preflight now provides **💡 Hints** to help you resolve the issue quickly.
+
+![Preflight Hints](/images/preflight-hints.png)
+
+### Common Hints
+- **Postgres**: "Database service might not be running or is on a different port."
+- **Redis**: "Authentication failed. Check your Redis password."
+- **AWS**: "AWS Access Key ID is invalid."
+- **HTTP**: "The endpoint URL might be incorrect."
+
+## CI/CD Integration
+
+Use the `--ci` flag in your pipelines to block deployments if environment variables are missing or if infrastructure is unreachable.
+
+```yaml
+- name: Preflight Check
+  run: dotset preflight check --ci
+```

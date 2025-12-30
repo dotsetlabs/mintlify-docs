@@ -12,7 +12,7 @@ Shield offers three protection modes for different use cases.
 **Logs when secrets appear in output but doesn't modify anything.**
 
 ```bash
-dotset run --mode detect -- npm test
+dotset shield run --mode detect -- npm test
 ```
 
 Best for:
@@ -31,7 +31,7 @@ Output:
 **Replaces secrets with `[REDACTED]` in real-time.**
 
 ```bash
-dotset run --mode redact -- npm test
+dotset shield run --mode redact -- npm test
 ```
 
 Best for:
@@ -54,7 +54,7 @@ Redact mode is the default for all Shield commands. It prevents exposure while k
 **Completely suppresses any output line containing a secret.**
 
 ```bash
-dotset run --mode block -- npm test
+dotset shield run --mode block -- npm test
 ```
 
 Best for:

@@ -50,7 +50,7 @@ env:
 
 steps:
   - run: dotset link ${{ vars.PROJECT_ID }} --token $DOTSET_TOKEN
-  - run: dotset run --mode redact -- npm test
+  - run: dotset shield run --mode redact -- npm test
 ```
 
 ## Token Limits by Plan

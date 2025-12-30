@@ -43,12 +43,12 @@ Tokens are only shown once. Store them securely.
 dotset link proj_abc123 --token dss_xxxxx
 
 # Verify connection
-dotset status
+dotset shield status
 ```
 
 ## What Happens
 
-When linked, `dotset run` automatically sends **anonymized telemetry** to your dashboard:
+When linked, `dotset shield run` automatically sends **anonymized telemetry** to your dashboard:
 
 - **Command** executed (e.g., "npm start")
 - **Secrets count** loaded
@@ -64,13 +64,13 @@ No secret values are ever sent to the cloud. Only metadata about protection even
 
 | Command | Description |
 |---------|-------------|
-| `dotset unlink` | Disconnect from cloud |
-| `dotset status` | Show connection status |
+| `dotset shield unlink` | Disconnect from cloud |
+| `dotset shield status` | Show connection status |
 
 ## Disable Telemetry
 
 To run a command without reporting:
 
 ```bash
-dotset run --no-telemetry -- npm start
+dotset shield run --no-telemetry -- npm start
 ```

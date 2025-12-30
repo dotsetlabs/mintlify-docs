@@ -1,0 +1,40 @@
+---
+title: dotset preflight generate
+description: 'Generate .env.example from schema'
+---
+
+# dotset preflight generate
+
+Create a safe `.env.example` file based on your `.preflight.yaml` schema. This ensures your example file always matches your actual environment requirements.
+
+## Usage
+
+```bash
+dotset preflight generate [options]
+```
+
+## Options
+
+| Option | Description | Required |
+|--------|-------------|----------|
+| `-f, --force` | Overwrite existing files | No |
+| `--output <path>` | Custom output path (default: `.env.example`) | No |
+
+## Example
+
+```bash
+# Generate .env.example
+dotset preflight generate
+
+# Force overwrite
+dotset preflight generate --force
+```
+
+## How It Works
+
+1. Reads `.preflight.yaml`.
+2. For each variable:
+   - Uses the `default` value if present.
+   - Or generates a placeholder based on the `type` (e.g., `STRIPE_KEY=string`).
+   - Respects `secret` flags (redacts values if sensitive).
+3. Writes the result to `.env.example` (or specified output).

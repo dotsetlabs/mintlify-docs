@@ -1,0 +1,36 @@
+---
+title: "init"
+description: "Initialize a Preflight schema"
+---
+
+The `init` command bootstraps a `.preflight.yaml` schema file for your project. It can infer variable definitions from an existing `.env` file or fetch a complete schema from a remote URL.
+
+## Usage
+
+```bash
+dotset preflight init [options]
+```
+
+## Options
+
+| Option | Description | Default |
+| :--- | :--- | :--- |
+| `-f, --file <path>` | Path to the `.env` file to scan | `.env` |
+| `-o, --output <path>` | Path where the schema will be created | `.preflight.yaml` |
+| `-r, --remote <url>` | Initialize from a remote schema URL | - |
+| `--force` | Overwrite the schema file if it already exists | - |
+
+## Remotes (MVP Feature)
+
+You can now initialize your project using a shared schema hosted on a remote server (e.g., GitHub, S3, or your internal developer portal). This ensures consistency across microservices.
+
+```bash
+dotset preflight init --remote https://raw.githubusercontent.com/org/repo/main/.preflight.yaml
+```
+
+## Inference Engine
+
+When initializing from a local `.env` file, Preflight automatically infers:
+- **Types**: Detects URLs, ports, emails, and booleans.
+- **Sensitivity**: Automatically marks secrets like `API_KEY`, `PASSWORD`, and `TOKEN` as sensitive.
+- **Requirements**: All discovered variables are marked as `required: true` by default.

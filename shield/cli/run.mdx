@@ -1,16 +1,16 @@
 ---
-title: dotset run
+title: dotset shield run
 description: 'Run commands with multi-provider secret protection'
 ---
 
-# dotset run
+# dotset shield run
 
 Run any command with secrets injected from multiple providers and output protection.
 
 ## Usage
 
 ```bash
-dotset run [options] -- <command...>
+dotset shield run [options] -- <command...>
 ```
 
 <Note>
@@ -43,22 +43,22 @@ Shield aggregates secrets from configured providers. By default, it uses `auto` 
 
 ### Zero-Setup (.env auto-detection)
 ```bash
-dotset run -- npm start
+dotset shield run -- npm start
 ```
 
 ### Explicit Providers
 ```bash
-dotset run --providers dotenv,aws-sm -- node server.js
+dotset shield run --providers dotenv,aws-sm -- node server.js
 ```
 
 ### With Redaction
 ```bash
-dotset run --mode redact -- npm test
+dotset shield run --mode redact -- npm test
 ```
 
 ### Production Scope
 ```bash
-dotset run --scope production -- node server.js
+dotset shield run --scope production -- node server.js
 ```
 
 ## Compliance Reports
@@ -70,7 +70,7 @@ Use the `--report` flag to generate a standalone HTML report after each run. Thi
 - **CI artifacts**: Upload to your build system for review
 
 ```bash
-dotset run --report -- npm test
+dotset shield run --report -- npm test
 # Generates: shield-report.html
 ```
 
@@ -90,7 +90,7 @@ By default, `run` uses a hardcoded list of high-accuracy patterns (AWS keys, Git
 
 ### Auto-Updating Patterns
 
-When your project is [linked to the cloud](/cli/link), Shield automatically syncs your security policies:
+When your project is [linked to the cloud](/shield/cli/link), Shield automatically syncs your security policies:
 
 - Patterns are refreshed **every hour** in the background
 - Custom patterns you add in the Dashboard are applied immediately
@@ -99,9 +99,9 @@ When your project is [linked to the cloud](/cli/link), Shield automatically sync
 This means your team always has the latest protection without manual updates.
 
 ### Linking for Customization
-To use custom regex patterns or disable specific default rules, you must [link your project](/cli/link) to the Cloud. When linked, the CLI fetches your project-specific policies from the Dashboard, which completely override the local defaults.
+To use custom regex patterns or disable specific default rules, you must [link your project](/shield/cli/link) to the Cloud. When linked, the CLI fetches your project-specific policies from the Dashboard, which completely override the local defaults.
 
-See the [Security Policies](/concepts/security-policies) guide for a full list of default patterns.
+See the [Security Policies](/shield/concepts/security-policies) guide for a full list of default patterns.
 
 ## How It Works
 

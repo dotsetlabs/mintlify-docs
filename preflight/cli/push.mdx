@@ -1,0 +1,42 @@
+---
+title: dotset preflight push
+description: 'Upload your schema to Dotset Cloud'
+---
+
+# dotset preflight push
+
+Upload your local `.preflight.yaml` schema to your linked Dotset Cloud project. This allows you to manage environment configuration centrally and share it with your team.
+
+## Usage
+
+```bash
+dotset preflight push [options]
+```
+
+## Options
+
+| Option | Description | Required |
+|--------|-------------|----------|
+| `-s, --schema <path>` | Path to schema file (default: `.preflight.yaml`) | No |
+
+## Requirements
+
+1. **Linked Project**: Your workspace must be linked to a Dotset project (`dotset link`).
+2. **Schema File**: A valid `.preflight.yaml` file must exist.
+
+## Example
+
+```bash
+# Push default schema
+dotset preflight push
+
+# Push custom schema file
+dotset preflight push --schema ./config/env.yaml
+```
+
+## What Happens
+
+1. The CLI validates your `.preflight.yaml` file.
+2. It sends the schema to the Dotset Cloud API.
+3. The schema becomes the **Managed Schema** for your project.
+4. Teammates can pull this schema using `dotset preflight sync`.
