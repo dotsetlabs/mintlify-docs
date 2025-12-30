@@ -1,0 +1,139 @@
+---
+title: Audit Logging
+description: 'Track redactions for compliance'
+---
+
+# Audit Logging
+
+Border provides comprehensive audit logging for compliance and monitoring. Every redaction is logged with metadata about what was detected and where.
+
+## Subscribing to Events
+
+```typescript
+import { init, getAuditLogger } from "@dotsetlabs/border";
+
+init();
+
+const logger = getAuditLogger();
+
+const unsubscribe = logger.subscribe((entry) => {
+  console.log(`${entry.method} ${entry.url}`);
+  console.log(`  Redacted: ${entry.redacted}`);
+  console.log(`  PII: ${entry.metadata.map(m => m.type).join(", ")}`);
+});
+
+// Later: stop listening
+unsubscribe();
+```
+
+## Audit Entry Structure
+
+```typescript
+interface AuditLogEntry {
+  requestId: string;        // Unique ID for correlation
+  timestamp: string;        // ISO 8601
+  url: string;              // Request URL
+  method?: string;          // HTTP method
+  redacted: boolean;        // Whether any PII was redacted
+  dryRun: boolean;          // Whether this was a dry-run
+  blocked: boolean;         // Whether request was blocked
+  metadata: Array<{         // Summary by type
+    type: string;
+    count: number;
+  }>;
+  destinationCategory?: string;  // "ai_provider", "analytics", etc.
+}
+```
+
+## Getting Statistics
+
+```typescript
+const stats = logger.getStats();
+
+console.log(`Total: ${stats.totalRequests}`);
+console.log(`Redacted: ${stats.redactedRequests}`);
+console.log(`Blocked: ${stats.blockedRequests}`);
+
+// Breakdown by PII type
+for (const [type, count] of stats.redactionsByType) {
+  console.log(`  ${type}: ${count}`);
+}
+```
+
+## Built-in Handlers
+
+### File Logging
+
+```typescript
+import { createFileAuditHandler } from "@dotsetlabs/border";
+import fs from "fs";
+
+const handler = createFileAuditHandler(
+  (line) => fs.appendFileSync("audit.jsonl", line)
+);
+
+logger.subscribe(handler);
+```
+
+### Category Filtering
+
+```typescript
+import { createCategoryFilterHandler } from "@dotsetlabs/border";
+
+const aiHandler = createCategoryFilterHandler(
+  ["ai_provider"],
+  (entry) => console.log("AI request:", entry.url)
+);
+
+logger.subscribe(aiHandler);
+```
+
+### High-Risk Alerts
+
+```typescript
+import { createHighRiskHandler } from "@dotsetlabs/border";
+
+const alertHandler = createHighRiskHandler((entry) => {
+  // SSN, credit_card, aws_key detected
+  sendSlackAlert(`High-risk PII in ${entry.url}`);
+});
+
+logger.subscribe(alertHandler);
+```
+
+### Batching
+
+```typescript
+import { createBatchingHandler } from "@dotsetlabs/border";
+
+const { callback, flush, stop } = createBatchingHandler(
+  async (entries) => {
+    await fetch("/api/audit", {
+      method: "POST",
+      body: JSON.stringify(entries),
+    });
+  },
+  { batchSize: 100, flushIntervalMs: 5000 }
+);
+
+logger.subscribe(callback);
+
+// On shutdown
+stop();
+```
+
+## Privacy Considerations
+
+> [!IMPORTANT]
+> Audit logs contain **metadata only**, never actual PII values. The `text` field in detection matches is never included in audit entries.
+
+## Next Steps
+
+<CardGroup>
+  <Card title="Destinations" icon="route" href="/border/sdk/destinations">
+    Track by destination category
+  </Card>
+  <Card title="Cloud" icon="cloud" href="/border/sdk/cloud">
+    Sync to dashboard
+  </Card>
+</CardGroup>

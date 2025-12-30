@@ -1,0 +1,105 @@
+---
+title: Initialization
+description: 'Configure Border SDK'
+---
+
+# Initialization
+
+The `init()` function starts Border protection. Call it once at application startup.
+
+## Basic Usage
+
+```typescript
+import { init } from "@dotsetlabs/border";
+
+init();
+```
+
+## Configuration Options
+
+```typescript
+init({
+  // Domains that bypass all scanning
+  allowedDomains: ["localhost", "127.0.0.1", "api.internal.com"],
+  
+  // Per-destination policies
+  destinationPolicies: [
+    { domain: "*.stripe.com", allowedPiiTypes: ["credit_card", "email"] },
+    { domain: "*.openai.com", blockedPiiTypes: ["ssn", "credit_card"] },
+  ],
+  
+  // Detection sensitivity
+  sensitivity: "medium", // "low" | "medium" | "high" | "paranoid"
+  
+  // Dry-run mode (log but don't redact)
+  dryRun: false,
+  
+  // Block requests to unknown domains
+  blockUnknownDomains: false,
+  
+  // Enable debug logging
+  debug: false,
+});
+```
+
+## Options Reference
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `allowedDomains` | `string[]` | `["localhost"]` | Domains that bypass all scanning |
+| `destinationPolicies` | `DestinationPolicy[]` | `[]` | Per-domain PII rules |
+| `sensitivity` | `SensitivityLevel` | `"medium"` | Detection aggressiveness |
+| `dryRun` | `boolean` | `false` | Log without modifying requests |
+| `blockUnknownDomains` | `boolean` | `false` | Block unlisted domains |
+| `debug` | `boolean` | `false` | Verbose logging |
+| `detectApiKeys` | `boolean` | `true` | Enable API key detection |
+
+## Sensitivity Levels
+
+| Level | Behavior |
+|-------|----------|
+| `low` | Only high-confidence detections (Luhn-validated cards, formatted SSNs) |
+| `medium` | Balanced detection (default) |
+| `high` | More aggressive, may have false positives |
+| `paranoid` | Maximum detection |
+
+## Lifecycle
+
+```typescript
+import { init, shutdown, isActive, getPolicy } from "@dotsetlabs/border";
+
+// Start protection
+init({ dryRun: true });
+
+// Check status
+console.log(isActive()); // true
+
+// Get current policy
+const policy = getPolicy();
+console.log(policy.sensitivity); // "medium"
+
+// Stop protection (useful for testing)
+shutdown();
+console.log(isActive()); // false
+```
+
+## Reinitializing
+
+Calling `init()` again automatically shuts down the previous instance:
+
+```typescript
+init({ sensitivity: "low" });
+// Later...
+init({ sensitivity: "high" }); // Previous hooks are removed first
+```
+
+## Next Steps
+
+<CardGroup>
+  <Card title="Destinations" icon="route" href="/border/sdk/destinations">
+    Configure per-domain policies
+  </Card>
+  <Card title="Detection" icon="search" href="/border/sdk/detection">
+    How PII detection works
+  </Card>
+</CardGroup>

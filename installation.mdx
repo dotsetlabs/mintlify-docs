@@ -1,60 +1,88 @@
 ---
 title: Installation
-description: 'Install Dotset Shield'
+description: 'Install Dotset CLI and SDKs'
 ---
 
 # Installation
 
-## npm (Recommended)
+## CLI (Shield + Preflight)
+
+### npm (Recommended)
 
 ```bash
 npm install -g @dotsetlabs/cli
 ```
 
-## Yarn
+### Yarn
 
 ```bash
 yarn global add @dotsetlabs/cli
 ```
 
-## pnpm
+### pnpm
 
 ```bash
 pnpm add -g @dotsetlabs/cli
 ```
 
-## Verify Installation
+### Verify Installation
 
 ```bash
-dotset shield --version
+dotset --version
+```
+
+## Border SDK
+
+Install in your Node.js project:
+
+```bash
+npm install @dotsetlabs/border
+```
+
+Or with your preferred package manager:
+
+```bash
+yarn add @dotsetlabs/border
+pnpm add @dotsetlabs/border
 ```
 
 ## Requirements
 
-- Node.js 20 or later
-- npm, yarn, or pnpm
+- **CLI**: Node.js 20 or later
+- **Border**: Node.js 18 or later
 
-## Project Setup
+## Quick Start
 
-Shield is designed for zero-migration. If you use `.env` files, you can start using it immediately:
+### Shield
 
 ```bash
 cd your-project
 dotset shield run -- npm start
 ```
 
-<Tip>
-Shield auto-detects secrets from `.env` files and environment variables. No additional configuration required.
-</Tip>
+### Border
+
+```typescript
+import { init } from "@dotsetlabs/border";
+init();
+```
 
 ## Updating
 
 ```bash
+# CLI
 npm update -g @dotsetlabs/cli
+
+# Border (in project)
+npm update @dotsetlabs/border
 ```
 
 ## Uninstalling
 
 ```bash
+# CLI
 npm uninstall -g @dotsetlabs/cli
+
+# Border (in project)
+npm uninstall @dotsetlabs/border
 ```

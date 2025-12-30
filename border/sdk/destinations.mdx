@@ -1,0 +1,136 @@
+---
+title: Blessed Destinations
+description: 'Control what PII reaches which endpoints'
+---
+
+# Blessed Destinations
+
+Destination policies define what PII types are allowed or blocked for specific domains. This enables fine-grained control over data flow.
+
+## Concepts
+
+| Concept | Description |
+|---------|-------------|
+| `allowedDomains` | Domains that bypass ALL scanning |
+| `allowedPiiTypes` | PII types permitted for a destination |
+| `blockedPiiTypes` | PII types always redacted for a destination |
+| `bypass` | Skip scanning entirely for a specific policy |
+
+## Configuration
+
+```typescript
+init({
+  // Global bypass list
+  allowedDomains: ["localhost", "127.0.0.1"],
+  
+  // Per-destination rules
+  destinationPolicies: [
+    // Payment processor - needs credit cards
+    {
+      domain: "*.stripe.com",
+      label: "Payment Processor",
+      allowedPiiTypes: ["credit_card", "email"],
+    },
+    
+    // Analytics - never gets sensitive data
+    {
+      domain: "*.segment.io",
+      label: "Analytics",
+      blockedPiiTypes: ["ssn", "credit_card", "api_key"],
+    },
+    
+    // Internal API - full bypass
+    {
+      domain: "api.internal.company.com",
+      label: "Internal API",
+      bypass: true,
+    },
+    
+    // AI providers - block credentials
+    {
+      domain: "*.openai.com",
+      label: "AI Provider",
+      blockedPiiTypes: ["ssn", "credit_card", "api_key", "aws_key"],
+    },
+  ],
+});
+```
+
+## Pattern Matching
+
+Domain patterns support wildcards:
+
+| Pattern | Matches |
+|---------|---------|
+| `api.stripe.com` | Exact match only |
+| `*.stripe.com` | Any subdomain of stripe.com |
+| `*.api.example.com` | Any subdomain of api.example.com |
+
+## Policy Precedence
+
+1. **allowedDomains** — Checked first, full bypass
+2. **destinationPolicies** — Matched in order, first match wins
+3. **Default** — All PII types are redacted
+
+## Blocking Unknown Domains
+
+For strict environments, block requests to unlisted domains:
+
+```typescript
+init({
+  allowedDomains: ["localhost", "api.trusted.com"],
+  destinationPolicies: [
+    { domain: "*.stripe.com", allowedPiiTypes: ["credit_card"] },
+  ],
+  blockUnknownDomains: true,
+});
+
+// Requests to unknown domains throw BorderBlockedError
+try {
+  await fetch("https://unknown.com/api", { body: sensitiveData });
+} catch (e) {
+  if (e.name === "BorderBlockedError") {
+    console.log("Request blocked: unknown domain");
+  }
+}
+```
+
+## Inspecting Policies
+
+```typescript
+import { getDomainPolicy, shouldBlockRequest } from "@dotsetlabs/border";
+
+const policy = getPolicy();
+
+// Check what would happen for a URL
+const result = getDomainPolicy("https://api.stripe.com/v1/charges", policy);
+console.log(result.isAllowed);      // false (has specific rules)
+console.log(result.allowedTypes);   // Set { "credit_card", "email" }
+
+// Check if a request would be blocked
+const blocked = shouldBlockRequest("https://unknown.com", policy);
+```
+
+## Destination Categories
+
+Border automatically categorizes destinations for audit logging:
+
+| Category | Examples |
+|----------|----------|
+| `internal` | localhost, *.internal, *.local |
+| `payment_processor` | api.stripe.com, api.paypal.com |
+| `analytics` | api.segment.io, api.mixpanel.com |
+| `ai_provider` | api.openai.com, api.anthropic.com |
+| `marketing` | api.mailchimp.com, api.hubapi.com |
+| `unknown` | Everything else |
+
+## Next Steps
+
+<CardGroup>
+  <Card title="Audit Logging" icon="clipboard" href="/border/sdk/audit">
+    Track redactions by destination
+  </Card>
+  <Card title="Initialization" icon="gear" href="/border/sdk/init">
+    All configuration options
+  </Card>
+</CardGroup>

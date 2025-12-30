@@ -105,6 +105,30 @@
                     ]
                 }
             ]
+        },
+        {
+            "group": "Border",
+            "pages": [
+                "border/introduction",
+                "border/quickstart",
+                {
+                    "group": "SDK Reference",
+                    "pages": [
+                        "border/sdk/init",
+                        "border/sdk/detection",
+                        "border/sdk/destinations",
+                        "border/sdk/audit",
+                        "border/sdk/cloud"
+                    ]
+                },
+                {
+                    "group": "Concepts",
+                    "pages": [
+                        "border/concepts/pii-types",
+                        "border/concepts/sensitivity"
+                    ]
+                }
+            ]
         }
     ],
     "footerSocials": {

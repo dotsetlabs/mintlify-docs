@@ -1,0 +1,104 @@
+---
+title: PII Detection
+description: 'How Border detects sensitive data'
+---
+
+# PII Detection
+
+Border's detection engine scans request bodies for 20+ types of personally identifiable information using pattern matching with algorithmic validation.
+
+## Detection Process
+
+1. **Quick Check**: Fast heuristics determine if content might contain PII
+2. **Pattern Matching**: Regex patterns identify potential matches
+3. **Validation**: Algorithmic checks confirm validity (Luhn, checksums)
+4. **Confidence Scoring**: Each match is assigned high/medium/low confidence
+
+## Using the Detection API
+
+```typescript
+import { findPii, createDefaultDetectionConfig } from "@dotsetlabs/border";
+
+const config = createDefaultDetectionConfig();
+const matches = findPii("Email: john@example.com, SSN: 123-45-6789", config);
+
+for (const match of matches) {
+  console.log(`${match.type}: ${match.text} (${match.confidence})`);
+}
+// email: john@example.com (high)
+// ssn: 123-45-6789 (high)
+```
+
+## Validation Algorithms
+
+Border uses algorithmic validation to reduce false positives:
+
+| Type | Algorithm |
+|------|-----------|
+| Credit Cards | Luhn checksum + network detection |
+| SSNs | Area/group/serial validation |
+| IBANs | MOD-97 checksum |
+| ABA Routing | Weighted checksum |
+| VINs | Check digit validation |
+
+```typescript
+import { luhnCheck, validateSsn, detectCardNetwork } from "@dotsetlabs/border";
+
+luhnCheck("4532015112830366");     // true
+validateSsn("123-45-6789");        // true
+detectCardNetwork("4532...");      // "visa"
+```
+
+## Confidence Levels
+
+| Level | Meaning | Example |
+|-------|---------|---------|
+| `high` | Algorithmically validated | Luhn-valid credit card |
+| `medium` | Strong pattern match | Well-formatted email |
+| `low` | Pattern match only | Unformatted 9-digit number |
+
+Configure sensitivity to filter by confidence:
+
+```typescript
+init({
+  sensitivity: "low", // Only high-confidence matches
+});
+```
+
+## Custom Patterns
+
+Add your own detection patterns:
+
+```typescript
+init({
+  customPatternDefinitions: [
+    {
+      name: "internal_id",
+      pattern: /ACME-[A-Z0-9]{8}/g,
+      description: "ACME Corp internal IDs",
+      confidence: "high",
+    },
+  ],
+});
+```
+
+## Disabling Detectors
+
+Disable specific PII types:
+
+```typescript
+init({
+  disabledDetectors: ["ip_address", "mac_address"],
+});
+```
+
+## Next Steps
+
+<CardGroup>
+  <Card title="PII Types" icon="list" href="/border/concepts/pii-types">
+    Full list of 20+ PII types
+  </Card>
+  <Card title="Sensitivity" icon="sliders" href="/border/concepts/sensitivity">
+    Sensitivity level details
+  </Card>
+</CardGroup>

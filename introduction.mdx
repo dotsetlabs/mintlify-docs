@@ -1,70 +1,95 @@
 ---
 title: Introduction
-description: 'Unified secret protection for CI/CD'
+description: 'Secure your applications at every layer'
 ---
 
-# Dotset Shield
+# Dotset
 
-**The unified secret protection engine for CI/CD build logs.**
+**Enterprise-grade security for modern applications.**
 
-Secrets leak in build logs every day. Debug statements, error messages, and verbose logging expose API keys, tokens, and credentials. GitHub's built-in masking can't catch everything. GitGuardian scans *after* the breach.
+Dotset provides three complementary security products:
 
-**Dotset Shield** intercepts output streams and redacts secrets in real-time — with **zero migration** and **multi-provider support**.
+<CardGroup cols={3}>
+  <Card title="Shield" icon="shield" href="/quickstart">
+    Protect CI/CD logs from secret leakage in real-time
+  </Card>
+  <Card title="Preflight" icon="plane-departure" href="/preflight/introduction">
+    Validate deployments before they go live
+  </Card>
+  <Card title="Border" icon="lock" href="/border/introduction">
+    Redact PII from outbound HTTP requests
+  </Card>
+</CardGroup>
 
-> [!NOTE]
-> **Your secrets never leave your machine.** Shield processes secrets locally and only sends anonymous metadata to the cloud. The CLI is [open source](https://github.com/dotsetlabs/cli) and fully auditable. [Learn more →](/shield/security/trust)
+---
 
-## Zero Migration
+## Shield
 
-Shield works with your existing workflow. If you use `.env` files, you can start protecting your logs instantly without moving a single secret.
+**Log sanitization for CI/CD.**
+
+Secrets leak in build logs every day. Debug statements, error messages, and verbose logging expose API keys, tokens, and credentials.
+
+**Dotset Shield** intercepts output streams and redacts secrets in real-time — with **zero migration** and **dynamic secret detection**.
 
 ```bash
-# Shield auto-detects .env files and starts protecting
 dotset shield run -- npm start
 ```
 
-## Provider-Agnostic
+> [!NOTE]
+> Shield processes secrets locally and never sends values to the cloud. [Learn more →](/shield/security/trust)
 
-Stop worrying about where your secrets live. Shield aggregates secrets from multiple sources into a single protected environment:
+---
 
-- **Ecosystem**: `.env`, `.env.local`, etc.
-- **Infrastructure**: AWS Secrets Manager
-- **Environment**: Shell environment variables
+## Preflight
 
-## Key Features
+**Deployment validation.**
 
-<CardGroup cols={2}>
-  <Card title="Multi-Provider" icon="hubspot">
-    Aggregate secrets from AWS, .env files, and environment variables into one secure context.
-  </Card>
-  <Card title="Streaming Reliability" icon="bolt">
-    Line-buffered redaction ensures secrets are caught even if split across output chunks.
-  </Card>
-  <Card title="Three Protection Modes" icon="shield">
-    Detect (audit), Redact (replace), or Block (suppress) — choose your protection level.
-  </Card>
-  <Card title="Cloud Analytics" icon="chart-line">
-    Track protection events and exposure patterns in your team dashboard.
-  </Card>
-</CardGroup>
+Catch configuration issues before they hit production. Preflight runs health probes against your services and validates that everything is ready.
+
+```bash
+dotset preflight check
+```
+
+---
+
+## Border
+
+**Outbound PII firewall for Node.js.**
+
+Prevent sensitive data from leaking through API requests. Border intercepts `fetch()` and `http.request()` calls and redacts PII before transmission.
+
+```typescript
+import { init } from "@dotsetlabs/border";
+
+init({
+  destinationPolicies: [
+    { domain: "*.openai.com", blockedPiiTypes: ["ssn", "credit_card"] },
+  ],
+});
+```
+
+---
 
 ## Quick Install
 
 ```bash
+# CLI (Shield + Preflight)
 npm install -g @dotsetlabs/cli
+
+# Border SDK
+npm install @dotsetlabs/border
 ```
 
 ## Next Steps
 
 <CardGroup>
-  <Card title="Quickstart" icon="rocket" href="/quickstart">
-    Get up and running in 60 seconds
+  <Card title="Shield Quickstart" icon="rocket" href="/quickstart">
+    Protect your CI/CD in 60 seconds
   </Card>
-  <Card title="CLI Reference" icon="cli" href="/shield/cli/overview">
-    Explore all available commands
+  <Card title="Preflight Quickstart" icon="plane" href="/preflight/quickstart">
+    Validate your deployments
   </Card>
-  <Card title="Protection Modes" icon="shield-check" href="/shield/concepts/protection-modes">
-    Understand detect, redact, and block modes
+  <Card title="Border Quickstart" icon="lock" href="/border/quickstart">
+    Protect outbound requests
   </Card>
 </CardGroup>
-

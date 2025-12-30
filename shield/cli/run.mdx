@@ -107,8 +107,9 @@ See the [Security Policies](/shield/concepts/security-policies) guide for a full
 
 1. **Resolution**: Aggregates secrets from all specified providers.
 2. **Injection**: Injects discovered secrets into the child process environment.
-3. **Redaction**: Intercepts `stdout`/`stderr` using a **streaming line-buffered engine**. This ensures secrets are caught even if split across output chunks.
-4. **Flush**: Flushes any remaining buffered text before exiting.
+3. **Sanitization**: Intercepts `stdout`/`stderr` using a **streaming line-buffered engine**. This ensures secrets are caught even if split across output chunks.
+4. **Dynamic Detection**: Scans for assignment patterns (e.g. `password=`) and high-entropy strings, providing a safety net for secrets not covered by standard regex.
+5. **Flush**: Flushes any remaining buffered text before exiting.
 
 ## Exit Codes
 
