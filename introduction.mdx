@@ -1,29 +1,9 @@
 ---
 title: Introduction
-description: 'Secure your applications at every layer'
+description: 'Protect CI/CD logs from secret leakage'
 ---
 
-# Dotset
-
-**Enterprise-grade security for modern applications.**
-
-Dotset provides three complementary security products:
-
-<CardGroup cols={3}>
-  <Card title="Shield" icon="shield" href="/quickstart">
-    Protect CI/CD logs from secret leakage in real-time
-  </Card>
-  <Card title="Preflight" icon="plane-departure" href="/preflight/introduction">
-    Validate deployments before they go live
-  </Card>
-  <Card title="Border" icon="lock" href="/border/introduction">
-    Redact PII from outbound HTTP requests
-  </Card>
-</CardGroup>
-
----
-
-## Shield
+# Dotset Shield
 
 **Log sanitization for CI/CD.**
 
@@ -40,44 +20,10 @@ dotset shield run -- npm start
 
 ---
 
-## Preflight
-
-**Deployment validation.**
-
-Catch configuration issues before they hit production. Preflight runs health probes against your services and validates that everything is ready.
-
-```bash
-dotset preflight check
-```
-
----
-
-## Border
-
-**Outbound PII firewall for Node.js.**
-
-Prevent sensitive data from leaking through API requests. Border intercepts `fetch()` and `http.request()` calls and redacts PII before transmission.
-
-```typescript
-import { init } from "@dotsetlabs/border";
-
-init({
-  destinationPolicies: [
-    { domain: "*.openai.com", blockedPiiTypes: ["ssn", "credit_card"] },
-  ],
-});
-```
-
----
-
 ## Quick Install
 
 ```bash
-# CLI (Shield + Preflight)
 npm install -g @dotsetlabs/cli
-
-# Border SDK
-npm install @dotsetlabs/border
 ```
 
 ## Next Steps
@@ -85,11 +31,5 @@ npm install @dotsetlabs/border
 <CardGroup>
   <Card title="Shield Quickstart" icon="rocket" href="/quickstart">
     Protect your CI/CD in 60 seconds
-  </Card>
-  <Card title="Preflight Quickstart" icon="plane" href="/preflight/quickstart">
-    Validate your deployments
-  </Card>
-  <Card title="Border Quickstart" icon="lock" href="/border/quickstart">
-    Protect outbound requests
   </Card>
 </CardGroup>

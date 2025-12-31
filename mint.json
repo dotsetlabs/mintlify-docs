@@ -15,21 +15,15 @@
             "to": "#06B6D4"
         }
     },
-    "topbarLinks": [
-        {
-            "name": "Dashboard",
-            "url": "https://app.dotsetlabs.com"
-        }
-    ],
     "topbarCtaButton": {
-        "name": "Get Started",
-        "url": "https://dotsetlabs.com"
+        "name": "GitHub",
+        "url": "https://github.com/dotsetlabs/cli"
     },
     "anchors": [
         {
             "name": "GitHub",
             "icon": "github",
-            "url": "https://github.com/dotsetlabs/shield"
+            "url": "https://github.com/dotsetlabs/cli"
         },
         {
             "name": "npm",
@@ -47,40 +41,32 @@
             ]
         },
         {
-            "group": "CLI Reference",
-            "pages": [
-                "cli/link"
-            ]
-        },
-        {
-            "group": "Preflight",
-            "pages": [
-                "preflight/introduction",
-                "preflight/quickstart",
-                {
-                    "group": "CLI Commands",
-                    "pages": [
-                        "preflight/cli/init",
-                        "preflight/cli/check",
-                        "preflight/cli/wait",
-                        "preflight/cli/discover",
-                        "preflight/cli/generate",
-                        "preflight/cli/push"
-                    ]
-                },
-                "preflight/probes",
-                "preflight/managed-schemas"
-            ]
-        },
-        {
             "group": "Shield",
             "pages": [
                 {
                     "group": "CLI Commands",
                     "pages": [
                         "shield/cli/overview",
-                        "shield/cli/auth",
                         "shield/cli/run"
+                    ]
+                },
+                {
+                    "group": "Concepts",
+                    "pages": [
+                        "shield/concepts/protection-modes",
+                        "shield/concepts/secrets",
+                        "shield/concepts/scopes",
+                        "shield/concepts/security-policies"
+                    ]
+                },
+                {
+                    "group": "CI/CD Guides",
+                    "pages": [
+                        "shield/guides/github-actions",
+                        "shield/guides/gitlab-ci",
+                        "shield/guides/circleci",
+                        "shield/guides/jenkins",
+                        "shield/guides/generic-ci"
                     ]
                 },
                 {
@@ -88,44 +74,6 @@
                     "pages": [
                         "shield/security/encryption",
                         "shield/security/trust"
-                    ]
-                },
-                {
-                    "group": "Guides",
-                    "pages": [
-                        "shield/guides/api-tokens",
-                        "shield/guides/analytics",
-                        "shield/guides/generic-ci"
-                    ]
-                },
-                {
-                    "group": "Concepts",
-                    "pages": [
-                        "shield/concepts/reliability"
-                    ]
-                }
-            ]
-        },
-        {
-            "group": "Border",
-            "pages": [
-                "border/introduction",
-                "border/quickstart",
-                {
-                    "group": "SDK Reference",
-                    "pages": [
-                        "border/sdk/init",
-                        "border/sdk/detection",
-                        "border/sdk/destinations",
-                        "border/sdk/audit",
-                        "border/sdk/cloud"
-                    ]
-                },
-                {
-                    "group": "Concepts",
-                    "pages": [
-                        "border/concepts/pii-types",
-                        "border/concepts/sensitivity"
                     ]
                 }
             ]

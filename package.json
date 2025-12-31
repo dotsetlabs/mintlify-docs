@@ -2,7 +2,7 @@
     "name": "@dotsetlabs/docs",
     "version": "1.0.0",
     "private": true,
-    "author": "Dotset Labs LLC",
+    "author": "Dotset Labs",
     "scripts": {
         "dev": "mintlify dev",
         "install-cli": "npm install -g mintlify"

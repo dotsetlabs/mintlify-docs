@@ -47,15 +47,6 @@ Secrets are pulled from your existing providers and processed in-memory only:
 
 Shield never writes these secrets to disk. They exist only in process memory during execution.
 
-## Cloud Features Security
-
-When using cloud analytics (after `dotset link`):
-
-- **What we store**: Protection event metadata (counts, timestamps, patterns)
-- **What we don't store**: Your actual secret values
-- **Transport**: TLS 1.3
-- **Infrastructure**: SOC 2 compliant providers
-
 ## Threat Model
 
 Shield protects against:
@@ -79,4 +70,4 @@ Shield protects against:
 1. Use your existing secrets infrastructure (CI secrets, AWS SM, etc.)
 2. Run Shield in `redact` mode in production CI
 3. Use `detect` mode for auditing existing pipelines
-4. Link to cloud for analytics and alerting
+4. Generate compliance reports with `--report` flag

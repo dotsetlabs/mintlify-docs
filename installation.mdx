@@ -1,11 +1,11 @@
 ---
 title: Installation
-description: 'Install Dotset CLI and SDKs'
+description: 'Install Dotset CLI'
 ---
 
 # Installation
 
-## CLI (Shield + Preflight)
+## CLI (Shield)
 
 ### npm (Recommended)
 
@@ -31,58 +31,25 @@ pnpm add -g @dotsetlabs/cli
 dotset --version
 ```
 
-## Border SDK
-
-Install in your Node.js project:
-
-```bash
-npm install @dotsetlabs/border
-```
-
-Or with your preferred package manager:
-
-```bash
-yarn add @dotsetlabs/border
-pnpm add @dotsetlabs/border
-```
-
 ## Requirements
 
 - **CLI**: Node.js 20 or later
-- **Border**: Node.js 18 or later
 
 ## Quick Start
-
-### Shield
 
 ```bash
 cd your-project
 dotset shield run -- npm start
 ```
 
-### Border
-
-```typescript
-import { init } from "@dotsetlabs/border";
-init();
-```
-
 ## Updating
 
 ```bash
-# CLI
 npm update -g @dotsetlabs/cli
-
-# Border (in project)
-npm update @dotsetlabs/border
 ```
 
 ## Uninstalling
 
 ```bash
-# CLI
 npm uninstall -g @dotsetlabs/cli
-
-# Border (in project)
-npm uninstall @dotsetlabs/border
 ```
