@@ -55,23 +55,6 @@ echo "API_KEY=$API_KEY" >> .env
 dotset shield run --mode redact -- npm test
 ```
 
-## Cloud Analytics
-
-Set the `DOTSET_API_TOKEN` environment variable to report events:
-
-```bash
-export DOTSET_API_TOKEN="your-api-token"
-dotset shield run --mode redact -- npm test
-```
-
-Or link your project first (one-time setup in your repo):
-
-```bash
-dotset link <project-id> --token <api-token>
-```
-
-After linking, Shield uses the cached credentials from `.dotset/project.json`.
-
 ## Docker-Based CI
 
 If your CI uses Docker, include Shield in your image or install during build:
@@ -87,7 +70,7 @@ COPY . .
 RUN npm ci
 
 # Run with protection
-CMD ["dotset", "run", "--mode", "redact", "--", "npm", "start"]
+CMD ["dotset", "shield", "run", "--mode", "redact", "--", "npm", "start"]
 ```
 
 Or in your CI config:
@@ -138,17 +121,17 @@ Upload this as a build artifact for compliance auditing.
 
 ## Offline / Air-Gapped Environments
 
-Shield works fully offline. Cloud features are optional:
+Shield works fully offline with no cloud dependencies:
 
 ```bash
-# Disable telemetry entirely
-dotset shield run --no-telemetry --mode redact -- npm test
+# Shield works completely offline
+dotset shield run --mode redact -- npm test
 ```
 
 When offline:
-- Protection still works using built-in patterns
-- Cached policies (if previously synced) are used
+- Protection works using built-in patterns
 - No data is sent anywhere
+- No account or API key required
 
 ## Troubleshooting
 
