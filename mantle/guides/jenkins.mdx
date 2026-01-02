@@ -56,7 +56,6 @@ pipeline {
     environment {
         DATABASE_URL = credentials('database-url')
         API_KEY = credentials('api-key')
-        DOTSET_API_TOKEN = credentials('dotset-api-token')
     }
     
     stages {
@@ -98,8 +97,7 @@ pipeline {
             steps {
                 withCredentials([
                     string(credentialsId: 'aws-access-key', variable: 'AWS_ACCESS_KEY_ID'),
-                    string(credentialsId: 'aws-secret-key', variable: 'AWS_SECRET_ACCESS_KEY'),
-                    string(credentialsId: 'dotset-api-token', variable: 'DOTSET_API_TOKEN')
+                    string(credentialsId: 'aws-secret-key', variable: 'AWS_SECRET_ACCESS_KEY')
                 ]) {
                     sh 'dotset mantle run --mode redact -- ./deploy.sh'
                 }
@@ -142,17 +140,13 @@ pipeline {
         }
     }
     
-    environment {
-        DOTSET_API_TOKEN = credentials('dotset-api-token')
-    }
-    
     stages {
         stage('Setup') {
             steps {
                 sh 'npm install -g @dotsetlabs/cli'
             }
         }
-        
+
         stage('Test') {
             steps {
                 sh 'dotset mantle run --mode redact -- npm test'
@@ -178,8 +172,7 @@ node {
     
     stage('Test') {
         withCredentials([
-            string(credentialsId: 'database-url', variable: 'DATABASE_URL'),
-            string(credentialsId: 'dotset-api-token', variable: 'DOTSET_API_TOKEN')
+            string(credentialsId: 'database-url', variable: 'DATABASE_URL')
         ]) {
             sh 'dotset mantle run --mode redact -- npm test'
         }
@@ -187,34 +180,16 @@ node {
 }
 ```
 
-## Cloud Analytics
-
-Link your project to track protection events:
-
-```groovy
-environment {
-    DOTSET_API_TOKEN = credentials('dotset-api-token')
-}
-```
-
-<Tip>
-Create a credential of type "Secret text" in Jenkins for your Dotset API token.
-</Tip>
-
 ## Complete Example
 
 ```groovy
 pipeline {
     agent any
-    
+
     tools {
         nodejs 'NodeJS-20'
     }
-    
-    environment {
-        DOTSET_API_TOKEN = credentials('dotset-api-token')
-    }
-    
+
     stages {
         stage('Checkout') {
             steps {

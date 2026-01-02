@@ -64,24 +64,6 @@ test:
     - dotset mantle run --mode redact -- npm test
 ```
 
-## Cloud Analytics
-
-Link your project to track protection events across all pipeline runs:
-
-```yaml
-test:
-  before_script:
-    - npm install -g @dotsetlabs/cli
-  script:
-    - dotset mantle run --mode redact -- npm test
-  variables:
-    DOTSET_API_TOKEN: $DOTSET_API_TOKEN
-```
-
-<Tip>
-Store your Dotset API token as a [protected variable](https://docs.gitlab.com/ee/ci/variables/#protect-a-cicd-variable) in GitLab.
-</Tip>
-
 ## Caching Mantle Installation
 
 Speed up your pipelines by caching the global npm packages:
@@ -129,7 +111,6 @@ test:
     - dotset mantle run --mode redact -- npm test
   variables:
     DATABASE_URL: $DATABASE_URL
-    DOTSET_API_TOKEN: $DOTSET_API_TOKEN
 
 deploy:
   <<: *mantle-setup
@@ -140,7 +121,6 @@ deploy:
   variables:
     AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
     AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
-    DOTSET_API_TOKEN: $DOTSET_API_TOKEN
   only:
     - main
 ```

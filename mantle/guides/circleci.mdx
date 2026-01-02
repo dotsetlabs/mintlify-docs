@@ -66,7 +66,7 @@ workflows:
 ```
 
 <Note>
-Create a `dotset-mantle` context with your `DOTSET_API_TOKEN` for analytics tracking.
+Create a context with your secrets to share them across projects.
 </Note>
 
 ## Using Project Environment Variables
@@ -111,26 +111,6 @@ jobs:
           name: Run tests
           command: dotset mantle run --mode redact -- npm test
 ```
-
-## Cloud Analytics
-
-Link your project to track protection events:
-
-```yaml
-jobs:
-  test:
-    docker:
-      - image: cimg/node:20.0
-    steps:
-      - checkout
-      - run: npm install -g @dotsetlabs/cli
-      - run: dotset mantle run --mode redact -- npm test
-    # DOTSET_API_TOKEN should be set in project settings or context
-```
-
-<Tip>
-Store your Dotset API token in a CircleCI context for easy sharing across projects.
-</Tip>
 
 ## Caching Mantle Installation
 
@@ -197,15 +177,12 @@ jobs:
 workflows:
   build-and-deploy:
     jobs:
-      - test:
-          context:
-            - dotset-mantle
+      - test
       - deploy:
           requires:
             - test
           context:
             - aws-credentials
-            - dotset-mantle
           filters:
             branches:
               only: main

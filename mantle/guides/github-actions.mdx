@@ -49,21 +49,6 @@ Mantle can pull secrets directly from AWS during your build:
     AWS_REGION: us-east-1
 ```
 
-## Cloud Analytics
-
-Link your project to track protection events:
-
-```yaml
-- name: Run with analytics
-  run: dotset mantle run --mode redact -- npm test
-  env:
-    DOTSET_API_TOKEN: ${{ secrets.DOTSET_API_TOKEN }}
-```
-
-<Tip>
-Create an API token in the Dotset dashboard and store it as a GitHub secret. Mantle will automatically report protection events.
-</Tip>
-
 ## Complete Examples
 
 For comprehensive, real-world GitHub Actions workflow examples, see the **[testing repository](https://github.com/dotsetlabs/testing)**:
