@@ -1,0 +1,104 @@
+---
+title: "Interface: ValidationResult"
+description: "Defined in: src/tollgate/policy/validator.ts:60"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / ValidationResult
+
+# Interface: ValidationResult
+
+Defined in: src/tollgate/policy/validator.ts:60
+
+Summary of validation results.
+
+## Properties
+
+### errorCount
+
+```ts
+errorCount: number;
+```
+
+Defined in: src/tollgate/policy/validator.ts:68
+
+Count of errors
+
+### infoCount
+
+```ts
+infoCount: number;
+```
+
+Defined in: src/tollgate/policy/validator.ts:74
+
+Count of informational messages
+
+### issues
+
+```ts
+issues: ValidationIssue[];
+```
+
+Defined in: src/tollgate/policy/validator.ts:65
+
+All issues found
+
+### stats
+
+```ts
+stats: {
+  analyzersUsed: string[];
+  serversConfigured: number;
+  smartAnalysisEnabled: boolean;
+  toolPoliciesConfigured: number;
+};
+```
+
+Defined in: src/tollgate/policy/validator.ts:77
+
+Summary statistics
+
+#### analyzersUsed
+
+```ts
+analyzersUsed: string[];
+```
+
+#### serversConfigured
+
+```ts
+serversConfigured: number;
+```
+
+#### smartAnalysisEnabled
+
+```ts
+smartAnalysisEnabled: boolean;
+```
+
+#### toolPoliciesConfigured
+
+```ts
+toolPoliciesConfigured: number;
+```
+
+### valid
+
+```ts
+valid: boolean;
+```
+
+Defined in: src/tollgate/policy/validator.ts:62
+
+Whether the configuration is valid (no errors)
+
+### warningCount
+
+```ts
+warningCount: number;
+```
+
+Defined in: src/tollgate/policy/validator.ts:71
+
+Count of warnings

@@ -1,0 +1,123 @@
+---
+title: start
+description: 'Start Tollgate proxy with full configuration'
+---
+
+# tollgate start
+
+Starts the Tollgate proxy for a configured MCP server with full policy control.
+
+## Usage
+
+```bash
+dotset tollgate start [options]
+```
+
+## Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `-s, --server <name>` | Server name from config **(required)** | - |
+| `-c, --config <path>` | Path to tollgate.yaml config file | `./tollgate.yaml` |
+| `--audit-path <path>` | Custom path for audit database | `~/.dotset/tollgate.db` |
+| `--timeout <ms>` | Approval timeout in milliseconds | `60000` |
+| `--dry-run` | Evaluate policies without executing tools | - |
+| `--failure-mode <mode>` | Behavior when upstream fails | `fail-closed` |
+
+## Examples
+
+### Basic Usage
+
+```bash
+# Start proxy for 'postgres' server from config
+dotset tollgate start -s postgres
+
+# Use custom config path
+dotset tollgate start -s postgres -c ~/configs/tollgate.yaml
+```
+
+### With Options
+
+```bash
+# Start with custom timeout
+dotset tollgate start -s postgres --timeout 120000
+
+# Start with fail-readonly mode
+dotset tollgate start -s filesystem --failure-mode fail-readonly
+```
+
+### Dry Run Mode
+
+```bash
+# Test policies without executing tools
+dotset tollgate start -s postgres --dry-run
+```
+
+## Configuration File
+
+The `start` command requires a `tollgate.yaml` configuration file. Create one with:
+
+```bash
+dotset tollgate init
+```
+
+### Example Configuration
+
+```yaml
+version: "1"
+
+defaults:
+  action: prompt
+  timeout: 60000
+
+servers:
+  postgres:
+    command: "npx"
+    args: ["-y", "@modelcontextprotocol/server-postgres"]
+    env:
+      DATABASE_URL: "${DATABASE_URL}"
+    tools:
+      "query":
+        action: allow
+      "execute":
+        action: prompt
+        analyzer: sql
+      "*":
+        action: deny
+
+  filesystem:
+    command: "npx"
+    args: ["-y", "@anthropic/mcp-server-filesystem", "./src"]
+    tools:
+      "read_*":
+        action: allow
+      "write_*":
+        action: prompt
+      "delete_*":
+        action: deny
+```
+
+## Server Selection
+
+The `-s/--server` option must match a server name defined in your config:
+
+```yaml
+servers:
+  postgres:      # Use: dotset tollgate start -s postgres
+    ...
+  filesystem:    # Use: dotset tollgate start -s filesystem
+    ...
+```
+
+## When to Use
+
+**Use `start` when:**
+- You need per-tool policies
+- Using smart content analyzers (SQL, filesystem, shell)
+- Running in production environments
+- Managing multiple MCP servers with different policies
+
+**Use `wrap` when:**
+- Quick testing without config files
+- Uniform policy for all tools
+- One-off commands

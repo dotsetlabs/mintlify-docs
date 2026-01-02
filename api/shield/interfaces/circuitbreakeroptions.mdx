@@ -1,0 +1,137 @@
+---
+title: "Interface: CircuitBreakerOptions"
+description: "Defined in: src/shield/errors/index.ts:712"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/shield) / CircuitBreakerOptions
+
+# Interface: CircuitBreakerOptions
+
+Defined in: src/shield/errors/index.ts:712
+
+Error Handling and Recovery Module
+
+Comprehensive error handling with retry logic and circuit breakers.
+
+## Example
+
+```typescript
+import {
+  withRetry,
+  withTimeout,
+  CircuitBreaker,
+  isRetryableError,
+} from '@dotsetlabs/cli';
+
+// Retry with exponential backoff
+const result = await withRetry(
+  () => fetchSecrets(),
+  { maxAttempts: 3, baseDelayMs: 1000, backoffMultiplier: 2 }
+);
+
+// Add timeout to operation
+const secrets = await withTimeout(fetchSecrets(), 5000);
+
+// Use circuit breaker for external services
+const breaker = new CircuitBreaker('aws-sm', {
+  failureThreshold: 5,
+  resetTimeoutMs: 30000,
+});
+
+const secret = await breaker.execute(() => getFromAWS(key));
+```
+
+## Properties
+
+### failureThreshold?
+
+```ts
+optional failureThreshold: number;
+```
+
+Defined in: src/shield/errors/index.ts:713
+
+### halfOpenMaxCalls?
+
+```ts
+optional halfOpenMaxCalls: number;
+```
+
+Defined in: src/shield/errors/index.ts:716
+
+### onFailure()?
+
+```ts
+optional onFailure: (name, error) => void;
+```
+
+Defined in: src/shield/errors/index.ts:722
+
+#### Parameters
+
+##### name
+
+`string`
+
+##### error
+
+#### Returns
+
+`void`
+
+### onStateChange()?
+
+```ts
+optional onStateChange: (name, from, to) => void;
+```
+
+Defined in: src/shield/errors/index.ts:717
+
+#### Parameters
+
+##### name
+
+`string`
+
+##### from
+
+##### to
+
+#### Returns
+
+`void`
+
+### onSuccess()?
+
+```ts
+optional onSuccess: (name) => void;
+```
+
+Defined in: src/shield/errors/index.ts:723
+
+#### Parameters
+
+##### name
+
+`string`
+
+#### Returns
+
+`void`
+
+### resetTimeoutMs?
+
+```ts
+optional resetTimeoutMs: number;
+```
+
+Defined in: src/shield/errors/index.ts:715
+
+### successThreshold?
+
+```ts
+optional successThreshold: number;
+```
+
+Defined in: src/shield/errors/index.ts:714

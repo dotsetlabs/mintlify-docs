@@ -1,0 +1,58 @@
+---
+title: "Class: TollgateBridge"
+description: "Defined in: src/tollgate/proxy/bridge.ts:66"
+icon: "cube"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / TollgateBridge
+
+# Class: TollgateBridge
+
+Defined in: src/tollgate/proxy/bridge.ts:66
+
+## Constructors
+
+### Constructor
+
+```ts
+new TollgateBridge(options): TollgateBridge;
+```
+
+Defined in: src/tollgate/proxy/bridge.ts:73
+
+#### Parameters
+
+##### options
+
+#### Returns
+
+`TollgateBridge`
+
+## Methods
+
+### start()
+
+```ts
+start(): Promise<void>;
+```
+
+Defined in: src/tollgate/proxy/bridge.ts:94
+
+#### Returns
+
+`Promise`\<`void`\>
+
+### stop()
+
+```ts
+stop(): Promise<void>;
+```
+
+Defined in: src/tollgate/proxy/bridge.ts:182
+
+Stop the bridge and all components.
+Waits for in-flight requests to complete before closing.
+
+#### Returns
+
+`Promise`\<`void`\>

@@ -1,0 +1,113 @@
+---
+title: "Interface: ProfilerOptions"
+description: "Defined in: src/shield/utils/profiler.ts:180"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/shield) / ProfilerOptions
+
+# Interface: ProfilerOptions
+
+Defined in: src/shield/utils/profiler.ts:180
+
+Performance Profiling Module
+
+Measure and optimize scanning performance with profiling tools.
+
+## Example
+
+```typescript
+import {
+  Timer,
+  Profiler,
+  enableProfiling,
+  formatDuration,
+  formatBytes,
+} from '@dotsetlabs/cli';
+
+// Enable global profiling
+enableProfiling();
+
+// Time a specific operation
+const timer = new Timer();
+timer.start();
+await scanLargeFile();
+timer.stop();
+console.log(`Scan took: ${formatDuration(timer.elapsed())}`);
+
+// Use profiler for detailed metrics
+const profiler = new Profiler('scan-operation');
+profiler.start('pattern-matching');
+// ... pattern matching
+profiler.end('pattern-matching');
+
+profiler.start('entropy-analysis');
+// ... entropy analysis
+profiler.end('entropy-analysis');
+
+console.log(profiler.getReport());
+```
+
+## Properties
+
+### enabled?
+
+```ts
+optional enabled: boolean;
+```
+
+Defined in: src/shield/utils/profiler.ts:181
+
+### maxSamples?
+
+```ts
+optional maxSamples: number;
+```
+
+Defined in: src/shield/utils/profiler.ts:182
+
+### memoryIntervalMs?
+
+```ts
+optional memoryIntervalMs: number;
+```
+
+Defined in: src/shield/utils/profiler.ts:184
+
+### onSlowOperation()?
+
+```ts
+optional onSlowOperation: (operation, durationMs) => void;
+```
+
+Defined in: src/shield/utils/profiler.ts:185
+
+#### Parameters
+
+##### operation
+
+`string`
+
+##### durationMs
+
+`number`
+
+#### Returns
+
+`void`
+
+### sampleMemory?
+
+```ts
+optional sampleMemory: boolean;
+```
+
+Defined in: src/shield/utils/profiler.ts:183
+
+### slowThresholdMs?
+
+```ts
+optional slowThresholdMs: number;
+```
+
+Defined in: src/shield/utils/profiler.ts:186

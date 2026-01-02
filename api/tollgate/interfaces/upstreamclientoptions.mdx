@@ -1,0 +1,65 @@
+---
+title: "Interface: UpstreamClientOptions"
+description: "Defined in: src/tollgate/proxy/client.ts:35"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / UpstreamClientOptions
+
+# Interface: UpstreamClientOptions
+
+Defined in: src/tollgate/proxy/client.ts:35
+
+Options for the upstream client.
+
+## Properties
+
+### callTimeoutMs?
+
+```ts
+optional callTimeoutMs: number;
+```
+
+Defined in: src/tollgate/proxy/client.ts:39
+
+Timeout for tool calls in ms (default: 30000)
+
+### config
+
+```ts
+config: ServerConfig;
+```
+
+Defined in: src/tollgate/proxy/client.ts:37
+
+Server configuration
+
+### healthCheck?
+
+```ts
+optional healthCheck: HealthCheckConfig;
+```
+
+Defined in: src/tollgate/proxy/client.ts:41
+
+Health check configuration
+
+### onHealthChange()?
+
+```ts
+optional onHealthChange: (status, previousStatus) => void;
+```
+
+Defined in: src/tollgate/proxy/client.ts:43
+
+Callback when health status changes
+
+#### Parameters
+
+##### status
+
+##### previousStatus
+
+#### Returns
+
+`void`

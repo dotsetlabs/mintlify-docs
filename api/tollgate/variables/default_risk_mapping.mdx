@@ -1,0 +1,21 @@
+---
+title: "Variable: DEFAULT_RISK_MAPPING"
+description: "```ts"
+icon: "database"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / DEFAULT\_RISK\_MAPPING
+
+# Variable: DEFAULT\_RISK\_MAPPING
+
+```ts
+const DEFAULT_RISK_MAPPING: Required<RiskMapping>;
+```
+
+Defined in: src/tollgate/analyzers/types.ts:139
+
+Default risk mapping with sensible security defaults.
+
+- Safe and read operations are allowed automatically
+- Write and destructive operations require user approval
+- Dangerous operations are denied by default

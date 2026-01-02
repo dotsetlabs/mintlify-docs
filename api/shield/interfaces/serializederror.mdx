@@ -1,0 +1,117 @@
+---
+title: "Interface: SerializedError"
+description: "Defined in: src/shield/errors/index.ts:126"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/shield) / SerializedError
+
+# Interface: SerializedError
+
+Defined in: src/shield/errors/index.ts:126
+
+Error Handling and Recovery Module
+
+Comprehensive error handling with retry logic and circuit breakers.
+
+## Example
+
+```typescript
+import {
+  withRetry,
+  withTimeout,
+  CircuitBreaker,
+  isRetryableError,
+} from '@dotsetlabs/cli';
+
+// Retry with exponential backoff
+const result = await withRetry(
+  () => fetchSecrets(),
+  { maxAttempts: 3, baseDelayMs: 1000, backoffMultiplier: 2 }
+);
+
+// Add timeout to operation
+const secrets = await withTimeout(fetchSecrets(), 5000);
+
+// Use circuit breaker for external services
+const breaker = new CircuitBreaker('aws-sm', {
+  failureThreshold: 5,
+  resetTimeoutMs: 30000,
+});
+
+const secret = await breaker.execute(() => getFromAWS(key));
+```
+
+## Properties
+
+### cause?
+
+```ts
+optional cause: string;
+```
+
+Defined in: src/shield/errors/index.ts:134
+
+### code
+
+```ts
+code: ErrorCode;
+```
+
+Defined in: src/shield/errors/index.ts:128
+
+### context?
+
+```ts
+optional context: ErrorContext;
+```
+
+Defined in: src/shield/errors/index.ts:132
+
+### isRetryable
+
+```ts
+isRetryable: boolean;
+```
+
+Defined in: src/shield/errors/index.ts:130
+
+### message
+
+```ts
+message: string;
+```
+
+Defined in: src/shield/errors/index.ts:129
+
+### name
+
+```ts
+name: string;
+```
+
+Defined in: src/shield/errors/index.ts:127
+
+### remediation?
+
+```ts
+optional remediation: string[];
+```
+
+Defined in: src/shield/errors/index.ts:133
+
+### retryAfterMs?
+
+```ts
+optional retryAfterMs: number;
+```
+
+Defined in: src/shield/errors/index.ts:131
+
+### stack?
+
+```ts
+optional stack: string;
+```
+
+Defined in: src/shield/errors/index.ts:135

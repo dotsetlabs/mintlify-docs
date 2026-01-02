@@ -1,0 +1,128 @@
+---
+title: "Class: AnalyzerRegistry"
+description: "Defined in: src/tollgate/analyzers/index.ts:18"
+icon: "cube"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / AnalyzerRegistry
+
+# Class: AnalyzerRegistry
+
+Defined in: src/tollgate/analyzers/index.ts:18
+
+Registry of all available analyzers
+
+## Constructors
+
+### Constructor
+
+```ts
+new AnalyzerRegistry(): AnalyzerRegistry;
+```
+
+Defined in: src/tollgate/analyzers/index.ts:21
+
+#### Returns
+
+`AnalyzerRegistry`
+
+## Methods
+
+### analyze()
+
+```ts
+analyze(
+   analyzerName, 
+   content, 
+   context?): AnalysisResult;
+```
+
+Defined in: src/tollgate/analyzers/index.ts:59
+
+Analyze content with a specific analyzer
+
+#### Parameters
+
+##### analyzerName
+
+`string`
+
+##### content
+
+`string`
+
+##### context?
+
+#### Returns
+
+### get()
+
+```ts
+get(name): ContentAnalyzer | undefined;
+```
+
+Defined in: src/tollgate/analyzers/index.ts:38
+
+Get an analyzer by name
+
+#### Parameters
+
+##### name
+
+`string`
+
+#### Returns
+
+[`ContentAnalyzer`](../interfaces/ContentAnalyzer.md) \| `undefined`
+
+### has()
+
+```ts
+has(name): boolean;
+```
+
+Defined in: src/tollgate/analyzers/index.ts:45
+
+Check if an analyzer exists
+
+#### Parameters
+
+##### name
+
+`string`
+
+#### Returns
+
+`boolean`
+
+### list()
+
+```ts
+list(): string[];
+```
+
+Defined in: src/tollgate/analyzers/index.ts:52
+
+List all registered analyzer names
+
+#### Returns
+
+`string`[]
+
+### register()
+
+```ts
+register(analyzer): void;
+```
+
+Defined in: src/tollgate/analyzers/index.ts:31
+
+Register a new analyzer
+
+#### Parameters
+
+##### analyzer
+
+#### Returns
+
+`void`

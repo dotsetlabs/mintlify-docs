@@ -1,0 +1,96 @@
+---
+title: "Interface: SessionPolicyConfig"
+description: "Defined in: src/tollgate/session/types.ts:155"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / SessionPolicyConfig
+
+# Interface: SessionPolicyConfig
+
+Defined in: src/tollgate/session/types.ts:155
+
+Configuration for session behavior in a tool policy.
+Enhanced from the original SessionConfig in policy/types.ts.
+
+## Properties
+
+### allowedDurations?
+
+```ts
+optional allowedDurations: SessionDuration[];
+```
+
+Defined in: src/tollgate/session/types.ts:178
+
+Allowed durations to show in terminal UI.
+
+#### Default
+
+```ts
+['once', '5min', '15min', 'session']
+```
+
+### allowRemember?
+
+```ts
+optional allowRemember: boolean;
+```
+
+Defined in: src/tollgate/session/types.ts:160
+
+Whether to offer session options when prompting.
+
+#### Default
+
+```ts
+true
+```
+
+### defaultScope?
+
+```ts
+optional defaultScope: SessionScope;
+```
+
+Defined in: src/tollgate/session/types.ts:166
+
+Default scope when user doesn't specify.
+
+#### Default
+
+```ts
+'tool'
+```
+
+### maxTtl?
+
+```ts
+optional maxTtl: number;
+```
+
+Defined in: src/tollgate/session/types.ts:172
+
+Maximum TTL in seconds that can be granted.
+
+#### Default
+
+```ts
+1800 (30 minutes)
+```
+
+### persist?
+
+```ts
+optional persist: boolean;
+```
+
+Defined in: src/tollgate/session/types.ts:184
+
+Whether to persist grants to disk (survives restart).
+
+#### Default
+
+```ts
+false
+```

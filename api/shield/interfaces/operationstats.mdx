@@ -1,0 +1,139 @@
+---
+title: "Interface: OperationStats"
+description: "Defined in: src/shield/utils/profiler.ts:20"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/shield) / OperationStats
+
+# Interface: OperationStats
+
+Defined in: src/shield/utils/profiler.ts:20
+
+Performance Profiling Module
+
+Measure and optimize scanning performance with profiling tools.
+
+## Example
+
+```typescript
+import {
+  Timer,
+  Profiler,
+  enableProfiling,
+  formatDuration,
+  formatBytes,
+} from '@dotsetlabs/cli';
+
+// Enable global profiling
+enableProfiling();
+
+// Time a specific operation
+const timer = new Timer();
+timer.start();
+await scanLargeFile();
+timer.stop();
+console.log(`Scan took: ${formatDuration(timer.elapsed())}`);
+
+// Use profiler for detailed metrics
+const profiler = new Profiler('scan-operation');
+profiler.start('pattern-matching');
+// ... pattern matching
+profiler.end('pattern-matching');
+
+profiler.start('entropy-analysis');
+// ... entropy analysis
+profiler.end('entropy-analysis');
+
+console.log(profiler.getReport());
+```
+
+## Properties
+
+### avgMs
+
+```ts
+avgMs: number;
+```
+
+Defined in: src/shield/utils/profiler.ts:26
+
+### count
+
+```ts
+count: number;
+```
+
+Defined in: src/shield/utils/profiler.ts:22
+
+### lastMs?
+
+```ts
+optional lastMs: number;
+```
+
+Defined in: src/shield/utils/profiler.ts:30
+
+### lastRun?
+
+```ts
+optional lastRun: Date;
+```
+
+Defined in: src/shield/utils/profiler.ts:31
+
+### maxMs
+
+```ts
+maxMs: number;
+```
+
+Defined in: src/shield/utils/profiler.ts:25
+
+### minMs
+
+```ts
+minMs: number;
+```
+
+Defined in: src/shield/utils/profiler.ts:24
+
+### name
+
+```ts
+name: string;
+```
+
+Defined in: src/shield/utils/profiler.ts:21
+
+### p50Ms
+
+```ts
+p50Ms: number;
+```
+
+Defined in: src/shield/utils/profiler.ts:27
+
+### p95Ms
+
+```ts
+p95Ms: number;
+```
+
+Defined in: src/shield/utils/profiler.ts:28
+
+### p99Ms
+
+```ts
+p99Ms: number;
+```
+
+Defined in: src/shield/utils/profiler.ts:29
+
+### totalMs
+
+```ts
+totalMs: number;
+```
+
+Defined in: src/shield/utils/profiler.ts:23

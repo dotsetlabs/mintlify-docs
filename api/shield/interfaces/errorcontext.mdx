@@ -1,0 +1,85 @@
+---
+title: "Interface: ErrorContext"
+description: "Defined in: src/shield/errors/index.ts:118"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/shield) / ErrorContext
+
+# Interface: ErrorContext
+
+Defined in: src/shield/errors/index.ts:118
+
+Error Handling and Recovery Module
+
+Comprehensive error handling with retry logic and circuit breakers.
+
+## Example
+
+```typescript
+import {
+  withRetry,
+  withTimeout,
+  CircuitBreaker,
+  isRetryableError,
+} from '@dotsetlabs/cli';
+
+// Retry with exponential backoff
+const result = await withRetry(
+  () => fetchSecrets(),
+  { maxAttempts: 3, baseDelayMs: 1000, backoffMultiplier: 2 }
+);
+
+// Add timeout to operation
+const secrets = await withTimeout(fetchSecrets(), 5000);
+
+// Use circuit breaker for external services
+const breaker = new CircuitBreaker('aws-sm', {
+  failureThreshold: 5,
+  resetTimeoutMs: 30000,
+});
+
+const secret = await breaker.execute(() => getFromAWS(key));
+```
+
+## Properties
+
+### component?
+
+```ts
+optional component: string;
+```
+
+Defined in: src/shield/errors/index.ts:120
+
+### metadata?
+
+```ts
+optional metadata: Record<string, unknown>;
+```
+
+Defined in: src/shield/errors/index.ts:123
+
+### operation?
+
+```ts
+optional operation: string;
+```
+
+Defined in: src/shield/errors/index.ts:119
+
+### requestId?
+
+```ts
+optional requestId: string;
+```
+
+Defined in: src/shield/errors/index.ts:122
+
+### timestamp?
+
+```ts
+optional timestamp: string;
+```
+
+Defined in: src/shield/errors/index.ts:121

@@ -1,0 +1,88 @@
+---
+title: "Interface: TollgateServerOptions"
+description: "Defined in: src/tollgate/proxy/server.ts:29"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / TollgateServerOptions
+
+# Interface: TollgateServerOptions
+
+Defined in: src/tollgate/proxy/server.ts:29
+
+## Properties
+
+### approvalHandler
+
+```ts
+approvalHandler: ApprovalHandler;
+```
+
+Defined in: src/tollgate/proxy/server.ts:33
+
+### auditLogger
+
+```ts
+auditLogger: AuditLogger;
+```
+
+Defined in: src/tollgate/proxy/server.ts:32
+
+### dryRun?
+
+```ts
+optional dryRun: boolean;
+```
+
+Defined in: src/tollgate/proxy/server.ts:42
+
+Enable dry-run mode.
+When true, tool calls are logged and policies evaluated,
+but calls are NOT forwarded to the upstream server.
+
+### failureMode?
+
+```ts
+optional failureMode: FailureMode;
+```
+
+Defined in: src/tollgate/proxy/server.ts:49
+
+Failure mode when upstream is unavailable.
+- 'fail-closed': Deny all requests (default, most secure)
+- 'fail-open': Allow all requests (logged, for development)
+- 'fail-readonly': Only allow read operations (balanced)
+
+### policyEngine
+
+```ts
+policyEngine: PolicyEngine;
+```
+
+Defined in: src/tollgate/proxy/server.ts:31
+
+### serverName
+
+```ts
+serverName: string;
+```
+
+Defined in: src/tollgate/proxy/server.ts:30
+
+### sessionManager?
+
+```ts
+optional sessionManager: SessionManager;
+```
+
+Defined in: src/tollgate/proxy/server.ts:36
+
+Session manager for time-bounded approvals
+
+### upstreamClient
+
+```ts
+upstreamClient: UpstreamClient;
+```
+
+Defined in: src/tollgate/proxy/server.ts:34

@@ -1,0 +1,199 @@
+{
+  "group": "API Reference",
+  "pages": [
+    "api/_index",
+    {
+      "group": "Shield API",
+      "pages": [
+        "api/shield/_index",
+        {
+          "group": "Classes",
+          "pages": [
+            "api/shield/classes/aggregateshielderror",
+            "api/shield/classes/artifactmanager",
+            "api/shield/classes/batchprofiler",
+            "api/shield/classes/circuitbreaker",
+            "api/shield/classes/circuitopenerror",
+            "api/shield/classes/configurationerror",
+            "api/shield/classes/errorcollector",
+            "api/shield/classes/lrucache",
+            "api/shield/classes/patterncompilationerror",
+            "api/shield/classes/profiler",
+            "api/shield/classes/providererror",
+            "api/shield/classes/ratelimiter",
+            "api/shield/classes/redactor",
+            "api/shield/classes/secretresolver",
+            "api/shield/classes/shielderror"
+          ]
+        },
+        {
+          "group": "Interfaces",
+          "pages": [
+            "api/shield/interfaces/allowlistconfig",
+            "api/shield/interfaces/allowlistentry",
+            "api/shield/interfaces/artifactinfo",
+            "api/shield/interfaces/artifactoptions",
+            "api/shield/interfaces/auditentry",
+            "api/shield/interfaces/awssecretsmanageroptions",
+            "api/shield/interfaces/baseline",
+            "api/shield/interfaces/baselinediff",
+            "api/shield/interfaces/baselinefinding",
+            "api/shield/interfaces/baselineversion",
+            "api/shield/interfaces/batchmetrics",
+            "api/shield/interfaces/cachemetrics",
+            "api/shield/interfaces/ciconfig",
+            "api/shield/interfaces/cidefaultconfig",
+            "api/shield/interfaces/cienvironment"
+          ]
+        },
+        {
+          "group": "Functions",
+          "pages": [
+            "api/shield/functions/addtobaseline",
+            "api/shield/functions/applyenvironmentdefaults",
+            "api/shield/functions/calculatethroughput",
+            "api/shield/functions/clearpatterncache",
+            "api/shield/functions/comparebaselines",
+            "api/shield/functions/completepipeline",
+            "api/shield/functions/createdefaultconfig",
+            "api/shield/functions/createemptybaseline",
+            "api/shield/functions/creategithubannotation",
+            "api/shield/functions/createpipelinecontext",
+            "api/shield/functions/detectcienvironment",
+            "api/shield/functions/detectenvironment",
+            "api/shield/functions/determineexitcode",
+            "api/shield/functions/disableprofiling",
+            "api/shield/functions/enableprofiling"
+          ]
+        },
+        {
+          "group": "Type Aliases",
+          "pages": [
+            "api/shield/type-aliases/ciprovider",
+            "api/shield/type-aliases/circuitstate",
+            "api/shield/type-aliases/configoutputformat",
+            "api/shield/type-aliases/detectionsignal",
+            "api/shield/type-aliases/errorcode",
+            "api/shield/type-aliases/exitcode",
+            "api/shield/type-aliases/findingseverity",
+            "api/shield/type-aliases/findingstatus",
+            "api/shield/type-aliases/outputformat",
+            "api/shield/type-aliases/protectionmode",
+            "api/shield/type-aliases/providersource",
+            "api/shield/type-aliases/scope",
+            "api/shield/type-aliases/severity"
+          ]
+        },
+        {
+          "group": "Variables",
+          "pages": [
+            "api/shield/variables/config_filename",
+            "api/shield/variables/config_template",
+            "api/shield/variables/current_schema_version",
+            "api/shield/variables/default_baseline_file",
+            "api/shield/variables/default_redact_text",
+            "api/shield/variables/dotset_config_dir",
+            "api/shield/variables/errorcodes",
+            "api/shield/variables/exitcodes",
+            "api/shield/variables/package_name",
+            "api/shield/variables/shield_config_path"
+          ]
+        }
+      ]
+    },
+    {
+      "group": "Tollgate API",
+      "pages": [
+        "api/tollgate/_index",
+        {
+          "group": "Classes",
+          "pages": [
+            "api/tollgate/classes/analyzerregistry",
+            "api/tollgate/classes/auditexporter",
+            "api/tollgate/classes/auditlogger",
+            "api/tollgate/classes/configerror",
+            "api/tollgate/classes/filesystemanalyzer",
+            "api/tollgate/classes/inmemorysessionstore",
+            "api/tollgate/classes/piiredactor",
+            "api/tollgate/classes/policyengine",
+            "api/tollgate/classes/policyerror",
+            "api/tollgate/classes/proxyerror",
+            "api/tollgate/classes/sessionmanager",
+            "api/tollgate/classes/shellanalyzer",
+            "api/tollgate/classes/sqlanalyzer",
+            "api/tollgate/classes/sqlitesessionstore",
+            "api/tollgate/classes/terminalapprovalhandler"
+          ]
+        },
+        {
+          "group": "Interfaces",
+          "pages": [
+            "api/tollgate/interfaces/analysisresult",
+            "api/tollgate/interfaces/analyzercontext",
+            "api/tollgate/interfaces/approvalhandler",
+            "api/tollgate/interfaces/approvalrequest",
+            "api/tollgate/interfaces/approvalresponse",
+            "api/tollgate/interfaces/auditloggeroptions",
+            "api/tollgate/interfaces/auditrecord",
+            "api/tollgate/interfaces/bridgeoptions",
+            "api/tollgate/interfaces/contentanalyzer",
+            "api/tollgate/interfaces/createsessiongrantinput",
+            "api/tollgate/interfaces/exportoptions",
+            "api/tollgate/interfaces/healthcheckconfig",
+            "api/tollgate/interfaces/policycondition",
+            "api/tollgate/interfaces/policydecision",
+            "api/tollgate/interfaces/policypreset"
+          ]
+        },
+        {
+          "group": "Functions",
+          "pages": [
+            "api/tollgate/functions/containspii",
+            "api/tollgate/functions/createredactor",
+            "api/tollgate/functions/durationtottlseconds",
+            "api/tollgate/functions/expandenvvars",
+            "api/tollgate/functions/exportauditrecords",
+            "api/tollgate/functions/extractanalyzablecontent",
+            "api/tollgate/functions/formatvalidationissues",
+            "api/tollgate/functions/generateconfig",
+            "api/tollgate/functions/getdatadir",
+            "api/tollgate/functions/getserverconfig",
+            "api/tollgate/functions/inferanalyzer",
+            "api/tollgate/functions/loadconfig",
+            "api/tollgate/functions/normalizetoolpolicy",
+            "api/tollgate/functions/redactpii",
+            "api/tollgate/functions/redactpiifromobject"
+          ]
+        },
+        {
+          "group": "Type Aliases",
+          "pages": [
+            "api/tollgate/type-aliases/approvalresult",
+            "api/tollgate/type-aliases/auditrisklevel",
+            "api/tollgate/type-aliases/concreteaction",
+            "api/tollgate/type-aliases/exportformat",
+            "api/tollgate/type-aliases/failuremode",
+            "api/tollgate/type-aliases/healthstatus",
+            "api/tollgate/type-aliases/policyaction",
+            "api/tollgate/type-aliases/risklevel",
+            "api/tollgate/type-aliases/sessionduration",
+            "api/tollgate/type-aliases/sessionscope",
+            "api/tollgate/type-aliases/validationlevel"
+          ]
+        },
+        {
+          "group": "Variables",
+          "pages": [
+            "api/tollgate/variables/analyzerregistry",
+            "api/tollgate/variables/audit_schema",
+            "api/tollgate/variables/audit_version",
+            "api/tollgate/variables/default_risk_mapping",
+            "api/tollgate/variables/default_session_config",
+            "api/tollgate/variables/policy_presets",
+            "api/tollgate/variables/server_templates"
+          ]
+        }
+      ]
+    }
+  ]
+}

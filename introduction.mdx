@@ -1,11 +1,20 @@
 ---
 title: Introduction
-description: 'Protect CI/CD logs from secret leakage'
+description: 'Security tools for modern development workflows'
 ---
 
-# Dotset Shield
+# Dotset CLI
 
-**Log sanitization for CI/CD.**
+**Security tools for CI/CD and AI agents.**
+
+The Dotset CLI provides two security tools:
+
+- **[Shield](/shield/cli/overview)** - Secret detection and log sanitization for CI/CD pipelines
+- **[Tollgate](/tollgate/cli/overview)** - Policy-based access control for AI agents using MCP
+
+---
+
+## Shield
 
 Secrets leak in build logs every day. Debug statements, error messages, and verbose logging expose API keys, tokens, and credentials.
 
@@ -20,6 +29,21 @@ dotset shield run -- npm start
 
 ---
 
+## Tollgate
+
+AI agents using MCP servers have full access to powerful tools — databases, filesystems, and APIs. Without access control, a single prompt injection or misunderstood request can cause damage.
+
+**Dotset Tollgate** adds policy-based access control to any MCP server, letting you allow, deny, or prompt for approval on each tool call.
+
+```bash
+dotset tollgate wrap npx @modelcontextprotocol/server-postgres
+```
+
+> [!NOTE]
+> Tollgate runs entirely locally with no cloud dependencies. [Learn more →](/tollgate/security/trust)
+
+---
+
 ## Quick Install
 
 ```bash
@@ -29,7 +53,10 @@ npm install -g @dotsetlabs/cli
 ## Next Steps
 
 <CardGroup>
-  <Card title="Shield Quickstart" icon="rocket" href="/quickstart">
+  <Card title="Shield Quickstart" icon="shield" href="/quickstart#shield">
     Protect your CI/CD in 60 seconds
+  </Card>
+  <Card title="Tollgate Quickstart" icon="lock" href="/quickstart#tollgate">
+    Add access control to MCP servers
   </Card>
 </CardGroup>

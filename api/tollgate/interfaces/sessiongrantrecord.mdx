@@ -1,0 +1,111 @@
+---
+title: "Interface: SessionGrantRecord"
+description: "Defined in: src/tollgate/audit/schema.ts:165"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / SessionGrantRecord
+
+# Interface: SessionGrantRecord
+
+Defined in: src/tollgate/audit/schema.ts:165
+
+Record of a session grant in the audit log.
+
+## Properties
+
+### createdAt
+
+```ts
+createdAt: Date;
+```
+
+Defined in: src/tollgate/audit/schema.ts:167
+
+### expiresAt
+
+```ts
+expiresAt: Date | null;
+```
+
+Defined in: src/tollgate/audit/schema.ts:168
+
+### grantedBy
+
+```ts
+grantedBy: "api" | "webhook" | "terminal";
+```
+
+Defined in: src/tollgate/audit/schema.ts:173
+
+### id
+
+```ts
+id: string;
+```
+
+Defined in: src/tollgate/audit/schema.ts:166
+
+### originalRequestId?
+
+```ts
+optional originalRequestId: string;
+```
+
+Defined in: src/tollgate/audit/schema.ts:174
+
+### revokedAt?
+
+```ts
+optional revokedAt: Date;
+```
+
+Defined in: src/tollgate/audit/schema.ts:176
+
+### revokedBy?
+
+```ts
+optional revokedBy: string;
+```
+
+Defined in: src/tollgate/audit/schema.ts:177
+
+### scope
+
+```ts
+scope: "pattern" | "exact" | "tool" | "server";
+```
+
+Defined in: src/tollgate/audit/schema.ts:170
+
+### scopeValue?
+
+```ts
+optional scopeValue: string;
+```
+
+Defined in: src/tollgate/audit/schema.ts:171
+
+### server
+
+```ts
+server: string;
+```
+
+Defined in: src/tollgate/audit/schema.ts:169
+
+### tool?
+
+```ts
+optional tool: string;
+```
+
+Defined in: src/tollgate/audit/schema.ts:172
+
+### usageCount
+
+```ts
+usageCount: number;
+```
+
+Defined in: src/tollgate/audit/schema.ts:175

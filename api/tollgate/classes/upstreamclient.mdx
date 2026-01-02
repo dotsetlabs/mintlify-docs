@@ -1,0 +1,471 @@
+---
+title: "Class: UpstreamClient"
+description: "Defined in: src/tollgate/proxy/client.ts:62"
+icon: "cube"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / UpstreamClient
+
+# Class: UpstreamClient
+
+Defined in: src/tollgate/proxy/client.ts:62
+
+Upstream MCP client with health monitoring and resilience features.
+
+## Constructors
+
+### Constructor
+
+```ts
+new UpstreamClient(options): UpstreamClient;
+```
+
+Defined in: src/tollgate/proxy/client.ts:81
+
+#### Parameters
+
+##### options
+
+#### Returns
+
+`UpstreamClient`
+
+## Methods
+
+### callTool()
+
+```ts
+callTool(name, args?): Promise<{
+[key: string]: unknown;
+  _meta?: {
+   [key: string]: unknown;
+     io.modelcontextprotocol/related-task?: {
+        taskId: string;
+     };
+     progressToken?: string | number;
+  };
+  content: (
+     | {
+     _meta?: {
+      [key: string]: unknown;
+     };
+     annotations?: {
+        audience?: ("user" | "assistant")[];
+        lastModified?: string;
+        priority?: number;
+     };
+     text: string;
+     type: "text";
+   }
+     | {
+     _meta?: {
+      [key: string]: unknown;
+     };
+     annotations?: {
+        audience?: ("user" | "assistant")[];
+        lastModified?: string;
+        priority?: number;
+     };
+     data: string;
+     mimeType: string;
+     type: "image";
+   }
+     | {
+     _meta?: {
+      [key: string]: unknown;
+     };
+     annotations?: {
+        audience?: ("user" | "assistant")[];
+        lastModified?: string;
+        priority?: number;
+     };
+     data: string;
+     mimeType: string;
+     type: "audio";
+   }
+     | {
+     _meta?: {
+      [key: string]: unknown;
+     };
+     annotations?: {
+        audience?: ("user" | "assistant")[];
+        lastModified?: string;
+        priority?: number;
+     };
+     description?: string;
+     icons?: {
+        mimeType?: string;
+        sizes?: string[];
+        src: string;
+        theme?: "light" | "dark";
+     }[];
+     mimeType?: string;
+     name: string;
+     title?: string;
+     type: "resource_link";
+     uri: string;
+   }
+     | {
+     _meta?: {
+      [key: string]: unknown;
+     };
+     annotations?: {
+        audience?: ("user" | "assistant")[];
+        lastModified?: string;
+        priority?: number;
+     };
+     resource:   | {
+        _meta?: {
+         [key: string]: unknown;
+        };
+        mimeType?: string;
+        text: string;
+        uri: string;
+      }
+        | {
+        _meta?: {
+         [key: string]: unknown;
+        };
+        blob: string;
+        mimeType?: string;
+        uri: string;
+      };
+     type: "resource";
+  })[];
+  isError?: boolean;
+  structuredContent?: {
+   [key: string]: unknown;
+  };
+}>;
+```
+
+Defined in: src/tollgate/proxy/client.ts:156
+
+Call a tool on the upstream server with timeout support.
+
+#### Parameters
+
+##### name
+
+`string`
+
+Tool name
+
+##### args?
+
+`Record`\<`string`, `unknown`\>
+
+Tool arguments
+
+#### Returns
+
+`Promise`\<\{
+\[`key`: `string`\]: `unknown`;
+  `_meta?`: \{
+   \[`key`: `string`\]: `unknown`;
+     `io.modelcontextprotocol/related-task?`: \{
+        `taskId`: `string`;
+     \};
+     `progressToken?`: `string` \| `number`;
+  \};
+  `content`: (
+     \| \{
+     `_meta?`: \{
+      \[`key`: `string`\]: `unknown`;
+     \};
+     `annotations?`: \{
+        `audience?`: (`"user"` \| `"assistant"`)[];
+        `lastModified?`: `string`;
+        `priority?`: `number`;
+     \};
+     `text`: `string`;
+     `type`: `"text"`;
+   \}
+     \| \{
+     `_meta?`: \{
+      \[`key`: `string`\]: `unknown`;
+     \};
+     `annotations?`: \{
+        `audience?`: (`"user"` \| `"assistant"`)[];
+        `lastModified?`: `string`;
+        `priority?`: `number`;
+     \};
+     `data`: `string`;
+     `mimeType`: `string`;
+     `type`: `"image"`;
+   \}
+     \| \{
+     `_meta?`: \{
+      \[`key`: `string`\]: `unknown`;
+     \};
+     `annotations?`: \{
+        `audience?`: (`"user"` \| `"assistant"`)[];
+        `lastModified?`: `string`;
+        `priority?`: `number`;
+     \};
+     `data`: `string`;
+     `mimeType`: `string`;
+     `type`: `"audio"`;
+   \}
+     \| \{
+     `_meta?`: \{
+      \[`key`: `string`\]: `unknown`;
+     \};
+     `annotations?`: \{
+        `audience?`: (`"user"` \| `"assistant"`)[];
+        `lastModified?`: `string`;
+        `priority?`: `number`;
+     \};
+     `description?`: `string`;
+     `icons?`: \{
+        `mimeType?`: `string`;
+        `sizes?`: `string`[];
+        `src`: `string`;
+        `theme?`: `"light"` \| `"dark"`;
+     \}[];
+     `mimeType?`: `string`;
+     `name`: `string`;
+     `title?`: `string`;
+     `type`: `"resource_link"`;
+     `uri`: `string`;
+   \}
+     \| \{
+     `_meta?`: \{
+      \[`key`: `string`\]: `unknown`;
+     \};
+     `annotations?`: \{
+        `audience?`: (`"user"` \| `"assistant"`)[];
+        `lastModified?`: `string`;
+        `priority?`: `number`;
+     \};
+     `resource`:   \| \{
+        `_meta?`: \{
+         \[`key`: `string`\]: `unknown`;
+        \};
+        `mimeType?`: `string`;
+        `text`: `string`;
+        `uri`: `string`;
+      \}
+        \| \{
+        `_meta?`: \{
+         \[`key`: `string`\]: `unknown`;
+        \};
+        `blob`: `string`;
+        `mimeType?`: `string`;
+        `uri`: `string`;
+      \};
+     `type`: `"resource"`;
+  \})[];
+  `isError?`: `boolean`;
+  `structuredContent?`: \{
+   \[`key`: `string`\]: `unknown`;
+  \};
+\}\>
+
+Tool call result
+
+#### Throws
+
+UpstreamError if timeout or upstream error occurs
+
+### close()
+
+```ts
+close(): Promise<void>;
+```
+
+Defined in: src/tollgate/proxy/client.ts:252
+
+Close the upstream connection and stop health checks.
+
+#### Returns
+
+`Promise`\<`void`\>
+
+### getHealthStatus()
+
+```ts
+getHealthStatus(): HealthCheckResult;
+```
+
+Defined in: src/tollgate/proxy/client.ts:226
+
+Get the current health status.
+
+#### Returns
+
+`HealthCheckResult`
+
+### healthCheck()
+
+```ts
+healthCheck(): Promise<HealthCheckResult>;
+```
+
+Defined in: src/tollgate/proxy/client.ts:175
+
+Perform a health check on the upstream server.
+Tests connectivity by calling listTools().
+
+#### Returns
+
+`Promise`\<`HealthCheckResult`\>
+
+Health check result
+
+### initialize()
+
+```ts
+initialize(): Promise<void>;
+```
+
+Defined in: src/tollgate/proxy/client.ts:114
+
+Initialize the upstream connection.
+Spawns the upstream MCP server process and establishes connection.
+
+#### Returns
+
+`Promise`\<`void`\>
+
+### isConnected()
+
+```ts
+isConnected(): boolean;
+```
+
+Defined in: src/tollgate/proxy/client.ts:245
+
+Check if the client is initialized and connected.
+
+#### Returns
+
+`boolean`
+
+### isHealthy()
+
+```ts
+isHealthy(): boolean;
+```
+
+Defined in: src/tollgate/proxy/client.ts:238
+
+Check if the upstream server is healthy.
+
+#### Returns
+
+`boolean`
+
+### listTools()
+
+```ts
+listTools(): Promise<{
+[key: string]: unknown;
+  _meta?: {
+   [key: string]: unknown;
+     io.modelcontextprotocol/related-task?: {
+        taskId: string;
+     };
+     progressToken?: string | number;
+  };
+  nextCursor?: string;
+  tools: {
+     _meta?: {
+      [key: string]: unknown;
+     };
+     annotations?: {
+        destructiveHint?: boolean;
+        idempotentHint?: boolean;
+        openWorldHint?: boolean;
+        readOnlyHint?: boolean;
+        title?: string;
+     };
+     description?: string;
+     execution?: {
+        taskSupport?: "optional" | "required" | "forbidden";
+     };
+     icons?: {
+        mimeType?: string;
+        sizes?: string[];
+        src: string;
+        theme?: "light" | "dark";
+     }[];
+     inputSchema: {
+      [key: string]: unknown;
+        properties?: {
+         [key: string]: object;
+        };
+        required?: string[];
+        type: "object";
+     };
+     name: string;
+     outputSchema?: {
+      [key: string]: unknown;
+        properties?: {
+         [key: string]: object;
+        };
+        required?: string[];
+        type: "object";
+     };
+     title?: string;
+  }[];
+}>;
+```
+
+Defined in: src/tollgate/proxy/client.ts:143
+
+List available tools from the upstream server.
+
+#### Returns
+
+`Promise`\<\{
+\[`key`: `string`\]: `unknown`;
+  `_meta?`: \{
+   \[`key`: `string`\]: `unknown`;
+     `io.modelcontextprotocol/related-task?`: \{
+        `taskId`: `string`;
+     \};
+     `progressToken?`: `string` \| `number`;
+  \};
+  `nextCursor?`: `string`;
+  `tools`: \{
+     `_meta?`: \{
+      \[`key`: `string`\]: `unknown`;
+     \};
+     `annotations?`: \{
+        `destructiveHint?`: `boolean`;
+        `idempotentHint?`: `boolean`;
+        `openWorldHint?`: `boolean`;
+        `readOnlyHint?`: `boolean`;
+        `title?`: `string`;
+     \};
+     `description?`: `string`;
+     `execution?`: \{
+        `taskSupport?`: `"optional"` \| `"required"` \| `"forbidden"`;
+     \};
+     `icons?`: \{
+        `mimeType?`: `string`;
+        `sizes?`: `string`[];
+        `src`: `string`;
+        `theme?`: `"light"` \| `"dark"`;
+     \}[];
+     `inputSchema`: \{
+      \[`key`: `string`\]: `unknown`;
+        `properties?`: \{
+         \[`key`: `string`\]: `object`;
+        \};
+        `required?`: `string`[];
+        `type`: `"object"`;
+     \};
+     `name`: `string`;
+     `outputSchema?`: \{
+      \[`key`: `string`\]: `unknown`;
+        `properties?`: \{
+         \[`key`: `string`\]: `object`;
+        \};
+        `required?`: `string`[];
+        `type`: `"object"`;
+     \};
+     `title?`: `string`;
+  \}[];
+\}\>

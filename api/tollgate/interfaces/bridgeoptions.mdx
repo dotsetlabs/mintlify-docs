@@ -1,0 +1,83 @@
+---
+title: "Interface: BridgeOptions"
+description: "Defined in: src/tollgate/proxy/bridge.ts:41"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / BridgeOptions
+
+# Interface: BridgeOptions
+
+Defined in: src/tollgate/proxy/bridge.ts:41
+
+## Properties
+
+### approvalTimeout?
+
+```ts
+optional approvalTimeout: number;
+```
+
+Defined in: src/tollgate/proxy/bridge.ts:45
+
+### auditPath?
+
+```ts
+optional auditPath: string;
+```
+
+Defined in: src/tollgate/proxy/bridge.ts:44
+
+### config
+
+```ts
+config: TollgateConfig;
+```
+
+Defined in: src/tollgate/proxy/bridge.ts:42
+
+### disableSessions?
+
+```ts
+optional disableSessions: boolean;
+```
+
+Defined in: src/tollgate/proxy/bridge.ts:47
+
+Disable session-based approvals
+
+### dryRun?
+
+```ts
+optional dryRun: boolean;
+```
+
+Defined in: src/tollgate/proxy/bridge.ts:56
+
+Enable dry-run mode.
+In dry-run mode:
+- Policies are fully evaluated
+- Prompts are shown (if policy requires)
+- Audit logs are written
+- BUT tool calls are NOT forwarded to the upstream server
+
+### failureMode?
+
+```ts
+optional failureMode: FailureMode;
+```
+
+Defined in: src/tollgate/proxy/bridge.ts:63
+
+Override failure mode from config.
+- 'fail-closed': Deny all requests when upstream is down (default)
+- 'fail-open': Allow all requests when upstream is down
+- 'fail-readonly': Only allow read operations when upstream is down
+
+### serverName
+
+```ts
+serverName: string;
+```
+
+Defined in: src/tollgate/proxy/bridge.ts:43

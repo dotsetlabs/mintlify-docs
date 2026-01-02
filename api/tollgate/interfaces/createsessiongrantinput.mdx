@@ -1,0 +1,75 @@
+---
+title: "Interface: CreateSessionGrantInput"
+description: "Defined in: src/tollgate/session/types.ts:117"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / CreateSessionGrantInput
+
+# Interface: CreateSessionGrantInput
+
+Defined in: src/tollgate/session/types.ts:117
+
+Input for creating a new session grant.
+
+## Properties
+
+### context
+
+```ts
+context: ToolCallContext;
+```
+
+Defined in: src/tollgate/session/types.ts:119
+
+The tool call context that triggered approval
+
+### duration
+
+```ts
+duration: SessionDuration;
+```
+
+Defined in: src/tollgate/session/types.ts:125
+
+Duration of the grant
+
+### grantedBy
+
+```ts
+grantedBy: "api" | "webhook" | "terminal";
+```
+
+Defined in: src/tollgate/session/types.ts:128
+
+How the grant was created
+
+### originalRequestId?
+
+```ts
+optional originalRequestId: string;
+```
+
+Defined in: src/tollgate/session/types.ts:134
+
+ID of the original approval request (for audit linkage)
+
+### pattern?
+
+```ts
+optional pattern: string;
+```
+
+Defined in: src/tollgate/session/types.ts:131
+
+Pattern for 'pattern' scope
+
+### scope
+
+```ts
+scope: SessionScope;
+```
+
+Defined in: src/tollgate/session/types.ts:122
+
+Scope of the grant

@@ -1,0 +1,42 @@
+---
+title: "Function: exportAuditRecords"
+description: "```ts"
+icon: "function"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / exportAuditRecords
+
+# Function: exportAuditRecords()
+
+```ts
+function exportAuditRecords(
+   logger, 
+   format, 
+   options): string;
+```
+
+Defined in: src/tollgate/audit/exporter.ts:415
+
+Creates an exporter and exports records in the specified format.
+
+## Parameters
+
+### logger
+
+The audit logger to export from
+
+### format
+
+The export format
+
+### options
+
+[`ExportOptions`](../interfaces/ExportOptions.md) = `{}`
+
+Export options
+
+## Returns
+
+`string`
+
+Formatted export string

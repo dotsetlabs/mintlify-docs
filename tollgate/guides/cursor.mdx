@@ -1,0 +1,229 @@
+---
+title: Cursor
+description: 'Configure Tollgate with Cursor IDE'
+---
+
+# Cursor Integration
+
+This guide shows how to use Tollgate with Cursor IDE to add policy-based access control to MCP servers.
+
+## Prerequisites
+
+- [Cursor](https://cursor.sh) installed
+- Node.js 20+ installed
+- `@dotsetlabs/cli` installed globally:
+  ```bash
+  npm install -g @dotsetlabs/cli
+  ```
+
+## Quick Start
+
+### 1. Open Cursor Settings
+
+Open Cursor's MCP configuration:
+
+1. Open Cursor
+2. Go to **Settings** (Cmd+, on macOS)
+3. Search for "MCP" or navigate to MCP server settings
+
+### 2. Configure with Tollgate
+
+Instead of configuring the MCP server directly, wrap it with Tollgate.
+
+**Direct connection (without Tollgate):**
+```json
+{
+  "command": "npx",
+  "args": ["-y", "@modelcontextprotocol/server-postgres"],
+  "env": {
+    "DATABASE_URL": "postgres://localhost/mydb"
+  }
+}
+```
+
+**With Tollgate protection:**
+```json
+{
+  "command": "npx",
+  "args": [
+    "-y", "@dotsetlabs/cli", "tollgate", "wrap",
+    "-d", "prompt",
+    "npx", "-y", "@modelcontextprotocol/server-postgres"
+  ],
+  "env": {
+    "DATABASE_URL": "postgres://localhost/mydb"
+  }
+}
+```
+
+### 3. Restart Cursor
+
+Restart Cursor to apply the configuration.
+
+## Using Configuration Files
+
+For more control, use a Tollgate config file:
+
+### 1. Create Config
+
+```bash
+dotset tollgate init -o ~/cursor-tollgate.yaml
+```
+
+### 2. Configure Cursor
+
+```json
+{
+  "command": "npx",
+  "args": [
+    "-y", "@dotsetlabs/cli", "tollgate", "start",
+    "-s", "postgres",
+    "-c", "/Users/yourname/cursor-tollgate.yaml"
+  ],
+  "env": {
+    "DATABASE_URL": "postgres://localhost/mydb"
+  }
+}
+```
+
+## Filesystem Server Example
+
+Protect the filesystem server commonly used with Cursor:
+
+### Quick Protection
+
+```json
+{
+  "command": "npx",
+  "args": [
+    "-y", "@dotsetlabs/cli", "tollgate", "wrap",
+    "-d", "prompt",
+    "npx", "-y", "@anthropic/mcp-server-filesystem", "./"
+  ]
+}
+```
+
+### With Policy File
+
+Create `~/cursor-tollgate.yaml`:
+
+```yaml
+version: "1"
+
+servers:
+  filesystem:
+    command: "npx"
+    args: ["-y", "@anthropic/mcp-server-filesystem", "./"]
+    tools:
+      # Allow all read operations
+      "read_*":
+        action: allow
+      "list_*":
+        action: allow
+      "search_*":
+        action: allow
+      # Prompt for writes
+      "write_*":
+        action: prompt
+        session:
+          enabled: true
+          duration: "15m"
+      "create_*":
+        action: prompt
+      # Block deletes
+      "delete_*":
+        action: deny
+        reason: "File deletion requires explicit confirmation"
+```
+
+Configure in Cursor:
+
+```json
+{
+  "command": "npx",
+  "args": [
+    "-y", "@dotsetlabs/cli", "tollgate", "start",
+    "-s", "filesystem",
+    "-c", "/Users/yourname/cursor-tollgate.yaml"
+  ]
+}
+```
+
+## Multiple Servers
+
+Configure multiple protected servers:
+
+```yaml
+# ~/cursor-tollgate.yaml
+version: "1"
+
+defaults:
+  action: prompt
+
+servers:
+  filesystem:
+    command: "npx"
+    args: ["-y", "@anthropic/mcp-server-filesystem", "./"]
+    tools:
+      "read_*": { action: allow }
+      "write_*": { action: prompt }
+      "*": { action: deny }
+
+  github:
+    command: "npx"
+    args: ["-y", "@modelcontextprotocol/server-github"]
+    env:
+      GITHUB_TOKEN: "${GITHUB_TOKEN}"
+    tools:
+      "get_*": { action: allow }
+      "list_*": { action: allow }
+      "create_*": { action: prompt }
+      "update_*": { action: prompt }
+      "delete_*": { action: deny }
+```
+
+## Development Workflow
+
+### Balanced Policy for Development
+
+```yaml
+servers:
+  filesystem:
+    tools:
+      # Allow reads freely
+      "read_*": { action: allow }
+      "list_*": { action: allow }
+
+      # Prompt for writes, but remember for session
+      "write_*":
+        action: prompt
+        session:
+          enabled: true
+          duration: "30m"
+
+      # Block dangerous operations
+      "delete_*": { action: deny }
+```
+
+This allows Claude to read freely, prompts for writes (with session memory), and blocks deletions.
+
+## Troubleshooting
+
+### Approval prompts not visible
+
+Tollgate approval prompts appear in the terminal. When using Cursor:
+
+1. Open Cursor's integrated terminal
+2. Or keep a separate terminal window open
+
+### Configuration not loading
+
+1. Use absolute paths in Cursor config
+2. Validate config: `dotset tollgate validate -c ~/cursor-tollgate.yaml`
+
+### Server crashes
+
+Check logs:
+```bash
+dotset tollgate logs -n 20
+```

@@ -1,0 +1,259 @@
+---
+title: "Class: SessionManager"
+description: "Defined in: src/tollgate/session/manager.ts:145"
+icon: "cube"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / SessionManager
+
+# Class: SessionManager
+
+Defined in: src/tollgate/session/manager.ts:145
+
+SessionManager handles creation, checking, and lifecycle of session grants.
+
+Thread-safe and designed for concurrent access from the proxy server.
+
+## Constructors
+
+### Constructor
+
+```ts
+new SessionManager(
+   store?, 
+   autoPrune?, 
+   pruneIntervalMs?): SessionManager;
+```
+
+Defined in: src/tollgate/session/manager.ts:156
+
+Creates a new SessionManager.
+
+#### Parameters
+
+##### store?
+
+Session store backend (defaults to in-memory)
+
+##### autoPrune?
+
+`boolean` = `true`
+
+Whether to automatically prune expired grants (default: true)
+
+##### pruneIntervalMs?
+
+`number` = `60_000`
+
+How often to prune (default: 60 seconds)
+
+#### Returns
+
+`SessionManager`
+
+## Methods
+
+### checkGrant()
+
+```ts
+checkGrant(context): SessionCheckResult;
+```
+
+Defined in: src/tollgate/session/manager.ts:266
+
+Checks if a tool call is covered by an existing session grant.
+
+Returns the most specific matching grant if multiple exist.
+Order of specificity: exact > tool > pattern > server
+
+#### Parameters
+
+##### context
+
+The tool call to check
+
+#### Returns
+
+Check result with grant details if matched
+
+#### Example
+
+```typescript
+const result = manager.checkGrant({
+  server: 'postgres',
+  tool: 'query',
+  args: { sql: 'SELECT * FROM users' },
+  timestamp: new Date(),
+});
+
+if (result.granted) {
+  console.log(`Authorized by session grant ${result.grant.id}`);
+}
+```
+
+### close()
+
+```ts
+close(): void;
+```
+
+Defined in: src/tollgate/session/manager.ts:444
+
+Cleans up resources. Call when shutting down.
+
+#### Returns
+
+`void`
+
+### createGrant()
+
+```ts
+createGrant(input): SessionGrant;
+```
+
+Defined in: src/tollgate/session/manager.ts:189
+
+Creates a new session grant based on an approved tool call.
+
+#### Parameters
+
+##### input
+
+Grant creation parameters
+
+#### Returns
+
+The created grant
+
+#### Example
+
+```typescript
+const grant = manager.createGrant({
+  context: { server: 'postgres', tool: 'query', args: {}, timestamp: new Date() },
+  scope: 'tool',
+  duration: '5min',
+  grantedBy: 'terminal',
+});
+```
+
+### formatGrant()
+
+```ts
+formatGrant(grant): string;
+```
+
+Defined in: src/tollgate/session/manager.ts:399
+
+Formats a grant for display in terminal or logs.
+
+#### Parameters
+
+##### grant
+
+#### Returns
+
+`string`
+
+### getActiveGrants()
+
+```ts
+getActiveGrants(): SessionGrant[];
+```
+
+Defined in: src/tollgate/session/manager.ts:373
+
+Gets all active (non-expired) grants.
+
+#### Returns
+
+[`SessionGrant`](../interfaces/SessionGrant.md)[]
+
+### getStats()
+
+```ts
+getStats(): SessionStats;
+```
+
+Defined in: src/tollgate/session/manager.ts:383
+
+Gets session statistics.
+
+#### Returns
+
+### pruneExpired()
+
+```ts
+pruneExpired(): number;
+```
+
+Defined in: src/tollgate/session/manager.ts:392
+
+Manually trigger expired grant cleanup.
+
+#### Returns
+
+`number`
+
+Number of grants pruned
+
+### revokeAll()
+
+```ts
+revokeAll(): void;
+```
+
+Defined in: src/tollgate/session/manager.ts:366
+
+Revokes all session grants.
+
+#### Returns
+
+`void`
+
+### revokeByServer()
+
+```ts
+revokeByServer(server): number;
+```
+
+Defined in: src/tollgate/session/manager.ts:350
+
+Revokes all grants for a specific server.
+
+#### Parameters
+
+##### server
+
+`string`
+
+Server name
+
+#### Returns
+
+`number`
+
+Number of grants revoked
+
+### revokeGrant()
+
+```ts
+revokeGrant(id): boolean;
+```
+
+Defined in: src/tollgate/session/manager.ts:340
+
+Revokes a session grant by ID.
+
+#### Parameters
+
+##### id
+
+`string`
+
+Grant ID to revoke
+
+#### Returns
+
+`boolean`
+
+true if grant was found and revoked

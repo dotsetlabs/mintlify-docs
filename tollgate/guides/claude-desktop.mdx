@@ -1,0 +1,197 @@
+---
+title: Claude Desktop
+description: 'Configure Tollgate with Claude Desktop'
+---
+
+# Claude Desktop Integration
+
+This guide shows how to use Tollgate with Claude Desktop to add policy-based access control to your MCP servers.
+
+## Prerequisites
+
+- [Claude Desktop](https://claude.ai/download) installed
+- Node.js 20+ installed
+- `@dotsetlabs/cli` installed globally:
+  ```bash
+  npm install -g @dotsetlabs/cli
+  ```
+
+## Quick Start (Wrap Mode)
+
+The fastest way to protect an MCP server:
+
+### 1. Locate Claude Desktop Config
+
+Open your Claude Desktop configuration file:
+
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+
+### 2. Wrap Your Server
+
+Replace your direct server command with Tollgate:
+
+**Before:**
+```json
+{
+  "mcpServers": {
+    "postgres": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "env": {
+        "DATABASE_URL": "postgres://localhost/mydb"
+      }
+    }
+  }
+}
+```
+
+**After:**
+```json
+{
+  "mcpServers": {
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "-y", "@dotsetlabs/cli", "tollgate", "wrap",
+        "npx", "-y", "@modelcontextprotocol/server-postgres"
+      ],
+      "env": {
+        "DATABASE_URL": "postgres://localhost/mydb"
+      }
+    }
+  }
+}
+```
+
+### 3. Restart Claude Desktop
+
+Quit and reopen Claude Desktop. Tollgate will now intercept all tool calls.
+
+## Config Mode (Recommended)
+
+For production use with fine-grained policies:
+
+### 1. Create Configuration
+
+```bash
+dotset tollgate init -o ~/tollgate.yaml
+```
+
+Edit `~/tollgate.yaml`:
+
+```yaml
+version: "1"
+
+defaults:
+  action: prompt
+  timeout: 60000
+
+servers:
+  postgres:
+    command: "npx"
+    args: ["-y", "@modelcontextprotocol/server-postgres"]
+    env:
+      DATABASE_URL: "${DATABASE_URL}"
+    tools:
+      "query":
+        action: allow
+      "execute":
+        analyzer: sql
+        risks:
+          read: allow
+          write: prompt
+          destructive: deny
+          dangerous: deny
+      "*":
+        action: deny
+```
+
+### 2. Update Claude Desktop Config
+
+```json
+{
+  "mcpServers": {
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "-y", "@dotsetlabs/cli", "tollgate", "start",
+        "-s", "postgres",
+        "-c", "/Users/yourname/tollgate.yaml"
+      ],
+      "env": {
+        "DATABASE_URL": "postgres://localhost/mydb"
+      }
+    }
+  }
+}
+```
+
+### 3. Restart Claude Desktop
+
+## Multiple Servers
+
+Configure multiple servers with different policies:
+
+```json
+{
+  "mcpServers": {
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "-y", "@dotsetlabs/cli", "tollgate", "start",
+        "-s", "postgres", "-c", "~/tollgate.yaml"
+      ],
+      "env": { "DATABASE_URL": "..." }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y", "@dotsetlabs/cli", "tollgate", "start",
+        "-s", "filesystem", "-c", "~/tollgate.yaml"
+      ]
+    }
+  }
+}
+```
+
+## Approval Workflow
+
+When Claude triggers a tool requiring approval:
+
+1. A terminal prompt appears asking for your decision
+2. Choose: Allow, Deny, or Allow for session
+3. Claude continues based on your choice
+
+```
+[tollgate] postgres:execute wants to run:
+  UPDATE users SET status = 'active' WHERE id = 123
+
+Options:
+  [y] Approve once
+  [s] Approve for 5 minutes
+  [S] Approve for full session
+  [n] Deny
+```
+
+## Troubleshooting
+
+### Tollgate not intercepting calls
+
+1. Ensure the config path is absolute
+2. Check Claude Desktop logs for errors
+3. Verify Tollgate is installed: `dotset tollgate --version`
+
+### Approval prompts not appearing
+
+The approval prompt appears in your terminal. Ensure you have a terminal window open when using Claude Desktop.
+
+### Server not starting
+
+```bash
+# Test the config
+dotset tollgate validate -c ~/tollgate.yaml
+
+# Test starting manually
+dotset tollgate start -s postgres -c ~/tollgate.yaml
+```

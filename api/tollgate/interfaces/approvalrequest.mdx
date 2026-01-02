@@ -1,0 +1,66 @@
+---
+title: "Interface: ApprovalRequest"
+description: "Defined in: src/tollgate/approval/types.ts:9"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / ApprovalRequest
+
+# Interface: ApprovalRequest
+
+Defined in: src/tollgate/approval/types.ts:9
+
+Request for user approval of a tool call.
+
+## Properties
+
+### context
+
+```ts
+context: ToolCallContext;
+```
+
+Defined in: src/tollgate/approval/types.ts:14
+
+Context of the tool call being approved
+
+### decision
+
+```ts
+decision: PolicyDecision;
+```
+
+Defined in: src/tollgate/approval/types.ts:17
+
+Policy decision that triggered this approval
+
+### id
+
+```ts
+id: string;
+```
+
+Defined in: src/tollgate/approval/types.ts:11
+
+Unique identifier for this approval request
+
+### sessionConfig?
+
+```ts
+optional sessionConfig: SessionPolicyConfig;
+```
+
+Defined in: src/tollgate/approval/types.ts:26
+
+Session configuration from policy.
+Controls what duration options are shown to the user.
+
+### timestamp
+
+```ts
+timestamp: Date;
+```
+
+Defined in: src/tollgate/approval/types.ts:20
+
+When the request was created

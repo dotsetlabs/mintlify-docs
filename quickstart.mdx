@@ -7,13 +7,19 @@ description: 'Get protected in 60 seconds'
 
 This guide gets you from zero to protected in under a minute.
 
-## 1. Install
+## Install
 
 ```bash
 npm install -g @dotsetlabs/cli
 ```
 
-## 2. Zero-Migration Setup
+---
+
+## Shield
+
+Shield protects your CI/CD pipelines from secret leakage.
+
+### 1. Zero-Migration Setup
 
 Shield automatically detects `.env` files. If you already have one, you're ready to go:
 
@@ -22,15 +28,7 @@ Shield automatically detects `.env` files. If you already have one, you're ready
 dotset shield run -- npm start
 ```
 
-## 3. Using Multiple Providers
-
-Shield can aggregate secrets from multiple sources. For example, to use both `.env` files and AWS Secrets Manager:
-
-```bash
-dotset shield run --providers dotenv,aws-sm -- node server.js
-```
-
-## 4. Protection Modes
+### 2. Protection Modes
 
 | Mode | Behavior | Use Case |
 |:-----|:---------|:---------|
@@ -43,7 +41,7 @@ dotset shield run --providers dotenv,aws-sm -- node server.js
 dotset shield run --mode redact -- npm test
 ```
 
-## Example Output
+### 3. Example Output
 
 ```bash
 $ dotset shield run --mode redact -- node app.js
@@ -58,13 +56,82 @@ Server running on port 3000
 🛡️  shield | exit: 0 | exposures: 2
 ```
 
-## Next Steps
-
 <CardGroup>
   <Card title="Protection Modes" icon="shield" href="/shield/concepts/protection-modes">
     Learn about detect, redact, and block
   </Card>
   <Card title="GitHub Actions" icon="github" href="/shield/guides/github-actions">
     Protect your GitHub Actions workflows
+  </Card>
+</CardGroup>
+
+---
+
+## Tollgate
+
+Tollgate adds policy-based access control to MCP servers used by AI agents.
+
+### 1. Wrap Any MCP Server
+
+Instantly protect any MCP server without configuration:
+
+```bash
+dotset tollgate wrap npx @modelcontextprotocol/server-postgres
+```
+
+This prompts you for approval on every tool call.
+
+### 2. Default Actions
+
+| Action | Behavior | Use Case |
+|:-------|:---------|:---------|
+| `allow` | Proceed without approval | Trusted operations |
+| `deny` | Block entirely | Dangerous operations |
+| `prompt` | Ask user (default) | **Recommended** |
+
+```bash
+# Allow reads, prompt for everything else
+dotset tollgate wrap -d prompt npx @anthropic/mcp-server-filesystem ./src
+```
+
+### 3. Use with Claude Desktop
+
+Update your Claude Desktop config:
+
+```json
+{
+  "mcpServers": {
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "-y", "@dotsetlabs/cli", "tollgate", "wrap",
+        "npx", "-y", "@modelcontextprotocol/server-postgres"
+      ],
+      "env": {
+        "DATABASE_URL": "postgres://localhost/mydb"
+      }
+    }
+  }
+}
+```
+
+### 4. Create a Policy File (Optional)
+
+For fine-grained control:
+
+```bash
+# Generate config
+dotset tollgate init
+
+# Start with config
+dotset tollgate start -s postgres
+```
+
+<CardGroup>
+  <Card title="Policy Configuration" icon="gear" href="/tollgate/concepts/policies">
+    Learn about allow, deny, and prompt policies
+  </Card>
+  <Card title="Claude Desktop" icon="robot" href="/tollgate/guides/claude-desktop">
+    Full Claude Desktop integration guide
   </Card>
 </CardGroup>

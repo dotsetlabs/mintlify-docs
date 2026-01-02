@@ -1,0 +1,121 @@
+---
+title: "Class: PiiRedactor"
+description: "Defined in: src/tollgate/audit/redaction.ts:209"
+icon: "cube"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / PiiRedactor
+
+# Class: PiiRedactor
+
+Defined in: src/tollgate/audit/redaction.ts:209
+
+PII Redactor class for detecting and masking sensitive data.
+
+## Constructors
+
+### Constructor
+
+```ts
+new PiiRedactor(options): PiiRedactor;
+```
+
+Defined in: src/tollgate/audit/redaction.ts:213
+
+#### Parameters
+
+##### options
+
+[`RedactionOptions`](../interfaces/RedactionOptions.md) = `{}`
+
+#### Returns
+
+`PiiRedactor`
+
+## Methods
+
+### containsSensitiveData()
+
+```ts
+containsSensitiveData(input): boolean;
+```
+
+Defined in: src/tollgate/audit/redaction.ts:299
+
+Checks if a string contains potentially sensitive data.
+
+#### Parameters
+
+##### input
+
+`string`
+
+The string to check
+
+#### Returns
+
+`boolean`
+
+True if sensitive data was detected
+
+### getActivePatterns()
+
+```ts
+getActivePatterns(): string[];
+```
+
+Defined in: src/tollgate/audit/redaction.ts:312
+
+Returns the list of pattern names being applied.
+
+#### Returns
+
+`string`[]
+
+### redactObject()
+
+```ts
+redactObject(input): string;
+```
+
+Defined in: src/tollgate/audit/redaction.ts:288
+
+Redacts sensitive data from an object by converting to JSON and back.
+
+#### Parameters
+
+##### input
+
+`Record`\<`string`, `unknown`\>
+
+The object to redact
+
+#### Returns
+
+`string`
+
+The redacted object as a JSON string
+
+### redactString()
+
+```ts
+redactString(input): string;
+```
+
+Defined in: src/tollgate/audit/redaction.ts:255
+
+Redacts sensitive data from a string.
+
+#### Parameters
+
+##### input
+
+`string`
+
+The string to redact
+
+#### Returns
+
+`string`
+
+The redacted string

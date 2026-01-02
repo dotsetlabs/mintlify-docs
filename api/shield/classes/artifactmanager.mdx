@@ -1,0 +1,163 @@
+---
+title: "Class: ArtifactManager"
+description: "Defined in: src/shield/ci/index.ts:434"
+icon: "cube"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/shield) / ArtifactManager
+
+# Class: ArtifactManager
+
+Defined in: src/shield/ci/index.ts:434
+
+Artifact manager for CI/CD pipelines
+
+## Constructors
+
+### Constructor
+
+```ts
+new ArtifactManager(options): ArtifactManager;
+```
+
+Defined in: src/shield/ci/index.ts:440
+
+#### Parameters
+
+##### options
+
+[`ArtifactOptions`](../interfaces/ArtifactOptions.md) = `{}`
+
+#### Returns
+
+`ArtifactManager`
+
+## Methods
+
+### generateManifest()
+
+```ts
+generateManifest(): string;
+```
+
+Defined in: src/shield/ci/index.ts:534
+
+Generate manifest of all artifacts
+
+#### Returns
+
+`string`
+
+### getArtifacts()
+
+```ts
+getArtifacts(): ArtifactInfo[];
+```
+
+Defined in: src/shield/ci/index.ts:527
+
+Get all saved artifacts
+
+#### Returns
+
+[`ArtifactInfo`](../interfaces/ArtifactInfo.md)[]
+
+### saveAllFormats()
+
+```ts
+saveAllFormats(result, formats): ArtifactInfo[];
+```
+
+Defined in: src/shield/ci/index.ts:488
+
+Save multiple formats at once
+
+#### Parameters
+
+##### result
+
+##### formats
+
+[`OutputFormat`](../type-aliases/OutputFormat.md)[] = `...`
+
+#### Returns
+
+[`ArtifactInfo`](../interfaces/ArtifactInfo.md)[]
+
+### saveManifest()
+
+```ts
+saveManifest(filename): ArtifactInfo;
+```
+
+Defined in: src/shield/ci/index.ts:551
+
+Save manifest file
+
+#### Parameters
+
+##### filename
+
+`string` = `'shield-artifacts.json'`
+
+#### Returns
+
+### saveRaw()
+
+```ts
+saveRaw(
+   content, 
+   filename, 
+   subdir?): ArtifactInfo;
+```
+
+Defined in: src/shield/ci/index.ts:498
+
+Save raw content as artifact
+
+#### Parameters
+
+##### content
+
+`string`
+
+##### filename
+
+`string`
+
+##### subdir?
+
+`string`
+
+#### Returns
+
+### saveResult()
+
+```ts
+saveResult(
+   result, 
+   outputFormat, 
+   options): ArtifactInfo;
+```
+
+Defined in: src/shield/ci/index.ts:451
+
+Save scan results in specified format
+
+#### Parameters
+
+##### result
+
+##### outputFormat
+
+##### options
+
+###### filename?
+
+`string`
+
+###### subdir?
+
+`string`
+
+#### Returns

@@ -1,0 +1,161 @@
+---
+title: Sessions
+description: 'Reduce approval fatigue with session-based grants'
+---
+
+# Session-Based Approvals
+
+When using `prompt` policies, users must approve each tool call. Session grants reduce this friction by remembering approvals for a configurable duration.
+
+## How Sessions Work
+
+1. User approves a tool call
+2. Tollgate creates a session grant
+3. Subsequent matching requests are auto-approved
+4. Grant expires after the configured duration
+
+## Configuration
+
+### Basic Session
+
+```yaml
+tools:
+  "write_file":
+    action: prompt
+    session:
+      enabled: true
+      duration: "15m"
+```
+
+### Session Options
+
+| Option | Description | Default |
+|:-------|:------------|:--------|
+| `enabled` | Enable session grants | `false` |
+| `duration` | How long grants last | `5m` |
+| `scope` | What gets remembered | `tool` |
+
+## Duration Formats
+
+```yaml
+session:
+  duration: "5m"    # 5 minutes
+  duration: "1h"    # 1 hour
+  duration: "30s"   # 30 seconds
+  duration: "once"  # Single use (no session)
+```
+
+## Scope Options
+
+### tool (Default)
+
+Approves future calls to the same tool:
+
+```yaml
+session:
+  scope: "tool"
+```
+
+After approving `write_file` once, all future `write_file` calls are auto-approved.
+
+### arguments
+
+Approves future calls with the same tool AND arguments:
+
+```yaml
+session:
+  scope: "arguments"
+```
+
+Approving `write_file("src/main.ts")` only auto-approves future writes to `src/main.ts`.
+
+### server
+
+Approves all tools on the same server:
+
+```yaml
+session:
+  scope: "server"
+```
+
+Approving any filesystem tool auto-approves all filesystem tools.
+
+## User Experience
+
+When prompted, users see session options:
+
+```
+[tollgate] postgres:execute wants to run:
+  INSERT INTO users (name) VALUES ('Alice')
+
+Options:
+  [y] Approve once
+  [s] Approve for 5 minutes
+  [S] Approve for full session
+  [n] Deny
+  [N] Deny and block
+```
+
+## Example Configurations
+
+### Interactive Development
+
+Allow quick approvals during active work:
+
+```yaml
+servers:
+  filesystem:
+    tools:
+      "write_file":
+        action: prompt
+        session:
+          enabled: true
+          duration: "15m"
+          scope: "tool"
+```
+
+### Strict Production
+
+Short sessions with argument-level scope:
+
+```yaml
+servers:
+  postgres:
+    tools:
+      "execute":
+        action: prompt
+        session:
+          enabled: true
+          duration: "1m"
+          scope: "arguments"
+```
+
+### No Sessions
+
+Every call requires explicit approval:
+
+```yaml
+servers:
+  admin-server:
+    tools:
+      "*":
+        action: prompt
+        session:
+          enabled: false
+```
+
+## Session Storage
+
+Sessions are stored in the Tollgate audit database (`~/.dotset/tollgate.db`). They persist across restarts within their duration.
+
+## Revoking Sessions
+
+To clear all session grants:
+
+```bash
+# Restart Tollgate (sessions are cleared)
+# Or delete the audit database
+rm ~/.dotset/tollgate.db
+```
+
+Future versions will include a `tollgate sessions clear` command.

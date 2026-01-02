@@ -1,0 +1,113 @@
+---
+title: "Interface: ServerConfig"
+description: "Defined in: src/tollgate/policy/types.ts:169"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / ServerConfig
+
+# Interface: ServerConfig
+
+Defined in: src/tollgate/policy/types.ts:169
+
+Configuration for an upstream MCP server.
+
+Defines how to launch an MCP server and what policies apply to its tools.
+
+## Example
+
+```typescript
+const postgresConfig: ServerConfig = {
+  command: 'npx',
+  args: ['-y', '@modelcontextprotocol/server-postgres'],
+  env: { DATABASE_URL: '${DATABASE_URL}' },
+  tools: {
+    'query': { action: 'allow' },
+    'execute': { action: 'prompt' }
+  },
+  defaults: { action: 'deny' }
+};
+```
+
+## Properties
+
+### args?
+
+```ts
+optional args: string[];
+```
+
+Defined in: src/tollgate/policy/types.ts:174
+
+Arguments to pass to the command
+
+### command
+
+```ts
+command: string;
+```
+
+Defined in: src/tollgate/policy/types.ts:171
+
+Command to execute to start the server
+
+### cwd?
+
+```ts
+optional cwd: string;
+```
+
+Defined in: src/tollgate/policy/types.ts:180
+
+Working directory for the server process
+
+### defaults?
+
+```ts
+optional defaults: {
+  action?: PolicyAction;
+  analyzer?: string;
+};
+```
+
+Defined in: src/tollgate/policy/types.ts:186
+
+Default settings for this server
+
+#### action?
+
+```ts
+optional action: PolicyAction;
+```
+
+Default action when no tool policy matches
+
+#### analyzer?
+
+```ts
+optional analyzer: string;
+```
+
+Default analyzer for smart analysis
+
+### env?
+
+```ts
+optional env: Record<string, string>;
+```
+
+Defined in: src/tollgate/policy/types.ts:177
+
+Environment variables for the server process
+
+### tools?
+
+```ts
+optional tools: Record<string, 
+  | PolicyAction
+| ToolPolicy>;
+```
+
+Defined in: src/tollgate/policy/types.ts:183
+
+Tool-specific policies (tool name or glob pattern to policy)

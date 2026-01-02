@@ -1,0 +1,141 @@
+---
+title: "Class: CircuitBreaker"
+description: "Defined in: src/shield/errors/index.ts:751"
+icon: "cube"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/shield) / CircuitBreaker
+
+# Class: CircuitBreaker
+
+Defined in: src/shield/errors/index.ts:751
+
+Circuit breaker for handling cascading failures
+
+## Constructors
+
+### Constructor
+
+```ts
+new CircuitBreaker(name, options): CircuitBreaker;
+```
+
+Defined in: src/shield/errors/index.ts:773
+
+#### Parameters
+
+##### name
+
+`string`
+
+##### options
+
+[`CircuitBreakerOptions`](../interfaces/CircuitBreakerOptions.md) = `{}`
+
+#### Returns
+
+`CircuitBreaker`
+
+## Properties
+
+### name
+
+```ts
+readonly name: string;
+```
+
+Defined in: src/shield/errors/index.ts:752
+
+## Methods
+
+### execute()
+
+```ts
+execute<T>(operation): Promise<T>;
+```
+
+Defined in: src/shield/errors/index.ts:786
+
+Execute a function through the circuit breaker
+
+#### Type Parameters
+
+##### T
+
+`T`
+
+#### Parameters
+
+##### operation
+
+() => `Promise`\<`T`\>
+
+#### Returns
+
+`Promise`\<`T`\>
+
+### getState()
+
+```ts
+getState(): CircuitState;
+```
+
+Defined in: src/shield/errors/index.ts:849
+
+Get current circuit breaker state
+
+#### Returns
+
+### getStats()
+
+```ts
+getStats(): CircuitBreakerStats;
+```
+
+Defined in: src/shield/errors/index.ts:860
+
+Get circuit breaker statistics
+
+#### Returns
+
+### isAllowing()
+
+```ts
+isAllowing(): boolean;
+```
+
+Defined in: src/shield/errors/index.ts:878
+
+Check if circuit breaker is allowing requests
+
+#### Returns
+
+`boolean`
+
+### reset()
+
+```ts
+reset(): void;
+```
+
+Defined in: src/shield/errors/index.ts:838
+
+Manually reset the circuit breaker
+
+#### Returns
+
+`void`
+
+### trip()
+
+```ts
+trip(): void;
+```
+
+Defined in: src/shield/errors/index.ts:831
+
+Manually trip the circuit breaker
+
+#### Returns
+
+`void`

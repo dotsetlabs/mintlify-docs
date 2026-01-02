@@ -1,0 +1,118 @@
+---
+title: "Class: TollgateServer"
+description: "Defined in: src/tollgate/proxy/server.ts:67"
+icon: "cube"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / TollgateServer
+
+# Class: TollgateServer
+
+Defined in: src/tollgate/proxy/server.ts:67
+
+## Constructors
+
+### Constructor
+
+```ts
+new TollgateServer(options): TollgateServer;
+```
+
+Defined in: src/tollgate/proxy/server.ts:88
+
+#### Parameters
+
+##### options
+
+#### Returns
+
+`TollgateServer`
+
+## Methods
+
+### close()
+
+```ts
+close(drainTimeoutMs): Promise<void>;
+```
+
+Defined in: src/tollgate/proxy/server.ts:586
+
+Gracefully close the server.
+Waits for in-flight requests to complete before closing components.
+
+#### Parameters
+
+##### drainTimeoutMs
+
+`number` = `5000`
+
+Time to wait for in-flight requests (default: 5000)
+
+#### Returns
+
+`Promise`\<`void`\>
+
+### getInFlightCount()
+
+```ts
+getInFlightCount(): number;
+```
+
+Defined in: src/tollgate/proxy/server.ts:211
+
+Get the number of in-flight requests.
+
+#### Returns
+
+`number`
+
+### isClosing()
+
+```ts
+isClosing(): boolean;
+```
+
+Defined in: src/tollgate/proxy/server.ts:218
+
+Check if the server is currently shutting down.
+
+#### Returns
+
+`boolean`
+
+### start()
+
+```ts
+start(): Promise<void>;
+```
+
+Defined in: src/tollgate/proxy/server.ts:568
+
+#### Returns
+
+`Promise`\<`void`\>
+
+### waitForInFlightRequests()
+
+```ts
+waitForInFlightRequests(timeoutMs): Promise<boolean>;
+```
+
+Defined in: src/tollgate/proxy/server.ts:227
+
+Wait for all in-flight requests to complete.
+
+#### Parameters
+
+##### timeoutMs
+
+`number`
+
+Maximum time to wait in milliseconds
+
+#### Returns
+
+`Promise`\<`boolean`\>
+
+true if all requests completed, false if timed out

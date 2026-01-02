@@ -1,0 +1,93 @@
+---
+title: wrap
+description: 'Wrap any MCP server with Tollgate protection'
+---
+
+# tollgate wrap
+
+Wraps an MCP server command with Tollgate protection without requiring a configuration file. Perfect for quick setup and testing.
+
+## Usage
+
+```bash
+dotset tollgate wrap [options] <command> [args...]
+```
+
+## Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `-d, --default <action>` | Default action: `allow`, `deny`, or `prompt` | `prompt` |
+| `--audit-path <path>` | Custom path for audit database | `~/.dotset/tollgate.db` |
+| `--timeout <ms>` | Approval timeout in milliseconds | `60000` |
+| `--dry-run` | Evaluate policies without executing tools | - |
+| `--failure-mode <mode>` | Behavior when upstream fails | `fail-closed` |
+
+## Examples
+
+### Basic Usage
+
+```bash
+# Wrap a PostgreSQL MCP server (prompts for all tool calls)
+dotset tollgate wrap npx @modelcontextprotocol/server-postgres
+
+# Wrap a filesystem server
+dotset tollgate wrap npx @anthropic/mcp-server-filesystem ./src
+```
+
+### Default Actions
+
+```bash
+# Allow all by default (use for trusted servers)
+dotset tollgate wrap -d allow npx mcp-server-trusted
+
+# Deny all by default (maximum security)
+dotset tollgate wrap -d deny npx mcp-server-untrusted
+
+# Prompt for everything (recommended)
+dotset tollgate wrap -d prompt npx mcp-server-postgres
+```
+
+### Testing with Dry Run
+
+```bash
+# See what would happen without actually executing tools
+dotset tollgate wrap --dry-run npx mcp-server-postgres
+```
+
+### Failure Modes
+
+```bash
+# Deny all operations if upstream server fails (safest)
+dotset tollgate wrap --failure-mode fail-closed npx mcp-server
+
+# Allow only reads if upstream fails
+dotset tollgate wrap --failure-mode fail-readonly npx mcp-server
+
+# Allow all operations if upstream fails (development only)
+dotset tollgate wrap --failure-mode fail-open npx mcp-server
+```
+
+## How It Works
+
+When you wrap an MCP server:
+
+1. Tollgate spawns the upstream MCP server as a child process
+2. All MCP traffic flows through Tollgate
+3. Tool calls are intercepted and evaluated against the default policy
+4. User is prompted for approval when action is `prompt`
+5. All decisions are logged to the audit database
+
+## When to Use
+
+**Use wrap mode when:**
+- Testing a new MCP server
+- Quick protection without config files
+- Running one-off commands
+- Development and debugging
+
+**Use config mode (`start`) when:**
+- You need per-tool policies
+- Running in production
+- Multiple servers with different policies
+- Smart content analysis is required

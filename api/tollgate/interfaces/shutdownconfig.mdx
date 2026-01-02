@@ -1,0 +1,38 @@
+---
+title: "Interface: ShutdownConfig"
+description: "Defined in: src/tollgate/policy/types.ts:243"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / ShutdownConfig
+
+# Interface: ShutdownConfig
+
+Defined in: src/tollgate/policy/types.ts:243
+
+Configuration for graceful shutdown behavior.
+
+Controls how Tollgate handles shutdown signals (SIGINT, SIGTERM),
+ensuring in-flight requests complete before termination.
+
+## Properties
+
+### drainTimeoutMs?
+
+```ts
+optional drainTimeoutMs: number;
+```
+
+Defined in: src/tollgate/policy/types.ts:248
+
+Time to wait for in-flight requests to complete in milliseconds (default: 5000)
+
+### timeoutMs?
+
+```ts
+optional timeoutMs: number;
+```
+
+Defined in: src/tollgate/policy/types.ts:245
+
+Maximum time to wait for graceful shutdown in milliseconds (default: 10000)

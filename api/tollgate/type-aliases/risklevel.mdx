@@ -1,0 +1,24 @@
+---
+title: "Type Alias: RiskLevel"
+description: "```ts"
+icon: "code"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / RiskLevel
+
+# Type Alias: RiskLevel
+
+```ts
+type RiskLevel = "safe" | "read" | "write" | "destructive" | "dangerous";
+```
+
+Defined in: src/tollgate/analyzers/types.ts:46
+
+Risk levels for analyzed content.
+
+Risk levels form a hierarchy from lowest to highest risk:
+1. `safe` - No risk, proceed automatically
+2. `read` - Read-only operation, typically safe
+3. `write` - Modifies data, may need approval
+4. `destructive` - Removes/deletes data, should prompt
+5. `dangerous` - High risk, should deny or require explicit approval

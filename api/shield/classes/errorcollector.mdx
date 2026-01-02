@@ -1,0 +1,137 @@
+---
+title: "Class: ErrorCollector"
+description: "Defined in: src/shield/errors/index.ts:1079"
+icon: "cube"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/shield) / ErrorCollector
+
+# Class: ErrorCollector
+
+Defined in: src/shield/errors/index.ts:1079
+
+Collect errors during batch operations
+
+## Constructors
+
+### Constructor
+
+```ts
+new ErrorCollector(maxErrors): ErrorCollector;
+```
+
+Defined in: src/shield/errors/index.ts:1083
+
+#### Parameters
+
+##### maxErrors
+
+`number` = `100`
+
+#### Returns
+
+`ErrorCollector`
+
+## Methods
+
+### add()
+
+```ts
+add(error, context?): void;
+```
+
+Defined in: src/shield/errors/index.ts:1087
+
+#### Parameters
+
+##### error
+
+`unknown`
+
+##### context?
+
+#### Returns
+
+`void`
+
+### clear()
+
+```ts
+clear(): void;
+```
+
+Defined in: src/shield/errors/index.ts:1106
+
+#### Returns
+
+`void`
+
+### count()
+
+```ts
+count(): number;
+```
+
+Defined in: src/shield/errors/index.ts:1098
+
+#### Returns
+
+`number`
+
+### getErrors()
+
+```ts
+getErrors(): ShieldError[];
+```
+
+Defined in: src/shield/errors/index.ts:1102
+
+#### Returns
+
+[`ShieldError`](ShieldError.md)[]
+
+### hasErrors()
+
+```ts
+hasErrors(): boolean;
+```
+
+Defined in: src/shield/errors/index.ts:1094
+
+#### Returns
+
+`boolean`
+
+### throwIfErrors()
+
+```ts
+throwIfErrors(message): void;
+```
+
+Defined in: src/shield/errors/index.ts:1114
+
+#### Parameters
+
+##### message
+
+`string`
+
+#### Returns
+
+`void`
+
+### toAggregateError()
+
+```ts
+toAggregateError(message): AggregateShieldError;
+```
+
+Defined in: src/shield/errors/index.ts:1110
+
+#### Parameters
+
+##### message
+
+`string`
+
+#### Returns

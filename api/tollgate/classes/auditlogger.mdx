@@ -1,0 +1,402 @@
+---
+title: "Class: AuditLogger"
+description: "Defined in: src/tollgate/audit/logger.ts:73"
+icon: "cube"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / AuditLogger
+
+# Class: AuditLogger
+
+Defined in: src/tollgate/audit/logger.ts:73
+
+AuditLogger records all tool calls and session grants to SQLite.
+
+Uses WAL mode for concurrent access and prepared statements for performance.
+
+## Example
+
+```typescript
+const logger = new AuditLogger();
+
+// Log a tool call attempt
+const id = logger.logAttempt(context, decision);
+
+// Later, log the result
+logger.logResult(id, 'approved', 'success', undefined, 150);
+
+// Log a session grant
+logger.logSessionGrant(grant);
+```
+
+## Constructors
+
+### Constructor
+
+```ts
+new AuditLogger(optionsOrPath?): AuditLogger;
+```
+
+Defined in: src/tollgate/audit/logger.ts:91
+
+#### Parameters
+
+##### optionsOrPath?
+
+`string` | [`AuditLoggerOptions`](../interfaces/AuditLoggerOptions.md)
+
+#### Returns
+
+`AuditLogger`
+
+## Methods
+
+### close()
+
+```ts
+close(): void;
+```
+
+Defined in: src/tollgate/audit/logger.ts:602
+
+Closes the database connection.
+
+#### Returns
+
+`void`
+
+### getActiveSessionGrants()
+
+```ts
+getActiveSessionGrants(server?): SessionGrantRecord[];
+```
+
+Defined in: src/tollgate/audit/logger.ts:482
+
+Gets active session grants for a server.
+
+#### Parameters
+
+##### server?
+
+`string`
+
+Server name to filter by (optional)
+
+#### Returns
+
+[`SessionGrantRecord`](../interfaces/SessionGrantRecord.md)[]
+
+Array of active grants
+
+### getRecentCalls()
+
+```ts
+getRecentCalls(limitOrOptions): AuditRecord[];
+```
+
+Defined in: src/tollgate/audit/logger.ts:378
+
+Gets recent tool calls with optional filtering.
+
+#### Parameters
+
+##### limitOrOptions
+
+`number` | \{
+`includeRedacted?`: `boolean`;
+`limit?`: `number`;
+`riskLevel?`: [`AuditRiskLevel`](../type-aliases/AuditRiskLevel.md);
+`server?`: `string`;
+`since?`: `Date`;
+`until?`: `Date`;
+\}
+
+#### Returns
+
+[`AuditRecord`](../interfaces/AuditRecord.md)[]
+
+### getSessionStats()
+
+```ts
+getSessionStats(): {
+  activeGrants: number;
+  expiredGrants: number;
+  revokedGrants: number;
+  totalGrants: number;
+  totalUsage: number;
+};
+```
+
+Defined in: src/tollgate/audit/logger.ts:563
+
+Gets session grant statistics.
+
+#### Returns
+
+```ts
+{
+  activeGrants: number;
+  expiredGrants: number;
+  revokedGrants: number;
+  totalGrants: number;
+  totalUsage: number;
+}
+```
+
+##### activeGrants
+
+```ts
+activeGrants: number;
+```
+
+##### expiredGrants
+
+```ts
+expiredGrants: number;
+```
+
+##### revokedGrants
+
+```ts
+revokedGrants: number;
+```
+
+##### totalGrants
+
+```ts
+totalGrants: number;
+```
+
+##### totalUsage
+
+```ts
+totalUsage: number;
+```
+
+### getStats()
+
+```ts
+getStats(): {
+  allowed: number;
+  denied: number;
+  prompted: number;
+  sessionAuthorized: number;
+  total: number;
+};
+```
+
+Defined in: src/tollgate/audit/logger.ts:526
+
+Gets aggregate statistics for tool calls.
+
+#### Returns
+
+```ts
+{
+  allowed: number;
+  denied: number;
+  prompted: number;
+  sessionAuthorized: number;
+  total: number;
+}
+```
+
+##### allowed
+
+```ts
+allowed: number;
+```
+
+##### denied
+
+```ts
+denied: number;
+```
+
+##### prompted
+
+```ts
+prompted: number;
+```
+
+##### sessionAuthorized
+
+```ts
+sessionAuthorized: number;
+```
+
+##### total
+
+```ts
+total: number;
+```
+
+### logAttempt()
+
+```ts
+logAttempt(
+   context, 
+   decision, 
+   sessionGrantId?, 
+   metadata?): string;
+```
+
+Defined in: src/tollgate/audit/logger.ts:244
+
+Logs a tool call attempt.
+
+#### Parameters
+
+##### context
+
+The tool call context
+
+##### decision
+
+The policy decision
+
+##### sessionGrantId?
+
+`string`
+
+ID of session grant that authorized this call (if any)
+
+##### metadata?
+
+Additional metadata for the audit record
+
+###### clientId?
+
+`string`
+
+###### correlationId?
+
+`string`
+
+#### Returns
+
+`string`
+
+The generated audit record ID
+
+### logResult()
+
+```ts
+logResult(
+   id, 
+   userDecision, 
+   result, 
+   errorMessage?, 
+   durationMs?): void;
+```
+
+Defined in: src/tollgate/audit/logger.ts:309
+
+Updates a tool call record with the final result.
+
+#### Parameters
+
+##### id
+
+`string`
+
+The audit record ID from logAttempt
+
+##### userDecision
+
+The user's approval decision (if prompted)
+
+[`ApprovalResult`](../type-aliases/ApprovalResult.md) | `null`
+
+##### result
+
+Whether the tool call succeeded or failed
+
+`"error"` | `"success"`
+
+##### errorMessage?
+
+`string`
+
+Error message (if result is 'error')
+
+##### durationMs?
+
+`number`
+
+Total duration of the tool call
+
+#### Returns
+
+`void`
+
+### logSessionGrant()
+
+```ts
+logSessionGrant(grant): void;
+```
+
+Defined in: src/tollgate/audit/logger.ts:334
+
+Logs a new session grant.
+
+#### Parameters
+
+##### grant
+
+The session grant to log
+
+#### Returns
+
+`void`
+
+### logSessionGrantUsage()
+
+```ts
+logSessionGrantUsage(grantId): void;
+```
+
+Defined in: src/tollgate/audit/logger.ts:352
+
+Increments the usage count for a session grant.
+
+#### Parameters
+
+##### grantId
+
+`string`
+
+The session grant ID
+
+#### Returns
+
+`void`
+
+### revokeSessionGrant()
+
+```ts
+revokeSessionGrant(grantId, revokedBy): void;
+```
+
+Defined in: src/tollgate/audit/logger.ts:362
+
+Marks a session grant as revoked.
+
+#### Parameters
+
+##### grantId
+
+`string`
+
+The session grant ID
+
+##### revokedBy
+
+`string`
+
+Who revoked it (e.g., 'user', 'timeout', 'policy')
+
+#### Returns
+
+`void`

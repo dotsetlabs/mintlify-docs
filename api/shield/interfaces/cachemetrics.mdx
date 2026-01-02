@@ -1,0 +1,134 @@
+---
+title: "Interface: CacheMetrics"
+description: "Defined in: src/shield/utils/cache.ts:20"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/shield) / CacheMetrics
+
+# Interface: CacheMetrics
+
+Defined in: src/shield/utils/cache.ts:20
+
+Caching Module
+
+LRU caching and memoization for performance optimization.
+
+## Example
+
+```typescript
+import {
+  LRUCache,
+  memoize,
+  memoizeAsync,
+  getPatternCacheMetrics,
+} from '@dotsetlabs/cli';
+
+// Create an LRU cache
+const cache = new LRUCache<string, RegExp>({ maxSize: 1000 });
+cache.set('aws-key', /AKIA[A-Z0-9]{16}/g);
+
+// Memoize expensive functions
+const parsePattern = memoize((pattern: string) => {
+  return new RegExp(pattern, 'gi');
+});
+
+// Memoize async functions
+const fetchSecrets = memoizeAsync(async (key: string) => {
+  return await secretsManager.getValue(key);
+}, { ttlMs: 60000 });
+
+// Check cache performance
+const metrics = getPatternCacheMetrics();
+console.log(`Cache hit rate: ${metrics.hitRate}%`);
+```
+
+## Properties
+
+### avgAccessCount
+
+```ts
+avgAccessCount: number;
+```
+
+Defined in: src/shield/utils/cache.ts:29
+
+### evictions
+
+```ts
+evictions: number;
+```
+
+Defined in: src/shield/utils/cache.ts:24
+
+### expirations
+
+```ts
+expirations: number;
+```
+
+Defined in: src/shield/utils/cache.ts:25
+
+### hitRate
+
+```ts
+hitRate: number;
+```
+
+Defined in: src/shield/utils/cache.ts:23
+
+### hits
+
+```ts
+hits: number;
+```
+
+Defined in: src/shield/utils/cache.ts:21
+
+### maxSize
+
+```ts
+maxSize: number;
+```
+
+Defined in: src/shield/utils/cache.ts:27
+
+### misses
+
+```ts
+misses: number;
+```
+
+Defined in: src/shield/utils/cache.ts:22
+
+### newestEntryAge?
+
+```ts
+optional newestEntryAge: number;
+```
+
+Defined in: src/shield/utils/cache.ts:31
+
+### oldestEntryAge?
+
+```ts
+optional oldestEntryAge: number;
+```
+
+Defined in: src/shield/utils/cache.ts:30
+
+### size
+
+```ts
+size: number;
+```
+
+Defined in: src/shield/utils/cache.ts:26
+
+### totalAccessCount
+
+```ts
+totalAccessCount: number;
+```
+
+Defined in: src/shield/utils/cache.ts:28

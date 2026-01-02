@@ -1,0 +1,52 @@
+---
+title: "Interface: ApprovalHandler"
+description: "Defined in: src/tollgate/approval/types.ts:67"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / ApprovalHandler
+
+# Interface: ApprovalHandler
+
+Defined in: src/tollgate/approval/types.ts:67
+
+Interface for approval handlers.
+Implementations can use terminal, webhook, or other approval methods.
+
+## Methods
+
+### close()
+
+```ts
+close(): void;
+```
+
+Defined in: src/tollgate/approval/types.ts:79
+
+Closes any open resources (readline interfaces, etc).
+
+#### Returns
+
+`void`
+
+### prompt()
+
+```ts
+prompt(request): Promise<ApprovalResponse>;
+```
+
+Defined in: src/tollgate/approval/types.ts:74
+
+Prompts the user for approval.
+
+#### Parameters
+
+##### request
+
+The approval request
+
+#### Returns
+
+`Promise`\<[`ApprovalResponse`](ApprovalResponse.md)\>
+
+Promise resolving to the user's response

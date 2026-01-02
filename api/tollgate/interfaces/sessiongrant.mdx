@@ -1,0 +1,122 @@
+---
+title: "Interface: SessionGrant"
+description: "Defined in: src/tollgate/session/types.ts:76"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / SessionGrant
+
+# Interface: SessionGrant
+
+Defined in: src/tollgate/session/types.ts:76
+
+A session grant represents a time-bounded approval for future tool calls.
+
+When a user approves a tool call, they can optionally grant a session
+that allows similar future calls without re-prompting.
+
+## Properties
+
+### createdAt
+
+```ts
+readonly createdAt: Date;
+```
+
+Defined in: src/tollgate/session/types.ts:81
+
+When the grant was created
+
+### expiresAt
+
+```ts
+readonly expiresAt: Date | null;
+```
+
+Defined in: src/tollgate/session/types.ts:84
+
+When the grant expires (null = session lifetime)
+
+### grantedBy
+
+```ts
+readonly grantedBy: "api" | "webhook" | "terminal";
+```
+
+Defined in: src/tollgate/session/types.ts:105
+
+How this grant was created
+
+### id
+
+```ts
+readonly id: string;
+```
+
+Defined in: src/tollgate/session/types.ts:78
+
+Unique identifier for this grant
+
+### originalRequestId?
+
+```ts
+readonly optional originalRequestId: string;
+```
+
+Defined in: src/tollgate/session/types.ts:111
+
+Original request that triggered this grant (for audit)
+
+### scope
+
+```ts
+readonly scope: SessionScope;
+```
+
+Defined in: src/tollgate/session/types.ts:90
+
+Scope of the grant
+
+### scopeValue?
+
+```ts
+readonly optional scopeValue: string;
+```
+
+Defined in: src/tollgate/session/types.ts:99
+
+Scope-specific value:
+- 'exact': JSON-stringified args
+- 'tool': tool name
+- 'server': undefined
+- 'pattern': glob pattern
+
+### server
+
+```ts
+readonly server: string;
+```
+
+Defined in: src/tollgate/session/types.ts:87
+
+Server this grant applies to
+
+### tool?
+
+```ts
+readonly optional tool: string;
+```
+
+Defined in: src/tollgate/session/types.ts:102
+
+Tool name (for 'exact' and 'tool' scopes)
+
+### usageCount
+
+```ts
+usageCount: number;
+```
+
+Defined in: src/tollgate/session/types.ts:108
+
+Number of times this grant has been used

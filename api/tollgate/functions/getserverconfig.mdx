@@ -1,0 +1,35 @@
+---
+title: "Function: getServerConfig"
+description: "```ts"
+icon: "function"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / getServerConfig
+
+# Function: getServerConfig()
+
+```ts
+function getServerConfig(config, serverName): ServerConfig | undefined;
+```
+
+Defined in: src/tollgate/policy/parser.ts:190
+
+Retrieves the configuration for a specific server.
+
+## Parameters
+
+### config
+
+Root Tollgate configuration
+
+### serverName
+
+`string`
+
+Name of the server to retrieve
+
+## Returns
+
+[`ServerConfig`](../interfaces/ServerConfig.md) \| `undefined`
+
+Server configuration or undefined if not found

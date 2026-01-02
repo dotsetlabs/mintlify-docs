@@ -1,0 +1,44 @@
+---
+title: "Function: withTimeout"
+description: "```ts"
+icon: "function"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/shield) / withTimeout
+
+# Function: withTimeout()
+
+```ts
+function withTimeout<T>(
+   promise, 
+   operationName, 
+timeoutMs): Promise<T>;
+```
+
+Defined in: src/shield/errors/index.ts:683
+
+Wrap a promise with a timeout
+
+## Type Parameters
+
+### T
+
+`T`
+
+## Parameters
+
+### promise
+
+`Promise`\<`T`\>
+
+### operationName
+
+`string`
+
+### timeoutMs
+
+`number`
+
+## Returns
+
+`Promise`\<`T`\>

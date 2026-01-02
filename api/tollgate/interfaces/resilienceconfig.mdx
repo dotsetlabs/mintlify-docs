@@ -1,0 +1,66 @@
+---
+title: "Interface: ResilienceConfig"
+description: "Defined in: src/tollgate/policy/types.ts:264"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / ResilienceConfig
+
+# Interface: ResilienceConfig
+
+Defined in: src/tollgate/policy/types.ts:264
+
+Complete resilience configuration for failure handling and monitoring.
+
+## Example
+
+```typescript
+const resilienceConfig: ResilienceConfig = {
+  failureMode: 'fail-readonly',
+  upstreamTimeoutMs: 60000,
+  healthCheck: { enabled: true, intervalMs: 15000 },
+  shutdown: { timeoutMs: 15000, drainTimeoutMs: 10000 }
+};
+```
+
+## Properties
+
+### failureMode?
+
+```ts
+optional failureMode: FailureMode;
+```
+
+Defined in: src/tollgate/policy/types.ts:266
+
+Behavior when upstream is unavailable (default: 'fail-closed')
+
+### healthCheck?
+
+```ts
+optional healthCheck: HealthCheckConfig;
+```
+
+Defined in: src/tollgate/policy/types.ts:272
+
+Health check configuration
+
+### shutdown?
+
+```ts
+optional shutdown: ShutdownConfig;
+```
+
+Defined in: src/tollgate/policy/types.ts:275
+
+Graceful shutdown configuration
+
+### upstreamTimeoutMs?
+
+```ts
+optional upstreamTimeoutMs: number;
+```
+
+Defined in: src/tollgate/policy/types.ts:269
+
+Timeout for upstream tool calls in milliseconds (default: 30000)

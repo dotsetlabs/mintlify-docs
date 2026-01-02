@@ -1,0 +1,125 @@
+---
+title: "Interface: CircuitBreakerStats"
+description: "Defined in: src/shield/errors/index.ts:735"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/shield) / CircuitBreakerStats
+
+# Interface: CircuitBreakerStats
+
+Defined in: src/shield/errors/index.ts:735
+
+Error Handling and Recovery Module
+
+Comprehensive error handling with retry logic and circuit breakers.
+
+## Example
+
+```typescript
+import {
+  withRetry,
+  withTimeout,
+  CircuitBreaker,
+  isRetryableError,
+} from '@dotsetlabs/cli';
+
+// Retry with exponential backoff
+const result = await withRetry(
+  () => fetchSecrets(),
+  { maxAttempts: 3, baseDelayMs: 1000, backoffMultiplier: 2 }
+);
+
+// Add timeout to operation
+const secrets = await withTimeout(fetchSecrets(), 5000);
+
+// Use circuit breaker for external services
+const breaker = new CircuitBreaker('aws-sm', {
+  failureThreshold: 5,
+  resetTimeoutMs: 30000,
+});
+
+const secret = await breaker.execute(() => getFromAWS(key));
+```
+
+## Properties
+
+### consecutiveSuccesses
+
+```ts
+consecutiveSuccesses: number;
+```
+
+Defined in: src/shield/errors/index.ts:739
+
+### failures
+
+```ts
+failures: number;
+```
+
+Defined in: src/shield/errors/index.ts:737
+
+### lastFailure?
+
+```ts
+optional lastFailure: Date;
+```
+
+Defined in: src/shield/errors/index.ts:740
+
+### lastSuccess?
+
+```ts
+optional lastSuccess: Date;
+```
+
+Defined in: src/shield/errors/index.ts:741
+
+### openedAt?
+
+```ts
+optional openedAt: Date;
+```
+
+Defined in: src/shield/errors/index.ts:742
+
+### state
+
+```ts
+state: CircuitState;
+```
+
+Defined in: src/shield/errors/index.ts:736
+
+### successes
+
+```ts
+successes: number;
+```
+
+Defined in: src/shield/errors/index.ts:738
+
+### totalFailures
+
+```ts
+totalFailures: number;
+```
+
+Defined in: src/shield/errors/index.ts:744
+
+### totalRequests
+
+```ts
+totalRequests: number;
+```
+
+Defined in: src/shield/errors/index.ts:743
+
+### totalSuccesses
+
+```ts
+totalSuccesses: number;
+```
+
+Defined in: src/shield/errors/index.ts:745

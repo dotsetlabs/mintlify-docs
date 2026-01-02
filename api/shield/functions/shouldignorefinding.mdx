@@ -1,0 +1,54 @@
+---
+title: "Function: shouldIgnoreFinding"
+description: "```ts"
+icon: "function"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/shield) / shouldIgnoreFinding
+
+# Function: shouldIgnoreFinding()
+
+```ts
+function shouldIgnoreFinding(
+   finding, 
+   file, 
+   baseline): {
+  ignore: boolean;
+  reason?: string;
+};
+```
+
+Defined in: src/shield/baseline.ts:278
+
+Check if a finding should be ignored (in baseline with non-active status)
+
+## Parameters
+
+### finding
+
+### file
+
+`string` | `undefined`
+
+### baseline
+
+## Returns
+
+```ts
+{
+  ignore: boolean;
+  reason?: string;
+}
+```
+
+### ignore
+
+```ts
+ignore: boolean;
+```
+
+### reason?
+
+```ts
+optional reason: string;
+```

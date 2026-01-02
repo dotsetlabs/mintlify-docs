@@ -1,0 +1,15 @@
+---
+title: "Variable: AUDIT_SCHEMA"
+description: "```ts"
+icon: "database"
+---
+
+[Dotset CLI API Documentation](/api) / [tollgate](/api/tollgate) / AUDIT\_SCHEMA
+
+# Variable: AUDIT\_SCHEMA
+
+```ts
+const AUDIT_SCHEMA: "\n-- Schema version tracking\nCREATE TABLE IF NOT EXISTS schema_version (\n  version INTEGER PRIMARY KEY,\n  applied_at DATETIME DEFAULT CURRENT_TIMESTAMP\n);\n\n-- Tool calls table: records every tool invocation\nCREATE TABLE IF NOT EXISTS tool_calls (\n  id TEXT PRIMARY KEY,\n  timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,\n  server TEXT NOT NULL,\n  tool TEXT NOT NULL,\n  args TEXT,\n  -- PII-redacted version of args for compliance\n  args_redacted TEXT,\n  policy_decision TEXT NOT NULL,\n  policy_rule TEXT,\n  -- Reason for the policy decision (for deny/prompt)\n  policy_reason TEXT,\n  -- Smart analysis metadata\n  analyzer TEXT,\n  risk_level TEXT,\n  user_decision TEXT,\n  result TEXT,\n  error_message TEXT,\n  duration_ms INTEGER,\n  -- Session grant that authorized this call (if any)\n  session_grant_id TEXT,\n  -- Correlation ID for linking related events\n  correlation_id TEXT,\n  -- Client identifier (for multi-client scenarios)\n  client_id TEXT,\n  FOREIGN KEY (session_grant_id) REFERENCES session_grants(id)\n);\n\nCREATE INDEX IF NOT EXISTS idx_tool_calls_timestamp ON tool_calls(timestamp);\nCREATE INDEX IF NOT EXISTS idx_tool_calls_server_tool ON tool_calls(server, tool);\nCREATE INDEX IF NOT EXISTS idx_tool_calls_policy_decision ON tool_calls(policy_decision);\nCREATE INDEX IF NOT EXISTS idx_tool_calls_session_grant ON tool_calls(session_grant_id);\nCREATE INDEX IF NOT EXISTS idx_tool_calls_risk_level ON tool_calls(risk_level);\nCREATE INDEX IF NOT EXISTS idx_tool_calls_correlation ON tool_calls(correlation_id);\n\n-- Session grants table: records time-bounded approval grants\nCREATE TABLE IF NOT EXISTS session_grants (\n  id TEXT PRIMARY KEY,\n  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,\n  expires_at DATETIME,\n  server TEXT NOT NULL,\n  scope TEXT NOT NULL,\n  scope_value TEXT,\n  tool TEXT,\n  granted_by TEXT NOT NULL,\n  original_request_id TEXT,\n  usage_count INTEGER DEFAULT 0,\n  revoked_at DATETIME,\n  revoked_by TEXT\n);\n\nCREATE INDEX IF NOT EXISTS idx_session_grants_server ON session_grants(server);\nCREATE INDEX IF NOT EXISTS idx_session_grants_expires ON session_grants(expires_at);\nCREATE INDEX IF NOT EXISTS idx_session_grants_active ON session_grants(server, expires_at) WHERE revoked_at IS NULL;\n";
+```
+
+Defined in: src/tollgate/audit/schema.ts:17

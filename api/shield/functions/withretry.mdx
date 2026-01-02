@@ -1,0 +1,44 @@
+---
+title: "Function: withRetry"
+description: "```ts"
+icon: "function"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/shield) / withRetry
+
+# Function: withRetry()
+
+```ts
+function withRetry<T>(
+   operation, 
+   operationName, 
+options): Promise<RetryResult<T>>;
+```
+
+Defined in: src/shield/errors/index.ts:577
+
+Execute a function with automatic retry on failure
+
+## Type Parameters
+
+### T
+
+`T`
+
+## Parameters
+
+### operation
+
+() => `Promise`\<`T`\>
+
+### operationName
+
+`string`
+
+### options
+
+[`RetryOptions`](../interfaces/RetryOptions.md) = `{}`
+
+## Returns
+
+`Promise`\<[`RetryResult`](../interfaces/RetryResult.md)\<`T`\>\>
