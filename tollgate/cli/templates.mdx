@@ -1,0 +1,180 @@
+---
+title: 'templates'
+description: 'Browse and apply MCP server configuration templates'
+---
+
+# tollgate templates
+
+The `templates` command provides quick access to pre-configured MCP server templates. Instead of writing configuration from scratch, you can browse, inspect, and apply templates for popular servers.
+
+## Available Subcommands
+
+| Command | Description |
+|:--------|:------------|
+| `tollgate templates list` | List all available templates |
+| `tollgate templates show <name>` | Show detailed template information |
+| `tollgate templates apply <names...>` | Apply templates to configuration |
+
+---
+
+## templates list
+
+List all available server configuration templates.
+
+```bash
+tollgate templates list [options]
+```
+
+### Options
+
+| Option | Description |
+|:-------|:------------|
+| `-c, --category <category>` | Filter by category |
+| `-s, --search <query>` | Search by keyword |
+| `--json` | Output as JSON |
+
+### Categories
+
+- `database` - PostgreSQL, SQLite
+- `filesystem` - Local files, Google Drive
+- `web` - Puppeteer, Fetch, Brave Search
+- `productivity` - Notion
+- `developer` - GitHub, GitLab, Sentry
+- `ai` - Memory
+- `communication` - Slack
+
+### Examples
+
+```bash
+# List all templates
+tollgate templates list
+
+# Filter by category
+tollgate templates list --category database
+
+# Search for templates
+tollgate templates list --search chat
+
+# Get JSON output for scripting
+tollgate templates list --json
+```
+
+---
+
+## templates show
+
+Display detailed information about a specific template.
+
+```bash
+tollgate templates show <name> [options]
+```
+
+### Options
+
+| Option | Description |
+|:-------|:------------|
+| `--json` | Output as JSON |
+
+### Output Includes
+
+- Server command and arguments
+- Required environment variables
+- Recommended tool policies
+- Documentation link
+- Searchable tags
+
+### Example
+
+```bash
+tollgate templates show slack
+```
+
+Output:
+```
+📦 Slack
+   Interact with Slack workspaces
+
+  Details:
+    Name:     slack
+    Category: 💬 Communication
+    Verified: Yes
+    Docs:     https://github.com/anthropics/...
+
+  Server Command:
+    npx -y @anthropic/mcp-server-slack
+
+  Required Environment Variables:
+    SLACK_BOT_TOKEN
+      Slack Bot User OAuth Token
+
+  Recommended Policies:
+    Read: list_channels, get_channel_history, search_*, get_*
+    Write: post_message, reply_*, update_*
+    Destructive: delete_message
+```
+
+---
+
+## templates apply
+
+Apply one or more templates to create or update your configuration file.
+
+```bash
+tollgate templates apply <names...> [options]
+```
+
+### Options
+
+| Option | Description |
+|:-------|:------------|
+| `-o, --output <path>` | Output path (default: `./tollgate.yaml`) |
+| `-f, --force` | Overwrite existing file |
+| `-a, --append` | Append to existing file instead of overwriting |
+| `-p, --preset <preset>` | Policy preset: `strict`, `balanced`, or `permissive` |
+
+### Policy Presets
+
+| Preset | Read | Write | Destructive |
+|:-------|:-----|:------|:------------|
+| `strict` | prompt | deny | deny |
+| `balanced` (default) | allow | prompt | deny |
+| `permissive` | allow | prompt | prompt |
+
+### Examples
+
+```bash
+# Create new config with one template
+tollgate templates apply postgres
+
+# Create config with multiple templates
+tollgate templates apply postgres slack notion --output tollgate.yaml
+
+# Use strict security preset
+tollgate templates apply github --preset strict
+
+# Add templates to existing config
+tollgate templates apply notion --append
+
+# Overwrite existing config
+tollgate templates apply postgres --force
+```
+
+---
+
+## Available Templates
+
+| Name | Category | Description |
+|:-----|:---------|:------------|
+| `postgres` | Database | PostgreSQL database access via SQL queries |
+| `sqlite` | Database | SQLite database access for local databases |
+| `filesystem` | Filesystem | Local filesystem read/write access |
+| `google-drive` | Filesystem | Access and manage Google Drive files |
+| `puppeteer` | Web | Web browsing via headless Chrome |
+| `fetch` | Web | Make HTTP requests to external APIs |
+| `brave-search` | Web | Web search using Brave Search API |
+| `slack` | Communication | Interact with Slack workspaces |
+| `notion` | Productivity | Access and manage Notion workspaces |
+| `memory` | AI | Persistent memory and knowledge storage |
+| `github` | Developer | GitHub repository operations |
+| `gitlab` | Developer | GitLab repository and CI/CD operations |
+| `sentry` | Developer | Monitor and debug application errors |

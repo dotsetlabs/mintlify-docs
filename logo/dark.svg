@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="140" height="32" viewBox="0 0 140 32" fill="none">
-  <!-- Shield icon with gradient -->
+
   <defs>
     <linearGradient id="shieldGradientDark" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#10B981"/>
@@ -7,10 +7,10 @@
     </linearGradient>
   </defs>
   <rect x="2" y="6" width="20" height="20" rx="5" fill="url(#shieldGradientDark)"/>
-  <!-- Shield icon path -->
+
   <path d="M12 10.5L12 10.5C12 10.5 9 11.5 7.5 12V16C7.5 18.5 9.5 20.5 12 21.5C14.5 20.5 16.5 18.5 16.5 16V12C15 11.5 12 10.5 12 10.5Z" fill="white" stroke="white" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- "Dotset" text -->
+
   <text x="28" y="22" fill="white" style="font-family: system-ui, -apple-system, sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -0.02em;">Dotset</text>
-  <!-- "Labs" text -->
+
   <text x="87" y="22" fill="#10B981" style="font-family: system-ui, -apple-system, sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -0.02em;">Labs</text>
 </svg>

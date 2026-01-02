@@ -1,0 +1,204 @@
+---
+title: 'doctor'
+description: 'Run diagnostics to verify configuration and environment'
+---
+
+# tollgate doctor
+
+The `doctor` command runs diagnostic checks to verify your Tollgate configuration and environment before running servers. It helps identify configuration issues, missing environment variables, and system problems.
+
+## Usage
+
+```bash
+tollgate doctor [options]
+```
+
+## Options
+
+| Option | Description |
+|:-------|:------------|
+| `-c, --config <path>` | Path to tollgate.yaml (default: ./tollgate.yaml) |
+| `-s, --server <name>` | Check only a specific server |
+| `--json` | Output results as JSON |
+
+---
+
+## Diagnostic Checks
+
+The doctor command performs the following checks:
+
+### 1. Configuration File
+
+Verifies that the configuration file exists and is readable.
+
+```
+✓ Configuration file
+   Found: ./tollgate.yaml
+```
+
+### 2. Configuration Valid
+
+Parses the configuration and checks for syntax errors, invalid values, and schema violations.
+
+```
+✓ Configuration valid
+   Valid
+```
+
+### 3. Servers Configured
+
+Ensures at least one server is configured with a valid command.
+
+```
+✓ Servers configured
+   2 server(s): postgres, filesystem
+```
+
+### 4. Server Commands
+
+Validates that each server has a command specified.
+
+```
+✓ Command: postgres
+   npx -y @modelcontextprotocol/server-postgres
+```
+
+### 5. Environment Variables
+
+Checks that all environment variables referenced in the config are set. Shows masked values for security.
+
+```
+✓ Env: DATABASE_URL (postgres)
+   Set (post...5432)
+
+⚠ Env: GITHUB_TOKEN (github)
+   Not set: GITHUB_TOKEN
+   Set this environment variable before running the github server.
+```
+
+### 6. Data Directory
+
+Verifies the Tollgate data directory is writable for audit logs and session storage.
+
+```
+✓ Data directory
+   Writable: /home/user/.tollgate
+```
+
+### 7. Audit Database
+
+Checks that the audit database location is accessible.
+
+```
+✓ Audit database
+   Will be created: /home/user/.tollgate/audit.db
+```
+
+### 8. Smart Analyzers
+
+Validates that configured analyzers (sql, filesystem, shell, http) are recognized.
+
+```
+✓ Smart analyzers
+   Configured: sql, http
+```
+
+---
+
+## Examples
+
+### Basic Usage
+
+```bash
+# Run diagnostics on default config
+tollgate doctor
+
+# Check specific config file
+tollgate doctor --config ./config/tollgate.yaml
+
+# Check only the postgres server
+tollgate doctor --server postgres
+```
+
+### Example Output
+
+```
+🩺 Tollgate Doctor
+
+✓ Configuration file
+   Found: ./tollgate.yaml
+✓ Configuration valid
+   Valid
+✓ Servers configured
+   2 server(s): postgres, api
+✓ Command: postgres
+   npx -y @modelcontextprotocol/server-postgres
+⚠ Env: DATABASE_URL (postgres)
+   Not set: DATABASE_URL
+   Set this environment variable before running the postgres server.
+✓ Command: api
+   npx -y @anthropic/mcp-server-fetch
+✓ Data directory
+   Writable: /home/user/.tollgate
+✓ Audit database
+   Will be created: /home/user/.tollgate/audit.db
+✓ Smart analyzers
+   Configured: sql, http
+
+📊 Summary
+
+   ✓ Passed:   7
+   ⚠ Warnings: 1
+   ✗ Failed:   0
+
+Configuration is valid with warnings.
+```
+
+### JSON Output
+
+For scripting and CI/CD integration:
+
+```bash
+tollgate doctor --json
+```
+
+```json
+{
+  "timestamp": "2024-01-15T10:30:00.000Z",
+  "configPath": "./tollgate.yaml",
+  "passed": 7,
+  "warnings": 1,
+  "failed": 0,
+  "results": [
+    {
+      "name": "Configuration file",
+      "status": "pass",
+      "message": "Found: ./tollgate.yaml"
+    },
+    {
+      "name": "Env: DATABASE_URL (postgres)",
+      "status": "warn",
+      "message": "Not set: DATABASE_URL",
+      "details": "Set this environment variable before running the postgres server."
+    }
+  ]
+}
+```
+
+---
+
+## Exit Codes
+
+| Code | Meaning |
+|:-----|:--------|
+| `0` | All checks passed (possibly with warnings) |
+| `1` | One or more checks failed |
+
+---
+
+## Best Practices
+
+1. **Run before production**: Always run `tollgate doctor` before deploying to production
+2. **CI/CD integration**: Add `tollgate doctor --json` to your CI pipeline to catch issues early
+3. **Environment variables**: Use the output to identify missing environment variables
+4. **Per-server debugging**: Use `--server` to focus on a specific server's configuration
