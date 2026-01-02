@@ -1,0 +1,124 @@
+---
+title: Approval Methods
+description: 'Terminal prompts or web-based approval UI'
+---
+
+# Approval Methods
+
+When a policy requires user approval, Tollgate supports multiple ways to present the approval request.
+
+## Terminal (Default)
+
+The terminal approval method prompts directly in your terminal. Best for local development when you're actively watching the output.
+
+```bash
+tollgate start -s postgres
+# or
+tollgate wrap npx mcp-server-postgres
+```
+
+When an approval is needed:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  TOLLGATE: Agent requesting action
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Server:  postgres
+  Tool:    query
+  Risk:    write
+
+  INSERT INTO users (name) VALUES ('Alice')
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Allow? [y]es once / [5]min / [15]min / [s]ession / [N]o
+```
+
+### Terminal Shortcuts
+
+| Key | Action |
+|-----|--------|
+| `y` | Approve once (no session grant) |
+| `5` | Approve and grant for 5 minutes |
+| `15` | Approve and grant for 15 minutes |
+| `30` | Approve and grant for 30 minutes |
+| `s` | Approve for entire session |
+| `n` or Enter | Deny |
+
+### Advanced Syntax
+
+Specify scope with duration:
+
+```
+> tool:15min    # Grant for this tool for 15 minutes
+> server:5min   # Grant for all tools on this server for 5 minutes
+> exact:session # Grant for this exact tool+args for session
+```
+
+## Interactive (Web UI)
+
+The interactive approval method serves a web UI where you can review and approve requests from your browser. Useful when:
+
+- You're not actively watching the terminal
+- You want a more visual approval experience
+- You're running Tollgate in the background
+
+### Starting with Interactive Mode
+
+```bash
+# Use the web UI for approvals
+tollgate start -s postgres --approval interactive
+
+# Custom port
+tollgate start -s postgres --approval interactive --approval-port 3000
+```
+
+### Using the Web UI
+
+1. Open `http://localhost:9847` in your browser
+2. Pending approvals appear in real-time
+3. Review the request details (server, tool, arguments, risk level)
+4. Click an approval button:
+   - **Deny** - Reject the request
+   - **Allow Once** - Approve without session grant
+   - **Allow 5 min** - Approve with 5-minute session grant
+   - **Allow 15 min** - Approve with 15-minute session grant
+   - **Allow Session** - Approve for entire session
+
+### Web UI Features
+
+- **Real-time updates** via Server-Sent Events
+- **Risk-level coloring** (safe=green, read=blue, write=yellow, destructive/dangerous=red)
+- **Countdown timer** showing time until auto-deny
+- **Full argument display** for reviewing exactly what the agent wants to do
+
+## Configuration
+
+Set the approval method in `tollgate.yaml`:
+
+```yaml
+approval:
+  method: interactive  # or 'terminal'
+  port: 9847          # for interactive mode
+  timeout: 60000      # approval timeout in ms
+```
+
+## Comparison
+
+| Feature | Terminal | Interactive |
+|---------|----------|-------------|
+| Requires terminal focus | Yes | No |
+| Browser required | No | Yes |
+| Keyboard shortcuts | Yes | No |
+| Visual risk indicators | Color-coded text | Color-coded badges |
+| Multiple pending requests | One at a time | Queue visible |
+| Best for | Active development | Background operation |
+
+## Timeout Behavior
+
+Both methods have a configurable timeout (default: 60 seconds). If no response is received within the timeout, the request is automatically denied.
+
+```bash
+# Set 2-minute timeout
+tollgate start -s postgres --timeout 120000
+```

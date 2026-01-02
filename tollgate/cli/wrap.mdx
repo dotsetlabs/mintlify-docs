@@ -20,6 +20,10 @@ tollgate wrap [options] <command> [args...]
 | `-d, --default <action>` | Default action: `allow`, `deny`, or `prompt` | `prompt` |
 | `--audit-path <path>` | Custom path for audit database | `~/.dotset/tollgate.db` |
 | `--timeout <ms>` | Approval timeout in milliseconds | `60000` |
+| `--approval <method>` | Approval method: `terminal` or `interactive` | `terminal` |
+| `--approval-port <port>` | Port for interactive approval UI | `9847` |
+| `--persist-sessions` | Persist session grants to disk | - |
+| `--session-path <path>` | Path for persistent session database | `~/.tollgate/sessions.db` |
 | `--dry-run` | Evaluate policies without executing tools | - |
 | `--failure-mode <mode>` | Behavior when upstream fails | `fail-closed` |
 
@@ -66,6 +70,22 @@ tollgate wrap --failure-mode fail-readonly npx mcp-server
 
 # Allow all operations if upstream fails (development only)
 tollgate wrap --failure-mode fail-open npx mcp-server
+```
+
+### Interactive Approval UI
+
+```bash
+# Approve requests via web browser instead of terminal
+tollgate wrap --approval interactive npx mcp-server-postgres
+
+# Open http://localhost:9847 to see pending approvals
+```
+
+### Persistent Sessions
+
+```bash
+# Session grants survive process restarts
+tollgate wrap --persist-sessions npx mcp-server-postgres
 ```
 
 ## How It Works

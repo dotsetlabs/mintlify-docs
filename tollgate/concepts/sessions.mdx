@@ -146,16 +146,45 @@ servers:
 
 ## Session Storage
 
-Sessions are stored in the Tollgate audit database (`~/.dotset/tollgate.db`). They persist across restarts within their duration.
+By default, sessions are stored in memory and lost when Tollgate restarts. Enable persistent storage to preserve sessions across restarts.
+
+### In-Memory (Default)
+
+Sessions exist only during the current Tollgate process:
+
+```bash
+# Sessions are lost when process exits
+tollgate start -s postgres
+```
+
+### Persistent Storage
+
+Enable SQLite-backed persistent sessions:
+
+```bash
+# Via CLI
+tollgate start -s postgres --persist-sessions
+
+# With custom database path
+tollgate start -s postgres --persist-sessions --session-path ./data/sessions.db
+```
+
+Or in configuration:
+
+```yaml
+session:
+  persist: true
+  path: ~/.tollgate/sessions.db  # optional, this is the default
+```
 
 ## Revoking Sessions
 
 To clear all session grants:
 
 ```bash
-# Restart Tollgate (sessions are cleared)
-# Or delete the audit database
-rm ~/.dotset/tollgate.db
+# Restart Tollgate (clears in-memory sessions)
+# For persistent sessions, delete the database:
+rm ~/.tollgate/sessions.db
 ```
 
 Future versions will include a `tollgate sessions clear` command.

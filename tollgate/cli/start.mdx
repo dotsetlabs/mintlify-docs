@@ -21,6 +21,10 @@ tollgate start [options]
 | `-c, --config <path>` | Path to tollgate.yaml config file | `./tollgate.yaml` |
 | `--audit-path <path>` | Custom path for audit database | `~/.dotset/tollgate.db` |
 | `--timeout <ms>` | Approval timeout in milliseconds | `60000` |
+| `--approval <method>` | Approval method: `terminal` or `interactive` | `terminal` |
+| `--approval-port <port>` | Port for interactive approval UI | `9847` |
+| `--persist-sessions` | Persist session grants to disk | - |
+| `--session-path <path>` | Path for persistent session database | `~/.tollgate/sessions.db` |
 | `--dry-run` | Evaluate policies without executing tools | - |
 | `--failure-mode <mode>` | Behavior when upstream fails | `fail-closed` |
 
@@ -51,6 +55,27 @@ tollgate start -s filesystem --failure-mode fail-readonly
 ```bash
 # Test policies without executing tools
 tollgate start -s postgres --dry-run
+```
+
+### Interactive Approval UI
+
+```bash
+# Use web-based approval UI instead of terminal prompts
+tollgate start -s postgres --approval interactive
+
+# Open http://localhost:9847 to approve requests in your browser
+# Use custom port
+tollgate start -s postgres --approval interactive --approval-port 3000
+```
+
+### Persistent Sessions
+
+```bash
+# Session grants survive restarts
+tollgate start -s postgres --persist-sessions
+
+# Use custom session database path
+tollgate start -s postgres --persist-sessions --session-path ./data/sessions.db
 ```
 
 ## Configuration File
