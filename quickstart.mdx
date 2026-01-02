@@ -15,17 +15,17 @@ npm install -g @dotsetlabs/cli
 
 ---
 
-## Shield
+## Mantle
 
-Shield protects your CI/CD pipelines from secret leakage.
+Mantle protects your CI/CD pipelines from secret leakage.
 
 ### 1. Zero-Migration Setup
 
-Shield automatically detects `.env` files. If you already have one, you're ready to go:
+Mantle automatically detects `.env` files. If you already have one, you're ready to go:
 
 ```bash
 # Run with automatic protection
-dotset shield run -- npm start
+dotset mantle run -- npm start
 ```
 
 ### 2. Protection Modes
@@ -38,29 +38,29 @@ dotset shield run -- npm start
 
 ```bash
 # Redact secrets in real-time
-dotset shield run --mode redact -- npm test
+dotset mantle run --mode redact -- npm test
 ```
 
 ### 3. Example Output
 
 ```bash
-$ dotset shield run --mode redact -- node app.js
+$ dotset mantle run --mode redact -- node app.js
 
-🛡️  shield | mode: redact | secrets: 5 | providers: dotenv, environment
+🛡️  mantle | mode: redact | secrets: 5 | providers: dotenv, environment
 
 Starting server...
 Connecting to database: [REDACTED]
 Using API key: [REDACTED]
 Server running on port 3000
 
-🛡️  shield | exit: 0 | exposures: 2
+🛡️  mantle | exit: 0 | exposures: 2
 ```
 
 <CardGroup>
-  <Card title="Protection Modes" icon="shield" href="/shield/concepts/protection-modes">
+  <Card title="Protection Modes" icon="shield-halved" href="/mantle/concepts/protection-modes">
     Learn about detect, redact, and block
   </Card>
-  <Card title="GitHub Actions" icon="github" href="/shield/guides/github-actions">
+  <Card title="GitHub Actions" icon="github" href="/mantle/guides/github-actions">
     Protect your GitHub Actions workflows
   </Card>
 </CardGroup>

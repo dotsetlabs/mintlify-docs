@@ -1,0 +1,45 @@
+---
+title: "Interface: AllowlistConfig"
+description: "Defined in: [src/mantle/config.ts:55](https://github.com/dotsetlabs/cli/blob/5d9ea0fe5050d4d18b89d35a8fee54f876108d8f/src/mantle/config.ts#L55)"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/mantle) / AllowlistConfig
+
+# Interface: AllowlistConfig
+
+Defined in: [src/mantle/config.ts:55](https://github.com/dotsetlabs/cli/blob/5d9ea0fe5050d4d18b89d35a8fee54f876108d8f/src/mantle/config.ts#L55)
+
+Allowlist entry configuration
+
+## Properties
+
+### reason?
+
+```ts
+optional reason: string;
+```
+
+Defined in: [src/mantle/config.ts:61](https://github.com/dotsetlabs/cli/blob/5d9ea0fe5050d4d18b89d35a8fee54f876108d8f/src/mantle/config.ts#L61)
+
+Reason for allowlisting (for documentation)
+
+### type?
+
+```ts
+optional type: "glob" | "regex" | "literal";
+```
+
+Defined in: [src/mantle/config.ts:59](https://github.com/dotsetlabs/cli/blob/5d9ea0fe5050d4d18b89d35a8fee54f876108d8f/src/mantle/config.ts#L59)
+
+Type of matching: 'glob' | 'regex' | 'literal'
+
+### value
+
+```ts
+value: string;
+```
+
+Defined in: [src/mantle/config.ts:57](https://github.com/dotsetlabs/cli/blob/5d9ea0fe5050d4d18b89d35a8fee54f876108d8f/src/mantle/config.ts#L57)
+
+Pattern or value to allow

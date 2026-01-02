@@ -1,0 +1,133 @@
+---
+title: "Interface: Baseline"
+description: "Defined in: src/mantle/baseline.ts:93"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/mantle) / Baseline
+
+# Interface: Baseline
+
+Defined in: src/mantle/baseline.ts:93
+
+Baseline file format (v2)
+
+## Properties
+
+### auditLog
+
+```ts
+auditLog: AuditEntry[];
+```
+
+Defined in: src/mantle/baseline.ts:109
+
+Audit log
+
+### config?
+
+```ts
+optional config: {
+  allowedUsers?: string[];
+  autoPruneDays?: number;
+  requireApproval?: boolean;
+};
+```
+
+Defined in: src/mantle/baseline.ts:111
+
+Baseline configuration
+
+#### allowedUsers?
+
+```ts
+optional allowedUsers: string[];
+```
+
+Allowed users who can modify baseline
+
+#### autoPruneDays?
+
+```ts
+optional autoPruneDays: number;
+```
+
+Auto-prune findings after N days of not being seen
+
+#### requireApproval?
+
+```ts
+optional requireApproval: boolean;
+```
+
+Require approval for new baseline entries
+
+### created
+
+```ts
+created: string;
+```
+
+Defined in: src/mantle/baseline.ts:99
+
+When the baseline was created
+
+### findings
+
+```ts
+findings: BaselineFinding[];
+```
+
+Defined in: src/mantle/baseline.ts:105
+
+All findings
+
+### history
+
+```ts
+history: BaselineVersion[];
+```
+
+Defined in: src/mantle/baseline.ts:107
+
+Version history
+
+### modified
+
+```ts
+modified: string;
+```
+
+Defined in: src/mantle/baseline.ts:101
+
+When the baseline was last modified
+
+### projectId?
+
+```ts
+optional projectId: string;
+```
+
+Defined in: src/mantle/baseline.ts:103
+
+Project identifier
+
+### schemaVersion
+
+```ts
+schemaVersion: "2.0";
+```
+
+Defined in: src/mantle/baseline.ts:95
+
+Schema version
+
+### version
+
+```ts
+version: number;
+```
+
+Defined in: src/mantle/baseline.ts:97
+
+Current version number

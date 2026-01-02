@@ -1,0 +1,107 @@
+---
+title: "Interface: ProfileReport"
+description: "Defined in: src/mantle/utils/profiler.ts:43"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/mantle) / ProfileReport
+
+# Interface: ProfileReport
+
+Defined in: src/mantle/utils/profiler.ts:43
+
+Performance Profiling Module
+
+Measure and optimize scanning performance with profiling tools.
+
+## Example
+
+```typescript
+import {
+  Timer,
+  Profiler,
+  enableProfiling,
+  formatDuration,
+  formatBytes,
+} from '@dotsetlabs/cli';
+
+// Enable global profiling
+enableProfiling();
+
+// Time a specific operation
+const timer = new Timer();
+timer.start();
+await scanLargeFile();
+timer.stop();
+console.log(`Scan took: ${formatDuration(timer.elapsed())}`);
+
+// Use profiler for detailed metrics
+const profiler = new Profiler('scan-operation');
+profiler.start('pattern-matching');
+// ... pattern matching
+profiler.end('pattern-matching');
+
+profiler.start('entropy-analysis');
+// ... entropy analysis
+profiler.end('entropy-analysis');
+
+console.log(profiler.getReport());
+```
+
+## Properties
+
+### durationMs
+
+```ts
+durationMs: number;
+```
+
+Defined in: src/mantle/utils/profiler.ts:46
+
+### endTime
+
+```ts
+endTime: Date;
+```
+
+Defined in: src/mantle/utils/profiler.ts:45
+
+### memorySnapshots
+
+```ts
+memorySnapshots: MemorySnapshot[];
+```
+
+Defined in: src/mantle/utils/profiler.ts:48
+
+### operations
+
+```ts
+operations: OperationStats[];
+```
+
+Defined in: src/mantle/utils/profiler.ts:47
+
+### peakMemory
+
+```ts
+peakMemory: MemorySnapshot | null;
+```
+
+Defined in: src/mantle/utils/profiler.ts:49
+
+### startTime
+
+```ts
+startTime: Date;
+```
+
+Defined in: src/mantle/utils/profiler.ts:44
+
+### summary
+
+```ts
+summary: ProfileSummary;
+```
+
+Defined in: src/mantle/utils/profiler.ts:50

@@ -1,0 +1,102 @@
+---
+title: dotset mantle run
+description: 'Run commands with multi-provider secret protection'
+---
+
+# dotset mantle run
+
+Run any command with secrets injected from multiple providers and output protection.
+
+## Usage
+
+```bash
+dotset mantle run [options] -- <command...>
+```
+
+<Note>
+Use `--` to separate dotset options from your command.
+</Note>
+
+## Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `-p, --providers <list>` | Comma-separated providers | `auto` |
+| `-s, --scope <scope>` | Environment scope | `development` |
+| `-m, --mode <mode>` | Protection mode | `redact` |
+| `--redact-text <text>` | Replacement text | `[REDACTED]` |
+| `-q, --quiet` | Suppress mantle output | `false` |
+| `--report` | Generate HTML protection report | `false` |
+
+## Secret Resolution
+
+Mantle aggregates secrets from configured providers. By default, it uses `auto` which attempts to detect all available sources.
+
+### Supported Providers
+
+- **dotenv**: Loads from `.env`, `.env.local`, `.env.development`, etc.
+- **environment**: Shell environment variables (with common prefixes like `API_`, `SECRET_`, `TOKEN_`)
+- **aws-sm**: AWS Secrets Manager
+
+## Examples
+
+### Zero-Setup (.env auto-detection)
+```bash
+dotset mantle run -- npm start
+```
+
+### Explicit Providers
+```bash
+dotset mantle run --providers dotenv,aws-sm -- node server.js
+```
+
+### With Redaction
+```bash
+dotset mantle run --mode redact -- npm test
+```
+
+### Production Scope
+```bash
+dotset mantle run --scope production -- node server.js
+```
+
+## Compliance Reports
+
+Use the `--report` flag to generate a standalone HTML report after each run. This is useful for:
+
+- **Audit trails**: Document what protection was applied
+- **Compliance evidence**: SOC 2, ISO 27001 artifact generation
+- **CI artifacts**: Upload to your build system for review
+
+```bash
+dotset mantle run --report -- npm test
+# Generates: mantle-report.html
+```
+
+The report includes:
+- Run summary (command, mode, duration)
+- Secrets protected (count by provider)
+- Exposures detected and blocked
+- Pattern matches with severity levels
+
+<Tip>
+In CI, upload the report as a build artifact for compliance auditing.
+</Tip>
+
+## Security Policies
+
+Mantle uses a curated set of high-accuracy patterns (AWS keys, GitHub tokens, OpenAI keys, etc.) to scan your output.
+
+See the [Security Policies](/mantle/concepts/security-policies) guide for a full list of supported patterns.
+
+## How It Works
+
+1. **Resolution**: Aggregates secrets from all specified providers.
+2. **Injection**: Injects discovered secrets into the child process environment.
+3. **Sanitization**: Intercepts `stdout`/`stderr` using a **streaming line-buffered engine**. This ensures secrets are caught even if split across output chunks.
+4. **Dynamic Detection**: Scans for assignment patterns (e.g. `password=`) and high-entropy strings, providing a safety net for secrets not covered by standard regex.
+5. **Flush**: Flushes any remaining buffered text before exiting.
+
+## Exit Codes
+
+The exit code matches your command's exit code. Mantle itself never fails silently.

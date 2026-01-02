@@ -41,39 +41,39 @@
             ]
         },
         {
-            "group": "Shield",
+            "group": "Mantle",
             "pages": [
                 {
                     "group": "CLI Commands",
                     "pages": [
-                        "shield/cli/overview",
-                        "shield/cli/run"
+                        "mantle/cli/overview",
+                        "mantle/cli/run"
                     ]
                 },
                 {
                     "group": "Concepts",
                     "pages": [
-                        "shield/concepts/protection-modes",
-                        "shield/concepts/secrets",
-                        "shield/concepts/scopes",
-                        "shield/concepts/security-policies"
+                        "mantle/concepts/protection-modes",
+                        "mantle/concepts/secrets",
+                        "mantle/concepts/scopes",
+                        "mantle/concepts/security-policies"
                     ]
                 },
                 {
                     "group": "CI/CD Guides",
                     "pages": [
-                        "shield/guides/github-actions",
-                        "shield/guides/gitlab-ci",
-                        "shield/guides/circleci",
-                        "shield/guides/jenkins",
-                        "shield/guides/generic-ci"
+                        "mantle/guides/github-actions",
+                        "mantle/guides/gitlab-ci",
+                        "mantle/guides/circleci",
+                        "mantle/guides/jenkins",
+                        "mantle/guides/generic-ci"
                     ]
                 },
                 {
                     "group": "Security",
                     "pages": [
-                        "shield/security/encryption",
-                        "shield/security/trust"
+                        "mantle/security/encryption",
+                        "mantle/security/trust"
                     ]
                 }
             ]
@@ -124,100 +124,100 @@
             "pages": [
                 "api/_index",
                 {
-                    "group": "Shield API",
+                    "group": "Mantle API",
                     "pages": [
-                        "api/shield/_index",
+                        "api/mantle/_index",
                         {
                             "group": "Classes",
                             "pages": [
-                                "api/shield/classes/aggregateshielderror",
-                                "api/shield/classes/artifactmanager",
-                                "api/shield/classes/batchprofiler",
-                                "api/shield/classes/circuitbreaker",
-                                "api/shield/classes/circuitopenerror",
-                                "api/shield/classes/configurationerror",
-                                "api/shield/classes/errorcollector",
-                                "api/shield/classes/lrucache",
-                                "api/shield/classes/patterncompilationerror",
-                                "api/shield/classes/profiler",
-                                "api/shield/classes/providererror",
-                                "api/shield/classes/ratelimiter",
-                                "api/shield/classes/redactor",
-                                "api/shield/classes/secretresolver",
-                                "api/shield/classes/shielderror"
+                                "api/mantle/classes/aggregatemantleerror",
+                                "api/mantle/classes/artifactmanager",
+                                "api/mantle/classes/batchprofiler",
+                                "api/mantle/classes/circuitbreaker",
+                                "api/mantle/classes/circuitopenerror",
+                                "api/mantle/classes/configurationerror",
+                                "api/mantle/classes/errorcollector",
+                                "api/mantle/classes/lrucache",
+                                "api/mantle/classes/patterncompilationerror",
+                                "api/mantle/classes/profiler",
+                                "api/mantle/classes/providererror",
+                                "api/mantle/classes/ratelimiter",
+                                "api/mantle/classes/redactor",
+                                "api/mantle/classes/secretresolver",
+                                "api/mantle/classes/mantleerror"
                             ]
                         },
                         {
                             "group": "Interfaces",
                             "pages": [
-                                "api/shield/interfaces/allowlistconfig",
-                                "api/shield/interfaces/allowlistentry",
-                                "api/shield/interfaces/artifactinfo",
-                                "api/shield/interfaces/artifactoptions",
-                                "api/shield/interfaces/auditentry",
-                                "api/shield/interfaces/awssecretsmanageroptions",
-                                "api/shield/interfaces/baseline",
-                                "api/shield/interfaces/baselinediff",
-                                "api/shield/interfaces/baselinefinding",
-                                "api/shield/interfaces/baselineversion",
-                                "api/shield/interfaces/batchmetrics",
-                                "api/shield/interfaces/cachemetrics",
-                                "api/shield/interfaces/ciconfig",
-                                "api/shield/interfaces/cidefaultconfig",
-                                "api/shield/interfaces/cienvironment"
+                                "api/mantle/interfaces/allowlistconfig",
+                                "api/mantle/interfaces/allowlistentry",
+                                "api/mantle/interfaces/artifactinfo",
+                                "api/mantle/interfaces/artifactoptions",
+                                "api/mantle/interfaces/auditentry",
+                                "api/mantle/interfaces/awssecretsmanageroptions",
+                                "api/mantle/interfaces/baseline",
+                                "api/mantle/interfaces/baselinediff",
+                                "api/mantle/interfaces/baselinefinding",
+                                "api/mantle/interfaces/baselineversion",
+                                "api/mantle/interfaces/batchmetrics",
+                                "api/mantle/interfaces/cachemetrics",
+                                "api/mantle/interfaces/ciconfig",
+                                "api/mantle/interfaces/cidefaultconfig",
+                                "api/mantle/interfaces/cienvironment"
                             ]
                         },
                         {
                             "group": "Functions",
                             "pages": [
-                                "api/shield/functions/addtobaseline",
-                                "api/shield/functions/applyenvironmentdefaults",
-                                "api/shield/functions/calculatethroughput",
-                                "api/shield/functions/clearpatterncache",
-                                "api/shield/functions/comparebaselines",
-                                "api/shield/functions/completepipeline",
-                                "api/shield/functions/createdefaultconfig",
-                                "api/shield/functions/createemptybaseline",
-                                "api/shield/functions/creategithubannotation",
-                                "api/shield/functions/createpipelinecontext",
-                                "api/shield/functions/detectcienvironment",
-                                "api/shield/functions/detectenvironment",
-                                "api/shield/functions/determineexitcode",
-                                "api/shield/functions/disableprofiling",
-                                "api/shield/functions/enableprofiling"
+                                "api/mantle/functions/addtobaseline",
+                                "api/mantle/functions/applyenvironmentdefaults",
+                                "api/mantle/functions/calculatethroughput",
+                                "api/mantle/functions/clearpatterncache",
+                                "api/mantle/functions/comparebaselines",
+                                "api/mantle/functions/completepipeline",
+                                "api/mantle/functions/createdefaultconfig",
+                                "api/mantle/functions/createemptybaseline",
+                                "api/mantle/functions/creategithubannotation",
+                                "api/mantle/functions/createpipelinecontext",
+                                "api/mantle/functions/detectcienvironment",
+                                "api/mantle/functions/detectenvironment",
+                                "api/mantle/functions/determineexitcode",
+                                "api/mantle/functions/disableprofiling",
+                                "api/mantle/functions/enableprofiling"
                             ]
                         },
                         {
                             "group": "Type Aliases",
                             "pages": [
-                                "api/shield/type-aliases/ciprovider",
-                                "api/shield/type-aliases/circuitstate",
-                                "api/shield/type-aliases/configoutputformat",
-                                "api/shield/type-aliases/detectionsignal",
-                                "api/shield/type-aliases/errorcode",
-                                "api/shield/type-aliases/exitcode",
-                                "api/shield/type-aliases/findingseverity",
-                                "api/shield/type-aliases/findingstatus",
-                                "api/shield/type-aliases/outputformat",
-                                "api/shield/type-aliases/protectionmode",
-                                "api/shield/type-aliases/providersource",
-                                "api/shield/type-aliases/scope",
-                                "api/shield/type-aliases/severity"
+                                "api/mantle/type-aliases/ciprovider",
+                                "api/mantle/type-aliases/circuitstate",
+                                "api/mantle/type-aliases/configoutputformat",
+                                "api/mantle/type-aliases/detectionsignal",
+                                "api/mantle/type-aliases/errorcode",
+                                "api/mantle/type-aliases/exitcode",
+                                "api/mantle/type-aliases/findingseverity",
+                                "api/mantle/type-aliases/findingstatus",
+                                "api/mantle/type-aliases/outputformat",
+                                "api/mantle/type-aliases/protectionmode",
+                                "api/mantle/type-aliases/providersource",
+                                "api/mantle/type-aliases/scope",
+                                "api/mantle/type-aliases/severity"
                             ]
                         },
                         {
                             "group": "Variables",
                             "pages": [
-                                "api/shield/variables/config_filename",
-                                "api/shield/variables/config_template",
-                                "api/shield/variables/current_schema_version",
-                                "api/shield/variables/default_baseline_file",
-                                "api/shield/variables/default_redact_text",
-                                "api/shield/variables/dotset_config_dir",
-                                "api/shield/variables/errorcodes",
-                                "api/shield/variables/exitcodes",
-                                "api/shield/variables/package_name",
-                                "api/shield/variables/shield_config_path"
+                                "api/mantle/variables/config_filename",
+                                "api/mantle/variables/config_template",
+                                "api/mantle/variables/current_schema_version",
+                                "api/mantle/variables/default_baseline_file",
+                                "api/mantle/variables/default_redact_text",
+                                "api/mantle/variables/dotset_config_dir",
+                                "api/mantle/variables/errorcodes",
+                                "api/mantle/variables/exitcodes",
+                                "api/mantle/variables/package_name",
+                                "api/mantle/variables/mantle_config_path"
                             ]
                         }
                     ]

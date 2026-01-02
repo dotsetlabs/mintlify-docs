@@ -1,0 +1,43 @@
+---
+title: "Function: memoize"
+description: "```ts"
+icon: "function"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/mantle) / memoize
+
+# Function: memoize()
+
+```ts
+function memoize<T>(fn, options): T & {
+  cache: LRUCache<string, ReturnType<T>>;
+  clearCache: () => void;
+};
+```
+
+Defined in: src/mantle/utils/cache.ts:477
+
+Memoize a function with LRU caching
+
+## Type Parameters
+
+### T
+
+`T` *extends* (...`args`) => `unknown`
+
+## Parameters
+
+### fn
+
+`T`
+
+### options
+
+[`MemoizeOptions`](../interfaces/MemoizeOptions.md) = `{}`
+
+## Returns
+
+`T` & \{
+  `cache`: [`LRUCache`](../classes/LRUCache.md)\<`string`, `ReturnType`\<`T`\>\>;
+  `clearCache`: () => `void`;
+\}

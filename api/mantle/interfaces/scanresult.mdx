@@ -1,0 +1,101 @@
+---
+title: "Interface: ScanResult"
+description: "Defined in: src/mantle/output/formatters.ts:56"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/mantle) / ScanResult
+
+# Interface: ScanResult
+
+Defined in: src/mantle/output/formatters.ts:56
+
+Output Formatting Module
+
+Format scan results in multiple output formats for CI/CD integration.
+
+## Example
+
+```typescript
+import { format, formatSARIF, formatMarkdown } from '@dotsetlabs/cli';
+
+// Format as SARIF for GitHub Code Scanning
+const sarif = format(scanResult, 'sarif');
+fs.writeFileSync('results.sarif', sarif);
+
+// Format as Markdown for PR comments
+const markdown = formatMarkdown(scanResult, { includeContext: true });
+
+// Format as JSON for API consumption
+const json = format(scanResult, 'json', { prettyPrint: true });
+
+// Get available formats
+const formats = getSupportedFormats();
+// ['text', 'json', 'sarif', 'csv', 'xml', 'junit', 'gitlab', 'github', 'markdown']
+```
+
+## Properties
+
+### duration
+
+```ts
+duration: number;
+```
+
+Defined in: src/mantle/output/formatters.ts:59
+
+### findings
+
+```ts
+findings: Finding[];
+```
+
+Defined in: src/mantle/output/formatters.ts:62
+
+### metadata?
+
+```ts
+optional metadata: ScanMetadata;
+```
+
+Defined in: src/mantle/output/formatters.ts:64
+
+### scanId
+
+```ts
+scanId: string;
+```
+
+Defined in: src/mantle/output/formatters.ts:57
+
+### success
+
+```ts
+success: boolean;
+```
+
+Defined in: src/mantle/output/formatters.ts:60
+
+### summary
+
+```ts
+summary: ScanSummary;
+```
+
+Defined in: src/mantle/output/formatters.ts:63
+
+### timestamp
+
+```ts
+timestamp: string;
+```
+
+Defined in: src/mantle/output/formatters.ts:58
+
+### totalFindings
+
+```ts
+totalFindings: number;
+```
+
+Defined in: src/mantle/output/formatters.ts:61

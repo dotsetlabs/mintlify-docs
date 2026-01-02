@@ -1,0 +1,69 @@
+---
+title: "Interface: AuditEntry"
+description: "Defined in: src/mantle/baseline.ts:27"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/mantle) / AuditEntry
+
+# Interface: AuditEntry
+
+Defined in: src/mantle/baseline.ts:27
+
+Audit log entry for tracking changes
+
+## Properties
+
+### action
+
+```ts
+action: 
+  | "resolved"
+  | "ignored"
+  | "created"
+  | "reactivated"
+  | "modified"
+  | "pruned";
+```
+
+Defined in: src/mantle/baseline.ts:29
+
+### details?
+
+```ts
+optional details: Record<string, unknown>;
+```
+
+Defined in: src/mantle/baseline.ts:33
+
+### findingHash?
+
+```ts
+optional findingHash: string;
+```
+
+Defined in: src/mantle/baseline.ts:32
+
+### reason?
+
+```ts
+optional reason: string;
+```
+
+Defined in: src/mantle/baseline.ts:31
+
+### timestamp
+
+```ts
+timestamp: string;
+```
+
+Defined in: src/mantle/baseline.ts:28
+
+### user?
+
+```ts
+optional user: string;
+```
+
+Defined in: src/mantle/baseline.ts:30

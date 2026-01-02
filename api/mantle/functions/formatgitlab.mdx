@@ -1,0 +1,51 @@
+---
+title: "Function: formatGitLab"
+description: "```ts"
+icon: "function"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/mantle) / formatGitLab
+
+# Function: formatGitLab()
+
+```ts
+function formatGitLab(result, options): string;
+```
+
+Defined in: src/mantle/output/formatters.ts:711
+
+Output Formatting Module
+
+Format scan results in multiple output formats for CI/CD integration.
+
+## Parameters
+
+### result
+
+### options
+
+[`FormatterOptions`](../interfaces/FormatterOptions.md) = `{}`
+
+## Returns
+
+`string`
+
+## Example
+
+```typescript
+import { format, formatSARIF, formatMarkdown } from '@dotsetlabs/cli';
+
+// Format as SARIF for GitHub Code Scanning
+const sarif = format(scanResult, 'sarif');
+fs.writeFileSync('results.sarif', sarif);
+
+// Format as Markdown for PR comments
+const markdown = formatMarkdown(scanResult, { includeContext: true });
+
+// Format as JSON for API consumption
+const json = format(scanResult, 'json', { prettyPrint: true });
+
+// Get available formats
+const formats = getSupportedFormats();
+// ['text', 'json', 'sarif', 'csv', 'xml', 'junit', 'gitlab', 'github', 'markdown']
+```

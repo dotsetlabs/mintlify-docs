@@ -1,0 +1,115 @@
+---
+title: "Interface: ProfileSummary"
+description: "Defined in: src/mantle/utils/profiler.ts:53"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/mantle) / ProfileSummary
+
+# Interface: ProfileSummary
+
+Defined in: src/mantle/utils/profiler.ts:53
+
+Performance Profiling Module
+
+Measure and optimize scanning performance with profiling tools.
+
+## Example
+
+```typescript
+import {
+  Timer,
+  Profiler,
+  enableProfiling,
+  formatDuration,
+  formatBytes,
+} from '@dotsetlabs/cli';
+
+// Enable global profiling
+enableProfiling();
+
+// Time a specific operation
+const timer = new Timer();
+timer.start();
+await scanLargeFile();
+timer.stop();
+console.log(`Scan took: ${formatDuration(timer.elapsed())}`);
+
+// Use profiler for detailed metrics
+const profiler = new Profiler('scan-operation');
+profiler.start('pattern-matching');
+// ... pattern matching
+profiler.end('pattern-matching');
+
+profiler.start('entropy-analysis');
+// ... entropy analysis
+profiler.end('entropy-analysis');
+
+console.log(profiler.getReport());
+```
+
+## Properties
+
+### avgOperationTimeMs
+
+```ts
+avgOperationTimeMs: number;
+```
+
+Defined in: src/mantle/utils/profiler.ts:60
+
+### memoryGrowthBytes
+
+```ts
+memoryGrowthBytes: number;
+```
+
+Defined in: src/mantle/utils/profiler.ts:61
+
+### mostFrequentCount
+
+```ts
+mostFrequentCount: number;
+```
+
+Defined in: src/mantle/utils/profiler.ts:59
+
+### mostFrequentOperation
+
+```ts
+mostFrequentOperation: string;
+```
+
+Defined in: src/mantle/utils/profiler.ts:58
+
+### slowestOperation
+
+```ts
+slowestOperation: string;
+```
+
+Defined in: src/mantle/utils/profiler.ts:56
+
+### slowestTimeMs
+
+```ts
+slowestTimeMs: number;
+```
+
+Defined in: src/mantle/utils/profiler.ts:57
+
+### totalOperations
+
+```ts
+totalOperations: number;
+```
+
+Defined in: src/mantle/utils/profiler.ts:54
+
+### totalTimeMs
+
+```ts
+totalTimeMs: number;
+```
+
+Defined in: src/mantle/utils/profiler.ts:55

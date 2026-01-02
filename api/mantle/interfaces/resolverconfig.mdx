@@ -1,0 +1,75 @@
+---
+title: "Interface: ResolverConfig"
+description: "Defined in: [src/mantle/providers/types.ts:106](https://github.com/dotsetlabs/cli/blob/5d9ea0fe5050d4d18b89d35a8fee54f876108d8f/src/mantle/providers/types.ts#L1"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/mantle) / ResolverConfig
+
+# Interface: ResolverConfig
+
+Defined in: [src/mantle/providers/types.ts:106](https://github.com/dotsetlabs/cli/blob/5d9ea0fe5050d4d18b89d35a8fee54f876108d8f/src/mantle/providers/types.ts#L106)
+
+Resolver configuration
+
+## Properties
+
+### awsSecretsManager?
+
+```ts
+optional awsSecretsManager: Omit<AwsSecretsManagerOptions, "workDir" | "scope">;
+```
+
+Defined in: [src/mantle/providers/types.ts:123](https://github.com/dotsetlabs/cli/blob/5d9ea0fe5050d4d18b89d35a8fee54f876108d8f/src/mantle/providers/types.ts#L123)
+
+AWS Secrets Manager options
+
+### dotenv?
+
+```ts
+optional dotenv: Omit<DotenvProviderOptions, "workDir" | "scope">;
+```
+
+Defined in: [src/mantle/providers/types.ts:117](https://github.com/dotsetlabs/cli/blob/5d9ea0fe5050d4d18b89d35a8fee54f876108d8f/src/mantle/providers/types.ts#L117)
+
+Dotenv-specific options
+
+### environment?
+
+```ts
+optional environment: Omit<EnvironmentProviderOptions, "workDir" | "scope">;
+```
+
+Defined in: [src/mantle/providers/types.ts:120](https://github.com/dotsetlabs/cli/blob/5d9ea0fe5050d4d18b89d35a8fee54f876108d8f/src/mantle/providers/types.ts#L120)
+
+Environment-specific options
+
+### providers
+
+```ts
+providers: ProviderSource[];
+```
+
+Defined in: [src/mantle/providers/types.ts:108](https://github.com/dotsetlabs/cli/blob/5d9ea0fe5050d4d18b89d35a8fee54f876108d8f/src/mantle/providers/types.ts#L108)
+
+Provider sources to use ('auto' for auto-detection)
+
+### scope?
+
+```ts
+optional scope: Scope;
+```
+
+Defined in: [src/mantle/providers/types.ts:114](https://github.com/dotsetlabs/cli/blob/5d9ea0fe5050d4d18b89d35a8fee54f876108d8f/src/mantle/providers/types.ts#L114)
+
+Environment scope
+
+### workDir?
+
+```ts
+optional workDir: string;
+```
+
+Defined in: [src/mantle/providers/types.ts:111](https://github.com/dotsetlabs/cli/blob/5d9ea0fe5050d4d18b89d35a8fee54f876108d8f/src/mantle/providers/types.ts#L111)
+
+Working directory

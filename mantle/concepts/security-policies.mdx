@@ -1,0 +1,48 @@
+---
+title: Security Policies
+description: 'How Mantle detects and protects your secrets'
+---
+
+# Security Policies
+
+Mantle uses a rule-based engine to identify secrets in your application logs and build output. These rules are called **Security Policies**.
+
+## Built-in Protection
+
+Mantle comes pre-configured with a curated set of high-accuracy detection patterns for common secret types:
+
+### Supported Patterns
+
+| Name | Description | Severity |
+| :--- | :--- | :--- |
+| **AWS Access Key** | Standard AWS Access Key IDs (AKIA...) | `critical` |
+| **GitHub Tokens** | Classic, OAuth, and Fine-grained Personal Access Tokens | `critical` |
+| **Stripe Keys** | Live and Test Secret Keys | `critical` / `high` |
+| **Google API Key** | Google Cloud Platform API keys | `critical` |
+| **Private Keys** | RSA, EC, and SSH private key blocks | `critical` |
+| **Azure Connection String** | Azure Storage account keys | `critical` |
+| **OpenAI API Key** | OpenAI API keys (sk-...) | `critical` |
+| **NPM Token** | NPM access tokens | `critical` |
+| **GitLab Personal Token** | GitLab Personal Access Tokens (glpat-...) | `critical` |
+| **PyPI API Token** | Python Package Index API tokens | `critical` |
+| **JWT Tokens** | JSON Web Tokens (base64 encoded) | `high` |
+| **Slack Webhooks** | Incoming Webhook URLs | `high` |
+| **Twilio Auth Token** | Twilio authentication tokens | `high` |
+| **SendGrid Keys** | SendGrid API credentials | `medium` |
+| **Generic Detectors** | Broad patterns for `api_key`, `secret`, and `password` | `medium` |
+
+## Dynamic Detection
+
+In addition to pattern-based detection, Mantle also performs:
+
+- **Exact value matching**: Any secret loaded from your providers is matched exactly
+- **High-entropy detection**: Identifies strings that look like secrets based on character distribution
+- **Assignment pattern detection**: Catches patterns like `password=` or `api_key:` in output
+
+## Priority and Merging
+
+If a value matches multiple patterns, Mantle:
+1. Merges overlapping redaction ranges
+2. Reports the pattern with the highest severity
+
+This ensures comprehensive protection without redundant alerts.

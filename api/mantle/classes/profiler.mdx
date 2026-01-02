@@ -1,0 +1,281 @@
+---
+title: "Class: Profiler"
+description: "Defined in: src/mantle/utils/profiler.ts:200"
+icon: "cube"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/mantle) / Profiler
+
+# Class: Profiler
+
+Defined in: src/mantle/utils/profiler.ts:200
+
+Main profiler for collecting performance metrics
+
+## Constructors
+
+### Constructor
+
+```ts
+new Profiler(options): Profiler;
+```
+
+Defined in: src/mantle/utils/profiler.ts:212
+
+#### Parameters
+
+##### options
+
+[`ProfilerOptions`](../interfaces/ProfilerOptions.md) = `{}`
+
+#### Returns
+
+`Profiler`
+
+## Methods
+
+### formatReport()
+
+```ts
+formatReport(): string;
+```
+
+Defined in: src/mantle/utils/profiler.ts:417
+
+Format report as human-readable string
+
+#### Returns
+
+`string`
+
+### generateReport()
+
+```ts
+generateReport(): ProfileReport;
+```
+
+Defined in: src/mantle/utils/profiler.ts:361
+
+Generate a complete profile report
+
+#### Returns
+
+### getAllOperationStats()
+
+```ts
+getAllOperationStats(): OperationStats[];
+```
+
+Defined in: src/mantle/utils/profiler.ts:338
+
+Get all operation statistics
+
+#### Returns
+
+[`OperationStats`](../interfaces/OperationStats.md)[]
+
+### getOperationStats()
+
+```ts
+getOperationStats(operation): OperationStats | undefined;
+```
+
+Defined in: src/mantle/utils/profiler.ts:313
+
+Get statistics for a specific operation
+
+#### Parameters
+
+##### operation
+
+`string`
+
+#### Returns
+
+[`OperationStats`](../interfaces/OperationStats.md) \| `undefined`
+
+### getPeakMemory()
+
+```ts
+getPeakMemory(): MemorySnapshot | null;
+```
+
+Defined in: src/mantle/utils/profiler.ts:350
+
+Get peak memory usage
+
+#### Returns
+
+[`MemorySnapshot`](../interfaces/MemorySnapshot.md) \| `null`
+
+### recordTiming()
+
+```ts
+recordTiming(operation, durationMs): void;
+```
+
+Defined in: src/mantle/utils/profiler.ts:225
+
+Record a timing measurement
+
+#### Parameters
+
+##### operation
+
+`string`
+
+##### durationMs
+
+`number`
+
+#### Returns
+
+`void`
+
+### reset()
+
+```ts
+reset(): void;
+```
+
+Defined in: src/mantle/utils/profiler.ts:464
+
+Reset all collected metrics
+
+#### Returns
+
+`void`
+
+### startTimer()
+
+```ts
+startTimer(operation, metadata?): Timer;
+```
+
+Defined in: src/mantle/utils/profiler.ts:253
+
+Create a timer that auto-records to this profiler
+
+#### Parameters
+
+##### operation
+
+`string`
+
+##### metadata?
+
+`Record`\<`string`, `unknown`\>
+
+#### Returns
+
+### stop()
+
+```ts
+stop(): void;
+```
+
+Defined in: src/mantle/utils/profiler.ts:475
+
+Stop the profiler and memory sampling
+
+#### Returns
+
+`void`
+
+### takeMemorySnapshot()
+
+```ts
+takeMemorySnapshot(): MemorySnapshot;
+```
+
+Defined in: src/mantle/utils/profiler.ts:292
+
+Take a memory snapshot
+
+#### Returns
+
+### timeAsync()
+
+```ts
+timeAsync<T>(operation, fn): Promise<{
+  durationMs: number;
+  result: T;
+}>;
+```
+
+Defined in: src/mantle/utils/profiler.ts:272
+
+Time an async operation with automatic recording
+
+#### Type Parameters
+
+##### T
+
+`T`
+
+#### Parameters
+
+##### operation
+
+`string`
+
+##### fn
+
+() => `Promise`\<`T`\>
+
+#### Returns
+
+`Promise`\<\{
+  `durationMs`: `number`;
+  `result`: `T`;
+\}\>
+
+### timeSync()
+
+```ts
+timeSync<T>(operation, fn): {
+  durationMs: number;
+  result: T;
+};
+```
+
+Defined in: src/mantle/utils/profiler.ts:282
+
+Time a sync operation with automatic recording
+
+#### Type Parameters
+
+##### T
+
+`T`
+
+#### Parameters
+
+##### operation
+
+`string`
+
+##### fn
+
+() => `T`
+
+#### Returns
+
+```ts
+{
+  durationMs: number;
+  result: T;
+}
+```
+
+##### durationMs
+
+```ts
+durationMs: number;
+```
+
+##### result
+
+```ts
+result: T;
+```

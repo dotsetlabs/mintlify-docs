@@ -1,0 +1,95 @@
+---
+title: "Interface: CIConfig"
+description: "Defined in: [src/mantle/config.ts:131](https://github.com/dotsetlabs/cli/blob/5d9ea0fe5050d4d18b89d35a8fee54f876108d8f/src/mantle/config.ts#L131)"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/mantle) / CIConfig
+
+# Interface: CIConfig
+
+Defined in: [src/mantle/config.ts:131](https://github.com/dotsetlabs/cli/blob/5d9ea0fe5050d4d18b89d35a8fee54f876108d8f/src/mantle/config.ts#L131)
+
+CI/CD configuration
+
+## Properties
+
+### annotations?
+
+```ts
+optional annotations: boolean;
+```
+
+Defined in: [src/mantle/config.ts:135](https://github.com/dotsetlabs/cli/blob/5d9ea0fe5050d4d18b89d35a8fee54f876108d8f/src/mantle/config.ts#L135)
+
+Generate GitHub/GitLab annotations
+
+### artifactFormats?
+
+```ts
+optional artifactFormats: ConfigOutputFormat[];
+```
+
+Defined in: [src/mantle/config.ts:143](https://github.com/dotsetlabs/cli/blob/5d9ea0fe5050d4d18b89d35a8fee54f876108d8f/src/mantle/config.ts#L143)
+
+Artifact formats to generate
+
+### artifactsPath?
+
+```ts
+optional artifactsPath: string;
+```
+
+Defined in: [src/mantle/config.ts:145](https://github.com/dotsetlabs/cli/blob/5d9ea0fe5050d4d18b89d35a8fee54f876108d8f/src/mantle/config.ts#L145)
+
+Base path for artifacts
+
+### baselineMode?
+
+```ts
+optional baselineMode: "strict" | "lenient" | "off";
+```
+
+Defined in: [src/mantle/config.ts:147](https://github.com/dotsetlabs/cli/blob/5d9ea0fe5050d4d18b89d35a8fee54f876108d8f/src/mantle/config.ts#L147)
+
+Baseline comparison mode: 'strict' fails on any new, 'lenient' allows low severity
+
+### codeQualityReport?
+
+```ts
+optional codeQualityReport: boolean;
+```
+
+Defined in: [src/mantle/config.ts:141](https://github.com/dotsetlabs/cli/blob/5d9ea0fe5050d4d18b89d35a8fee54f876108d8f/src/mantle/config.ts#L141)
+
+Generate GitLab Code Quality report
+
+### failOnSeverity?
+
+```ts
+optional failOnSeverity: Severity;
+```
+
+Defined in: [src/mantle/config.ts:133](https://github.com/dotsetlabs/cli/blob/5d9ea0fe5050d4d18b89d35a8fee54f876108d8f/src/mantle/config.ts#L133)
+
+Fail build on findings of this severity or higher
+
+### summary?
+
+```ts
+optional summary: boolean;
+```
+
+Defined in: [src/mantle/config.ts:137](https://github.com/dotsetlabs/cli/blob/5d9ea0fe5050d4d18b89d35a8fee54f876108d8f/src/mantle/config.ts#L137)
+
+Add to job summary (GitHub Actions / GitLab)
+
+### uploadSarif?
+
+```ts
+optional uploadSarif: boolean;
+```
+
+Defined in: [src/mantle/config.ts:139](https://github.com/dotsetlabs/cli/blob/5d9ea0fe5050d4d18b89d35a8fee54f876108d8f/src/mantle/config.ts#L139)
+
+Upload SARIF to GitHub Code Scanning

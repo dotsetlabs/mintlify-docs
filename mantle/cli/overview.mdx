@@ -1,0 +1,34 @@
+---
+title: CLI Overview
+description: 'Dotset Mantle command-line interface'
+---
+
+# CLI Reference
+
+The Mantle CLI provides a unified interface for secret protection in your CI/CD pipelines.
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| [`run`](/mantle/cli/run) | Run commands with protection |
+
+## Global Options
+
+```bash
+dotset mantle --version    # Show version
+dotset mantle --help       # Show help
+```
+
+## Quick Examples
+
+```bash
+# Zero-setup protection
+dotset mantle run -- npm start
+
+# Redact secrets from output
+dotset mantle run --mode redact -- npm test
+
+# Generate compliance report
+dotset mantle run --report -- npm test
+```

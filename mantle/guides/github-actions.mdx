@@ -1,0 +1,65 @@
+---
+title: GitHub Actions
+description: 'Protect your GitHub Actions workflows'
+---
+
+# GitHub Actions Integration
+
+Mantle integrates seamlessly with GitHub Actions to protect your CI builds.
+
+## Basic Setup
+
+Mantle auto-detects secrets from environment variables injected by GitHub Actions:
+
+```yaml
+- name: Install Mantle
+  run: npm install -g @dotsetlabs/cli
+
+- name: Run tests with protection
+  run: dotset mantle run --mode redact -- npm test
+  env:
+    DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    API_KEY: ${{ secrets.API_KEY }}
+```
+
+## Using with .env Files
+
+If your workflow creates a `.env` file from secrets, Mantle picks it up automatically:
+
+```yaml
+- name: Create .env from secrets
+  run: |
+    echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+    echo "API_KEY=${{ secrets.API_KEY }}" >> .env
+
+- name: Run with protection
+  run: dotset mantle run --mode redact -- npm test
+```
+
+## Using AWS Secrets Manager
+
+Mantle can pull secrets directly from AWS during your build:
+
+```yaml
+- name: Run with AWS Secrets
+  run: dotset mantle run --providers aws-sm --mode redact -- npm deploy
+  env:
+    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    AWS_REGION: us-east-1
+```
+
+## Cloud Analytics
+
+Link your project to track protection events:
+
+```yaml
+- name: Run with analytics
+  run: dotset mantle run --mode redact -- npm test
+  env:
+    DOTSET_API_TOKEN: ${{ secrets.DOTSET_API_TOKEN }}
+```
+
+<Tip>
+Create an API token in the Dotset dashboard and store it as a GitHub secret. Mantle will automatically report protection events.
+</Tip>

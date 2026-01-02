@@ -1,0 +1,84 @@
+---
+title: Protection Modes
+description: 'Understand detect, redact, and block modes'
+---
+
+# Protection Modes
+
+Mantle offers three protection modes for different use cases.
+
+## Detect Mode
+
+**Logs when secrets appear in output but doesn't modify anything.**
+
+```bash
+dotset mantle run --mode detect -- npm test
+```
+
+Best for:
+- Auditing existing builds
+- Understanding what would be caught
+- Development without surprises
+
+Output:
+```
+⚠️  Secret exposure detected: API_KEY
+⚠️  Secret exposure detected: DATABASE_URL
+```
+
+## Redact Mode (Default)
+
+**Replaces secrets with `[REDACTED]` in real-time.**
+
+```bash
+dotset mantle run --mode redact -- npm test
+```
+
+Best for:
+- Production CI/CD pipelines
+- Log storage systems
+- Team debugging sessions
+
+Output:
+```
+Connecting to [REDACTED]
+Using API key: [REDACTED]
+```
+
+<Tip>
+Redact mode is the default for all Mantle commands. It prevents exposure while keeping logs readable.
+</Tip>
+
+## Block Mode
+
+**Completely suppresses any output line containing a secret.**
+
+```bash
+dotset mantle run --mode block -- npm test
+```
+
+Best for:
+- Highly sensitive environments
+- Compliance requirements
+- Zero-tolerance policies
+
+Output:
+```
+Starting server...
+[blocked: contained secret]
+Server ready
+```
+
+## Streaming Reliability
+
+Regardless of the protection mode chosen, Mantle uses a sophisticated **Streaming Redaction Engine** to ensure reliability.
+
+### Line-Buffered Processing
+Standard stream processing can miss secrets if they happen to be split between two data chunks (e.g., a 1500-byte packet ending halfway through an API key). Mantle's engine is **line-buffered**, meaning it reconstructs complete lines before scanning, ensuring that secrets are caught regardless of how they are chunked.
+
+### Overlapping Match Merging
+Commonly, a specific secret value might also match a broader pattern (e.g., an API key within an "Authorization" header). Mantle intelligently merges these overlapping matches into a single redaction range to prevent corrupted or partial output in your logs.
+
+### Independent Stream Buffering
+Mantle maintains separate buffers for `stdout` and `stderr`. This ensures that interleaved output from different streams doesn't intermingle and interfere with the redaction process.
+

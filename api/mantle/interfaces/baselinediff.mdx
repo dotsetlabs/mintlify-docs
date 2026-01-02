@@ -1,0 +1,123 @@
+---
+title: "Interface: BaselineDiff"
+description: "Defined in: src/mantle/baseline.ts:124"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/mantle) / BaselineDiff
+
+# Interface: BaselineDiff
+
+Defined in: src/mantle/baseline.ts:124
+
+Diff result between two baseline states
+
+## Properties
+
+### newFindings
+
+```ts
+newFindings: BaselineFinding[];
+```
+
+Defined in: src/mantle/baseline.ts:126
+
+New findings not in baseline
+
+### reactivatedFindings
+
+```ts
+reactivatedFindings: BaselineFinding[];
+```
+
+Defined in: src/mantle/baseline.ts:136
+
+Findings that reappeared
+
+### resolvedFindings
+
+```ts
+resolvedFindings: BaselineFinding[];
+```
+
+Defined in: src/mantle/baseline.ts:128
+
+Findings that were resolved
+
+### statusChanges
+
+```ts
+statusChanges: {
+  finding: BaselineFinding;
+  newStatus: FindingStatus;
+  previousStatus: FindingStatus;
+}[];
+```
+
+Defined in: src/mantle/baseline.ts:130
+
+Findings with changed status
+
+#### finding
+
+```ts
+finding: BaselineFinding;
+```
+
+#### newStatus
+
+```ts
+newStatus: FindingStatus;
+```
+
+#### previousStatus
+
+```ts
+previousStatus: FindingStatus;
+```
+
+### summary
+
+```ts
+summary: {
+  netChange: number;
+  totalChanged: number;
+  totalNew: number;
+  totalReactivated: number;
+  totalResolved: number;
+};
+```
+
+Defined in: src/mantle/baseline.ts:138
+
+Summary statistics
+
+#### netChange
+
+```ts
+netChange: number;
+```
+
+#### totalChanged
+
+```ts
+totalChanged: number;
+```
+
+#### totalNew
+
+```ts
+totalNew: number;
+```
+
+#### totalReactivated
+
+```ts
+totalReactivated: number;
+```
+
+#### totalResolved
+
+```ts
+totalResolved: number;
+```

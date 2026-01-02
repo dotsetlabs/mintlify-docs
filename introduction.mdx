@@ -9,23 +9,23 @@ description: 'Security tools for modern development workflows'
 
 The Dotset CLI provides two security tools:
 
-- **[Shield](/shield/cli/overview)** - Secret detection and log sanitization for CI/CD pipelines
+- **[Mantle](/mantle/cli/overview)** - Secret detection and log sanitization for CI/CD pipelines
 - **[Tollgate](/tollgate/cli/overview)** - Policy-based access control for AI agents using MCP
 
 ---
 
-## Shield
+## Mantle
 
 Secrets leak in build logs every day. Debug statements, error messages, and verbose logging expose API keys, tokens, and credentials.
 
-**Dotset Shield** intercepts output streams and redacts secrets in real-time — with **zero migration** and **dynamic secret detection**.
+**Dotset Mantle** intercepts output streams and redacts secrets in real-time — with **zero migration** and **dynamic secret detection**.
 
 ```bash
-dotset shield run -- npm start
+dotset mantle run -- npm start
 ```
 
 > [!NOTE]
-> Shield processes secrets locally and never sends values to the cloud. [Learn more →](/shield/security/trust)
+> Mantle processes secrets locally and never sends values to the cloud. [Learn more →](/mantle/security/trust)
 
 ---
 
@@ -53,7 +53,7 @@ npm install -g @dotsetlabs/cli
 ## Next Steps
 
 <CardGroup>
-  <Card title="Shield Quickstart" icon="shield" href="/quickstart#shield">
+  <Card title="Mantle Quickstart" icon="shield-halved" href="/quickstart#mantle">
     Protect your CI/CD in 60 seconds
   </Card>
   <Card title="Tollgate Quickstart" icon="lock" href="/quickstart#tollgate">

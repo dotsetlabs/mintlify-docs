@@ -1,0 +1,71 @@
+---
+title: Scopes
+description: 'Manage secrets for different environments'
+---
+
+# Environment Scopes
+
+Mantle supports scopes for managing secrets across different environments. This is primarily useful when working with different `.env` files.
+
+## Available Scopes
+
+| Scope | Description | Example |
+|-------|-------------|---------|
+| `development` | Local development (default) | Dev API keys |
+| `staging` | Staging/preview environments | Staging database |
+| `production` | Production environment | Live credentials |
+
+## How Scopes Work with Providers
+
+### Dotenv Provider
+
+The dotenv provider automatically loads scope-specific files:
+
+```bash
+# development scope (default)
+.env                    # Always loaded
+.env.local              # Always loaded (overrides .env)
+.env.development        # Loaded for development scope
+.env.development.local  # Loaded for development scope
+
+# production scope
+.env                    # Always loaded
+.env.local              # Always loaded
+.env.production         # Loaded for production scope
+.env.production.local   # Loaded for production scope
+```
+
+### Running with a Scope
+
+```bash
+# Uses development secrets (default)
+dotset mantle run -- npm start
+
+# Uses staging secrets
+dotset mantle run --scope staging -- npm start
+
+# Uses production secrets  
+dotset mantle run --scope production -- npm start
+```
+
+## Use Cases
+
+### Local Development
+```bash
+# .env.development contains local dev values
+dotset mantle run -- npm start
+```
+
+### CI/CD Staging
+```bash
+dotset mantle run --scope staging -- npm test
+```
+
+### Production Deployment
+```bash
+dotset mantle run --scope production -- node server.js
+```
+
+<Tip>
+In production CI/CD, you typically don't need scopes since your CI platform injects the correct secrets as environment variables. Scopes are most useful for local development with `.env` files.
+</Tip>

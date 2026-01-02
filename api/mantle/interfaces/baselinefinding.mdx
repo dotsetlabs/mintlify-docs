@@ -1,0 +1,175 @@
+---
+title: "Interface: BaselineFinding"
+description: "Defined in: src/mantle/baseline.ts:39"
+icon: "brackets-curly"
+---
+
+[Dotset CLI API Documentation](/api) / [index](/api/mantle) / BaselineFinding
+
+# Interface: BaselineFinding
+
+Defined in: src/mantle/baseline.ts:39
+
+A single baseline finding with full metadata
+
+## Properties
+
+### column?
+
+```ts
+optional column: number;
+```
+
+Defined in: src/mantle/baseline.ts:49
+
+Column number in file
+
+### comment?
+
+```ts
+optional comment: string;
+```
+
+Defined in: src/mantle/baseline.ts:61
+
+User annotation/comment
+
+### created
+
+```ts
+created: string;
+```
+
+Defined in: src/mantle/baseline.ts:55
+
+When the finding was first detected
+
+### file?
+
+```ts
+optional file: string;
+```
+
+Defined in: src/mantle/baseline.ts:45
+
+File path where finding was detected
+
+### hash
+
+```ts
+hash: string;
+```
+
+Defined in: src/mantle/baseline.ts:41
+
+SHA256 hash of finding location + pattern
+
+### lastSeen
+
+```ts
+lastSeen: string;
+```
+
+Defined in: src/mantle/baseline.ts:57
+
+When the finding was last seen
+
+### line?
+
+```ts
+optional line: number;
+```
+
+Defined in: src/mantle/baseline.ts:47
+
+Line number in file
+
+### markedBy?
+
+```ts
+optional markedBy: string;
+```
+
+Defined in: src/mantle/baseline.ts:63
+
+Who marked this finding (for audit)
+
+### metadata?
+
+```ts
+optional metadata: Record<string, unknown>;
+```
+
+Defined in: src/mantle/baseline.ts:71
+
+Additional metadata
+
+### occurrences
+
+```ts
+occurrences: number;
+```
+
+Defined in: src/mantle/baseline.ts:69
+
+Number of times this finding has been seen
+
+### patternName
+
+```ts
+patternName: string;
+```
+
+Defined in: src/mantle/baseline.ts:43
+
+Pattern name that matched
+
+### remediation?
+
+```ts
+optional remediation: string;
+```
+
+Defined in: src/mantle/baseline.ts:65
+
+Remediation notes
+
+### severity
+
+```ts
+severity: FindingSeverity;
+```
+
+Defined in: src/mantle/baseline.ts:51
+
+Severity of the finding
+
+### status
+
+```ts
+status: FindingStatus;
+```
+
+Defined in: src/mantle/baseline.ts:53
+
+Current status
+
+### statusChanged?
+
+```ts
+optional statusChanged: string;
+```
+
+Defined in: src/mantle/baseline.ts:59
+
+When the status was last changed
+
+### ticketRef?
+
+```ts
+optional ticketRef: string;
+```
+
+Defined in: src/mantle/baseline.ts:67
+
+Ticket/issue reference
