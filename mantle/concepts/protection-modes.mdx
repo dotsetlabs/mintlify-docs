@@ -12,7 +12,7 @@ Mantle offers three protection modes for different use cases.
 **Logs when secrets appear in output but doesn't modify anything.**
 
 ```bash
-dotset mantle run --mode detect -- npm test
+mantle run --mode detect -- npm test
 ```
 
 Best for:
@@ -31,7 +31,7 @@ Output:
 **Replaces secrets with `[REDACTED]` in real-time.**
 
 ```bash
-dotset mantle run --mode redact -- npm test
+mantle run --mode redact -- npm test
 ```
 
 Best for:
@@ -54,7 +54,7 @@ Redact mode is the default for all Mantle commands. It prevents exposure while k
 **Completely suppresses any output line containing a secret.**
 
 ```bash
-dotset mantle run --mode block -- npm test
+mantle run --mode block -- npm test
 ```
 
 Best for:

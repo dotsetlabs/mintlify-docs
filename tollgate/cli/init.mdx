@@ -10,7 +10,7 @@ Creates a `tollgate.yaml` configuration file with example settings or using an i
 ## Usage
 
 ```bash
-dotset tollgate init [options]
+tollgate init [options]
 ```
 
 ## Options
@@ -27,20 +27,20 @@ dotset tollgate init [options]
 
 ```bash
 # Create default config in current directory
-dotset tollgate init
+tollgate init
 
 # Create config at custom path
-dotset tollgate init -o ~/configs/tollgate.yaml
+tollgate init -o ~/configs/tollgate.yaml
 
 # Overwrite existing config
-dotset tollgate init -f
+tollgate init -f
 ```
 
 ### Interactive Wizard
 
 ```bash
 # Launch interactive configuration wizard
-dotset tollgate init -i
+tollgate init -i
 ```
 
 The interactive wizard guides you through:
@@ -111,12 +111,12 @@ After creating your config:
 
 1. **Validate it:**
    ```bash
-   dotset tollgate validate
+   tollgate validate
    ```
 
 2. **Start the proxy:**
    ```bash
-   dotset tollgate start -s postgres
+   tollgate start -s postgres
    ```
 
 3. **Configure your MCP client** to use Tollgate instead of the direct server connection.

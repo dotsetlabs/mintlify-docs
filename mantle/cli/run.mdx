@@ -1,16 +1,16 @@
 ---
-title: dotset mantle run
+title: mantle run
 description: 'Run commands with multi-provider secret protection'
 ---
 
-# dotset mantle run
+# mantle run
 
 Run any command with secrets injected from multiple providers and output protection.
 
 ## Usage
 
 ```bash
-dotset mantle run [options] -- <command...>
+mantle run [options] -- <command...>
 ```
 
 <Note>
@@ -42,22 +42,22 @@ Mantle aggregates secrets from configured providers. By default, it uses `auto` 
 
 ### Zero-Setup (.env auto-detection)
 ```bash
-dotset mantle run -- npm start
+mantle run -- npm start
 ```
 
 ### Explicit Providers
 ```bash
-dotset mantle run --providers dotenv,aws-sm -- node server.js
+mantle run --providers dotenv,aws-sm -- node server.js
 ```
 
 ### With Redaction
 ```bash
-dotset mantle run --mode redact -- npm test
+mantle run --mode redact -- npm test
 ```
 
 ### Production Scope
 ```bash
-dotset mantle run --scope production -- node server.js
+mantle run --scope production -- node server.js
 ```
 
 ## Compliance Reports
@@ -69,7 +69,7 @@ Use the `--report` flag to generate a standalone HTML report after each run. Thi
 - **CI artifacts**: Upload to your build system for review
 
 ```bash
-dotset mantle run --report -- npm test
+mantle run --report -- npm test
 # Generates: mantle-report.html
 ```
 

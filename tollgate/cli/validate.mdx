@@ -10,7 +10,7 @@ Validates a `tollgate.yaml` configuration file for syntax errors, schema complia
 ## Usage
 
 ```bash
-dotset tollgate validate [path] [options]
+tollgate validate [path] [options]
 ```
 
 ## Arguments
@@ -33,30 +33,30 @@ dotset tollgate validate [path] [options]
 
 ```bash
 # Validate default config file
-dotset tollgate validate
+tollgate validate
 
 # Validate specific file
-dotset tollgate validate ~/configs/tollgate.yaml
+tollgate validate ~/configs/tollgate.yaml
 ```
 
 ### Selective Validation
 
 ```bash
 # Only validate postgres server config
-dotset tollgate validate -s postgres
+tollgate validate -s postgres
 
 # Only validate filesystem server
-dotset tollgate validate -s filesystem
+tollgate validate -s filesystem
 ```
 
 ### CI/CD Integration
 
 ```bash
 # Machine-readable JSON output
-dotset tollgate validate --json
+tollgate validate --json
 
 # Fail silently except for errors
-dotset tollgate validate --quiet
+tollgate validate --quiet
 ```
 
 ## Validation Checks
@@ -113,17 +113,17 @@ The validator checks for:
 
 1. **Always validate before deploying:**
    ```bash
-   dotset tollgate validate && dotset tollgate start -s postgres
+   tollgate validate && tollgate start -s postgres
    ```
 
 2. **Add to CI/CD pipeline:**
    ```yaml
    # .github/workflows/validate.yml
    - name: Validate Tollgate config
-     run: npx @dotsetlabs/cli tollgate validate --quiet
+     run: npx @dotsetlabs/tollgate tollgate validate --quiet
    ```
 
 3. **Use JSON output for programmatic checks:**
    ```bash
-   dotset tollgate validate --json | jq '.valid'
+   tollgate validate --json | jq '.valid'
    ```

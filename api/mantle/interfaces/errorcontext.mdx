@@ -22,7 +22,7 @@ import {
   withTimeout,
   CircuitBreaker,
   isRetryableError,
-} from '@dotsetlabs/cli';
+} from '@dotsetlabs/mantle';
 
 // Retry with exponential backoff
 const result = await withRetry(

@@ -15,10 +15,10 @@ Always use a configuration file in production:
 
 ```bash
 # Don't use wrap mode in production
-dotset tollgate wrap ...  # Not recommended
+tollgate wrap ...  # Not recommended
 
 # Use config mode with explicit policies
-dotset tollgate start -s postgres -c /etc/tollgate/config.yaml
+tollgate start -s postgres -c /etc/tollgate/config.yaml
 ```
 
 ### Strict Default Policy
@@ -63,7 +63,7 @@ Configure appropriate failure behavior:
 
 ```yaml
 # Production recommended
-dotset tollgate start -s postgres --failure-mode fail-closed
+tollgate start -s postgres --failure-mode fail-closed
 ```
 
 | Mode | Behavior | Use Case |
@@ -78,7 +78,7 @@ dotset tollgate start -s postgres --failure-mode fail-closed
 
 ```bash
 # Use a dedicated path
-dotset tollgate start -s postgres --audit-path /var/log/tollgate/audit.db
+tollgate start -s postgres --audit-path /var/log/tollgate/audit.db
 ```
 
 ### Regular Exports
@@ -87,7 +87,7 @@ Schedule regular exports for compliance:
 
 ```bash
 # Daily export cron job
-0 0 * * * /usr/local/bin/dotset tollgate export \
+0 0 * * * /usr/local/bin/tollgate export \
   --since "$(date -d 'yesterday' +%Y-%m-%d)" \
   -f json \
   -o /var/log/tollgate/daily-$(date +%Y%m%d).json
@@ -99,10 +99,10 @@ Forward to your security information system:
 
 ```bash
 # Splunk via CEF
-dotset tollgate export -f cef | nc splunk-server 514
+tollgate export -f cef | nc splunk-server 514
 
 # Datadog via JSONL
-dotset tollgate export -f jsonl | \
+tollgate export -f jsonl | \
   /opt/datadog-agent/bin/agent-pipe --source tollgate
 ```
 
@@ -120,7 +120,7 @@ After=network.target postgresql.service
 [Service]
 Type=simple
 User=tollgate
-ExecStart=/usr/local/bin/npx @dotsetlabs/cli tollgate start \
+ExecStart=/usr/local/bin/npx @dotsetlabs/tollgate tollgate start \
   -s postgres \
   -c /etc/tollgate/config.yaml \
   --audit-path /var/log/tollgate/audit.db \
@@ -144,11 +144,11 @@ sudo systemctl start tollgate-postgres
 ```dockerfile
 FROM node:20-slim
 
-RUN npm install -g @dotsetlabs/cli
+RUN npm install -g @dotsetlabs/tollgate
 
 COPY tollgate.yaml /etc/tollgate/config.yaml
 
-CMD ["npx", "@dotsetlabs/cli", "tollgate", "start", \
+CMD ["npx", "@dotsetlabs/tollgate", "tollgate", "start", \
      "-s", "postgres", \
      "-c", "/etc/tollgate/config.yaml", \
      "--audit-path", "/var/log/tollgate/audit.db", \
@@ -198,7 +198,7 @@ Monitor the Tollgate process:
 systemctl is-active tollgate-postgres
 
 # Check recent logs
-dotset tollgate logs -n 10
+tollgate logs -n 10
 ```
 
 ### Metrics to Track
@@ -241,8 +241,8 @@ git commit -m "Update Tollgate policies"
 Run separate Tollgate instances per MCP server:
 
 ```bash
-dotset tollgate start -s postgres -c /etc/tollgate/config.yaml &
-dotset tollgate start -s filesystem -c /etc/tollgate/config.yaml &
+tollgate start -s postgres -c /etc/tollgate/config.yaml &
+tollgate start -s filesystem -c /etc/tollgate/config.yaml &
 ```
 
 ### High Availability

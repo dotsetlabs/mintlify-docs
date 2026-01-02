@@ -11,9 +11,9 @@ This guide shows how to use Tollgate with Cursor IDE to add policy-based access 
 
 - [Cursor](https://cursor.sh) installed
 - Node.js 20+ installed
-- `@dotsetlabs/cli` installed globally:
+- `@dotsetlabs/tollgate` installed globally:
   ```bash
-  npm install -g @dotsetlabs/cli
+  npm install -g @dotsetlabs/tollgate
   ```
 
 ## Quick Start
@@ -46,7 +46,7 @@ Instead of configuring the MCP server directly, wrap it with Tollgate.
 {
   "command": "npx",
   "args": [
-    "-y", "@dotsetlabs/cli", "tollgate", "wrap",
+    "-y", "@dotsetlabs/tollgate", "tollgate", "wrap",
     "-d", "prompt",
     "npx", "-y", "@modelcontextprotocol/server-postgres"
   ],
@@ -67,7 +67,7 @@ For more control, use a Tollgate config file:
 ### 1. Create Config
 
 ```bash
-dotset tollgate init -o ~/cursor-tollgate.yaml
+tollgate init -o ~/cursor-tollgate.yaml
 ```
 
 ### 2. Configure Cursor
@@ -76,7 +76,7 @@ dotset tollgate init -o ~/cursor-tollgate.yaml
 {
   "command": "npx",
   "args": [
-    "-y", "@dotsetlabs/cli", "tollgate", "start",
+    "-y", "@dotsetlabs/tollgate", "tollgate", "start",
     "-s", "postgres",
     "-c", "/Users/yourname/cursor-tollgate.yaml"
   ],
@@ -96,7 +96,7 @@ Protect the filesystem server commonly used with Cursor:
 {
   "command": "npx",
   "args": [
-    "-y", "@dotsetlabs/cli", "tollgate", "wrap",
+    "-y", "@dotsetlabs/tollgate", "tollgate", "wrap",
     "-d", "prompt",
     "npx", "-y", "@anthropic/mcp-server-filesystem", "./"
   ]
@@ -142,7 +142,7 @@ Configure in Cursor:
 {
   "command": "npx",
   "args": [
-    "-y", "@dotsetlabs/cli", "tollgate", "start",
+    "-y", "@dotsetlabs/tollgate", "tollgate", "start",
     "-s", "filesystem",
     "-c", "/Users/yourname/cursor-tollgate.yaml"
   ]
@@ -219,11 +219,11 @@ Tollgate approval prompts appear in the terminal. When using Cursor:
 ### Configuration not loading
 
 1. Use absolute paths in Cursor config
-2. Validate config: `dotset tollgate validate -c ~/cursor-tollgate.yaml`
+2. Validate config: `tollgate validate -c ~/cursor-tollgate.yaml`
 
 ### Server crashes
 
 Check logs:
 ```bash
-dotset tollgate logs -n 20
+tollgate logs -n 20
 ```

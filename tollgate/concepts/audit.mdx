@@ -29,16 +29,16 @@ Every tool call records:
 
 ```bash
 # Last 20 entries
-dotset tollgate logs
+tollgate logs
 
 # Last 100 entries
-dotset tollgate logs -n 100
+tollgate logs -n 100
 ```
 
 ### Statistics
 
 ```bash
-dotset tollgate stats
+tollgate stats
 ```
 
 ## Exporting Logs
@@ -47,32 +47,32 @@ Export for compliance reporting or SIEM integration:
 
 ```bash
 # JSON format
-dotset tollgate export -f json -o audit.json
+tollgate export -f json -o audit.json
 
 # CSV for spreadsheets
-dotset tollgate export -f csv -o audit.csv
+tollgate export -f csv -o audit.csv
 
 # CEF for SIEM (Splunk, Datadog, etc.)
-dotset tollgate export -f cef -o audit.cef
+tollgate export -f cef -o audit.cef
 
 # JSONL for streaming
-dotset tollgate export -f jsonl
+tollgate export -f jsonl
 ```
 
 ### Filtering Exports
 
 ```bash
 # Last 24 hours
-dotset tollgate export --since "2024-01-14T00:00:00Z"
+tollgate export --since "2024-01-14T00:00:00Z"
 
 # Specific server
-dotset tollgate export -s postgres
+tollgate export -s postgres
 
 # Only dangerous operations
-dotset tollgate export --risk dangerous
+tollgate export --risk dangerous
 
 # Date range
-dotset tollgate export \
+tollgate export \
   --since "2024-01-01" \
   --until "2024-01-31" \
   -o january-report.json
@@ -97,7 +97,7 @@ The hash allows correlation without exposing data.
 For debugging, you can export with original data:
 
 ```bash
-dotset tollgate export --no-redact -o debug.json
+tollgate export --no-redact -o debug.json
 ```
 
 > [!CAUTION]
@@ -114,7 +114,7 @@ Audit logs are stored in SQLite at:
 Override with `--audit-path`:
 
 ```bash
-dotset tollgate start -s postgres --audit-path /var/log/tollgate.db
+tollgate start -s postgres --audit-path /var/log/tollgate.db
 ```
 
 ## Retention
@@ -123,7 +123,7 @@ Tollgate does not automatically delete old logs. For compliance, implement your 
 
 ```bash
 # Export and archive old logs
-dotset tollgate export \
+tollgate export \
   --until "$(date -v-90d +%Y-%m-%d)" \
   -o archive-$(date +%Y%m%d).json
 
@@ -137,14 +137,14 @@ rm ~/.dotset/tollgate.db
 
 ```bash
 # Real-time forwarding
-dotset tollgate export -f cef | nc splunk-server 514
+tollgate export -f cef | nc splunk-server 514
 ```
 
 ### Datadog
 
 ```bash
 # Export JSONL for Datadog logs
-dotset tollgate export -f jsonl | \
+tollgate export -f jsonl | \
   datadog-agent-pipe --source tollgate
 ```
 
@@ -152,7 +152,7 @@ dotset tollgate export -f jsonl | \
 
 ```bash
 # Export and upload
-dotset tollgate export -f jsonl -o /tmp/audit.jsonl
+tollgate export -f jsonl -o /tmp/audit.jsonl
 aws logs create-log-stream --log-group-name tollgate ...
 aws logs put-log-events --log-group-name tollgate ...
 ```

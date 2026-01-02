@@ -10,7 +10,7 @@ Starts the Tollgate proxy for a configured MCP server with full policy control.
 ## Usage
 
 ```bash
-dotset tollgate start [options]
+tollgate start [options]
 ```
 
 ## Options
@@ -30,27 +30,27 @@ dotset tollgate start [options]
 
 ```bash
 # Start proxy for 'postgres' server from config
-dotset tollgate start -s postgres
+tollgate start -s postgres
 
 # Use custom config path
-dotset tollgate start -s postgres -c ~/configs/tollgate.yaml
+tollgate start -s postgres -c ~/configs/tollgate.yaml
 ```
 
 ### With Options
 
 ```bash
 # Start with custom timeout
-dotset tollgate start -s postgres --timeout 120000
+tollgate start -s postgres --timeout 120000
 
 # Start with fail-readonly mode
-dotset tollgate start -s filesystem --failure-mode fail-readonly
+tollgate start -s filesystem --failure-mode fail-readonly
 ```
 
 ### Dry Run Mode
 
 ```bash
 # Test policies without executing tools
-dotset tollgate start -s postgres --dry-run
+tollgate start -s postgres --dry-run
 ```
 
 ## Configuration File
@@ -58,7 +58,7 @@ dotset tollgate start -s postgres --dry-run
 The `start` command requires a `tollgate.yaml` configuration file. Create one with:
 
 ```bash
-dotset tollgate init
+tollgate init
 ```
 
 ### Example Configuration
@@ -103,9 +103,9 @@ The `-s/--server` option must match a server name defined in your config:
 
 ```yaml
 servers:
-  postgres:      # Use: dotset tollgate start -s postgres
+  postgres:      # Use: tollgate start -s postgres
     ...
-  filesystem:    # Use: dotset tollgate start -s filesystem
+  filesystem:    # Use: tollgate start -s filesystem
     ...
 ```
 

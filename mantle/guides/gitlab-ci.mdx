@@ -19,9 +19,9 @@ test:
   stage: test
   image: node:20
   before_script:
-    - npm install -g @dotsetlabs/cli
+    - npm install -g @dotsetlabs/mantle
   script:
-    - dotset mantle run --mode redact -- npm test
+    - mantle run --mode redact -- npm test
   variables:
     DATABASE_URL: $DATABASE_URL
     API_KEY: $API_KEY
@@ -39,9 +39,9 @@ GitLab's [protected and masked variables](https://docs.gitlab.com/ee/ci/variable
 deploy:
   stage: deploy
   before_script:
-    - npm install -g @dotsetlabs/cli
+    - npm install -g @dotsetlabs/mantle
   script:
-    - dotset mantle run --mode redact -- ./deploy.sh
+    - mantle run --mode redact -- ./deploy.sh
   variables:
     DEPLOY_TOKEN: $DEPLOY_TOKEN
     AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
@@ -57,11 +57,11 @@ Create a `.env` file from CI variables:
 ```yaml
 test:
   before_script:
-    - npm install -g @dotsetlabs/cli
+    - npm install -g @dotsetlabs/mantle
     - echo "DATABASE_URL=$DATABASE_URL" >> .env
     - echo "API_KEY=$API_KEY" >> .env
   script:
-    - dotset mantle run --mode redact -- npm test
+    - mantle run --mode redact -- npm test
 ```
 
 ## Caching Mantle Installation
@@ -78,9 +78,9 @@ cache:
 
 test:
   before_script:
-    - npm install -g @dotsetlabs/cli
+    - npm install -g @dotsetlabs/mantle
   script:
-    - dotset mantle run --mode redact -- npm test
+    - mantle run --mode redact -- npm test
 ```
 
 ## Complete Example
@@ -100,7 +100,7 @@ cache:
 
 .mantle-setup: &mantle-setup
   before_script:
-    - npm install -g @dotsetlabs/cli
+    - npm install -g @dotsetlabs/mantle
 
 test:
   <<: *mantle-setup
@@ -108,7 +108,7 @@ test:
   image: node:20
   script:
     - npm ci
-    - dotset mantle run --mode redact -- npm test
+    - mantle run --mode redact -- npm test
   variables:
     DATABASE_URL: $DATABASE_URL
 
@@ -117,7 +117,7 @@ deploy:
   stage: deploy
   image: node:20
   script:
-    - dotset mantle run --mode redact -- ./scripts/deploy.sh
+    - mantle run --mode redact -- ./scripts/deploy.sh
   variables:
     AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
     AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY

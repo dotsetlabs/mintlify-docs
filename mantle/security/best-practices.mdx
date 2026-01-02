@@ -45,13 +45,13 @@ Rotate your secrets periodically and update them in your secret storage (CI secr
 ### Use Redact Mode
 
 ```bash
-dotset mantle run --mode redact -- npm test
+mantle run --mode redact -- npm test
 ```
 
 ### Use Quiet Mode in CI
 
 ```bash
-dotset mantle run --mode redact --quiet -- npm test
+mantle run --mode redact --quiet -- npm test
 ```
 
 ## Audit Your Logs
@@ -60,7 +60,7 @@ dotset mantle run --mode redact --quiet -- npm test
 
 ```bash
 # Run with detect mode to audit
-dotset mantle run --mode detect -- npm start
+mantle run --mode detect -- npm start
 ```
 
 ### Review CI Logs

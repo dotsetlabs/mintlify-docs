@@ -10,7 +10,7 @@ Wraps an MCP server command with Tollgate protection without requiring a configu
 ## Usage
 
 ```bash
-dotset tollgate wrap [options] <command> [args...]
+tollgate wrap [options] <command> [args...]
 ```
 
 ## Options
@@ -29,43 +29,43 @@ dotset tollgate wrap [options] <command> [args...]
 
 ```bash
 # Wrap a PostgreSQL MCP server (prompts for all tool calls)
-dotset tollgate wrap npx @modelcontextprotocol/server-postgres
+tollgate wrap npx @modelcontextprotocol/server-postgres
 
 # Wrap a filesystem server
-dotset tollgate wrap npx @anthropic/mcp-server-filesystem ./src
+tollgate wrap npx @anthropic/mcp-server-filesystem ./src
 ```
 
 ### Default Actions
 
 ```bash
 # Allow all by default (use for trusted servers)
-dotset tollgate wrap -d allow npx mcp-server-trusted
+tollgate wrap -d allow npx mcp-server-trusted
 
 # Deny all by default (maximum security)
-dotset tollgate wrap -d deny npx mcp-server-untrusted
+tollgate wrap -d deny npx mcp-server-untrusted
 
 # Prompt for everything (recommended)
-dotset tollgate wrap -d prompt npx mcp-server-postgres
+tollgate wrap -d prompt npx mcp-server-postgres
 ```
 
 ### Testing with Dry Run
 
 ```bash
 # See what would happen without actually executing tools
-dotset tollgate wrap --dry-run npx mcp-server-postgres
+tollgate wrap --dry-run npx mcp-server-postgres
 ```
 
 ### Failure Modes
 
 ```bash
 # Deny all operations if upstream server fails (safest)
-dotset tollgate wrap --failure-mode fail-closed npx mcp-server
+tollgate wrap --failure-mode fail-closed npx mcp-server
 
 # Allow only reads if upstream fails
-dotset tollgate wrap --failure-mode fail-readonly npx mcp-server
+tollgate wrap --failure-mode fail-readonly npx mcp-server
 
 # Allow all operations if upstream fails (development only)
-dotset tollgate wrap --failure-mode fail-open npx mcp-server
+tollgate wrap --failure-mode fail-open npx mcp-server
 ```
 
 ## How It Works

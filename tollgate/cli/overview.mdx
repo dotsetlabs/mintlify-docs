@@ -1,11 +1,17 @@
 ---
 title: CLI Overview
-description: 'Dotset Tollgate command-line interface'
+description: 'Tollgate command-line interface'
 ---
 
 # CLI Reference
 
 The Tollgate CLI provides policy-based access control for MCP (Model Context Protocol) servers, adding a security layer between AI agents and their tools.
+
+## Installation
+
+```bash
+npm install -g @dotsetlabs/tollgate
+```
 
 ## Commands
 
@@ -22,24 +28,24 @@ The Tollgate CLI provides policy-based access control for MCP (Model Context Pro
 ## Global Options
 
 ```bash
-dotset tollgate --version    # Show version
-dotset tollgate --help       # Show help
+tollgate --version    # Show version
+tollgate --help       # Show help
 ```
 
 ## Quick Examples
 
 ```bash
 # Zero-config protection (prompts for all tool calls)
-dotset tollgate wrap npx @modelcontextprotocol/server-postgres
+tollgate wrap npx @modelcontextprotocol/server-postgres
 
 # Use a configuration file
-dotset tollgate start -s postgres -c ./tollgate.yaml
+tollgate start -s postgres -c ./tollgate.yaml
 
 # View recent tool calls
-dotset tollgate logs -n 50
+tollgate logs -n 50
 
 # Export logs for compliance
-dotset tollgate export -f json -o audit.json
+tollgate export -f json -o audit.json
 ```
 
 ## Two Modes of Operation
@@ -49,7 +55,7 @@ dotset tollgate export -f json -o audit.json
 Instantly protect any MCP server without configuration:
 
 ```bash
-dotset tollgate wrap npx @anthropic/mcp-server-filesystem ./src
+tollgate wrap npx @anthropic/mcp-server-filesystem ./src
 ```
 
 ### Config Mode (Full Control)
@@ -58,8 +64,8 @@ Use a YAML configuration file for fine-grained policies:
 
 ```bash
 # Create config
-dotset tollgate init
+tollgate init
 
 # Start with config
-dotset tollgate start -s filesystem
+tollgate start -s filesystem
 ```

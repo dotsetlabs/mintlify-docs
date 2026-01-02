@@ -1,55 +1,97 @@
 ---
 title: Installation
-description: 'Install Dotset CLI'
+description: 'Install Dotset Labs tools'
 ---
 
 # Installation
 
-## CLI (Mantle)
+Mantle and Tollgate are separate npm packages that can be installed independently.
+
+---
+
+## Mantle (Secret Detection)
 
 ### npm (Recommended)
 
 ```bash
-npm install -g @dotsetlabs/cli
+npm install -g @dotsetlabs/mantle
 ```
 
 ### Yarn
 
 ```bash
-yarn global add @dotsetlabs/cli
+yarn global add @dotsetlabs/mantle
 ```
 
 ### pnpm
 
 ```bash
-pnpm add -g @dotsetlabs/cli
+pnpm add -g @dotsetlabs/mantle
 ```
 
 ### Verify Installation
 
 ```bash
-dotset --version
+mantle --version
 ```
 
-## Requirements
-
-- **CLI**: Node.js 20 or later
-
-## Quick Start
+### Quick Start
 
 ```bash
 cd your-project
-dotset mantle run -- npm start
+mantle run -- npm start
 ```
+
+---
+
+## Tollgate (MCP Access Control)
+
+### npm (Recommended)
+
+```bash
+npm install -g @dotsetlabs/tollgate
+```
+
+### Yarn
+
+```bash
+yarn global add @dotsetlabs/tollgate
+```
+
+### pnpm
+
+```bash
+pnpm add -g @dotsetlabs/tollgate
+```
+
+### Verify Installation
+
+```bash
+tollgate --version
+```
+
+### Quick Start
+
+```bash
+tollgate wrap npx @modelcontextprotocol/server-postgres
+```
+
+---
+
+## Requirements
+
+- **Node.js**: 20 or later
 
 ## Updating
 
 ```bash
-npm update -g @dotsetlabs/cli
+npm update -g @dotsetlabs/mantle
+npm update -g @dotsetlabs/tollgate
 ```
 
 ## Uninstalling
 
 ```bash
-npm uninstall -g @dotsetlabs/cli
+npm uninstall -g @dotsetlabs/mantle
+npm uninstall -g @dotsetlabs/tollgate
 ```

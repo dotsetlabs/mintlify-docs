@@ -3,11 +3,11 @@ title: Introduction
 description: 'Security tools for modern development workflows'
 ---
 
-# Dotset CLI
+# Dotset Labs
 
 **Security tools for CI/CD and AI agents.**
 
-The Dotset CLI provides two security tools:
+Dotset Labs provides two security tools as separate npm packages:
 
 - **[Mantle](/mantle/cli/overview)** - Secret detection and log sanitization for CI/CD pipelines
 - **[Tollgate](/tollgate/cli/overview)** - Policy-based access control for AI agents using MCP
@@ -18,10 +18,11 @@ The Dotset CLI provides two security tools:
 
 Secrets leak in build logs every day. Debug statements, error messages, and verbose logging expose API keys, tokens, and credentials.
 
-**Dotset Mantle** intercepts output streams and redacts secrets in real-time — with **zero migration** and **dynamic secret detection**.
+**Mantle** intercepts output streams and redacts secrets in real-time — with **zero migration** and **dynamic secret detection**.
 
 ```bash
-dotset mantle run -- npm start
+npm install -g @dotsetlabs/mantle
+mantle run -- npm start
 ```
 
 > [!NOTE]
@@ -33,10 +34,11 @@ dotset mantle run -- npm start
 
 AI agents using MCP servers have full access to powerful tools — databases, filesystems, and APIs. Without access control, a single prompt injection or misunderstood request can cause damage.
 
-**Dotset Tollgate** adds policy-based access control to any MCP server, letting you allow, deny, or prompt for approval on each tool call.
+**Tollgate** adds policy-based access control to any MCP server, letting you allow, deny, or prompt for approval on each tool call.
 
 ```bash
-dotset tollgate wrap npx @modelcontextprotocol/server-postgres
+npm install -g @dotsetlabs/tollgate
+tollgate wrap npx @modelcontextprotocol/server-postgres
 ```
 
 > [!NOTE]
@@ -47,7 +49,11 @@ dotset tollgate wrap npx @modelcontextprotocol/server-postgres
 ## Quick Install
 
 ```bash
-npm install -g @dotsetlabs/cli
+# For CI/CD secret protection
+npm install -g @dotsetlabs/mantle
+
+# For MCP access control
+npm install -g @dotsetlabs/tollgate
 ```
 
 ## Next Steps

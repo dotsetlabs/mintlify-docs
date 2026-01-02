@@ -22,7 +22,7 @@ import {
   memoize,
   memoizeAsync,
   getPatternCacheMetrics,
-} from '@dotsetlabs/cli';
+} from '@dotsetlabs/mantle';
 
 // Create an LRU cache
 const cache = new LRUCache<string, RegExp>({ maxSize: 1000 });

@@ -17,18 +17,18 @@
     },
     "topbarCtaButton": {
         "name": "GitHub",
-        "url": "https://github.com/dotsetlabs/cli"
+        "url": "https://github.com/dotsetlabs"
     },
     "anchors": [
         {
-            "name": "GitHub",
-            "icon": "github",
-            "url": "https://github.com/dotsetlabs/cli"
+            "name": "Mantle",
+            "icon": "shield-halved",
+            "url": "https://github.com/dotsetlabs/mantle"
         },
         {
-            "name": "npm",
-            "icon": "npm",
-            "url": "https://www.npmjs.com/package/@dotsetlabs/cli"
+            "name": "Tollgate",
+            "icon": "lock",
+            "url": "https://github.com/dotsetlabs/tollgate"
         }
     ],
     "navigation": [

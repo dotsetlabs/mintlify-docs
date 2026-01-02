@@ -11,9 +11,9 @@ This guide shows how to use Tollgate with Claude Desktop to add policy-based acc
 
 - [Claude Desktop](https://claude.ai/download) installed
 - Node.js 20+ installed
-- `@dotsetlabs/cli` installed globally:
+- `@dotsetlabs/tollgate` installed globally:
   ```bash
-  npm install -g @dotsetlabs/cli
+  npm install -g @dotsetlabs/tollgate
   ```
 
 ## Quick Start (Wrap Mode)
@@ -53,7 +53,7 @@ Replace your direct server command with Tollgate:
     "postgres": {
       "command": "npx",
       "args": [
-        "-y", "@dotsetlabs/cli", "tollgate", "wrap",
+        "-y", "@dotsetlabs/tollgate", "tollgate", "wrap",
         "npx", "-y", "@modelcontextprotocol/server-postgres"
       ],
       "env": {
@@ -75,7 +75,7 @@ For production use with fine-grained policies:
 ### 1. Create Configuration
 
 ```bash
-dotset tollgate init -o ~/tollgate.yaml
+tollgate init -o ~/tollgate.yaml
 ```
 
 Edit `~/tollgate.yaml`:
@@ -115,7 +115,7 @@ servers:
     "postgres": {
       "command": "npx",
       "args": [
-        "-y", "@dotsetlabs/cli", "tollgate", "start",
+        "-y", "@dotsetlabs/tollgate", "tollgate", "start",
         "-s", "postgres",
         "-c", "/Users/yourname/tollgate.yaml"
       ],
@@ -139,7 +139,7 @@ Configure multiple servers with different policies:
     "postgres": {
       "command": "npx",
       "args": [
-        "-y", "@dotsetlabs/cli", "tollgate", "start",
+        "-y", "@dotsetlabs/tollgate", "tollgate", "start",
         "-s", "postgres", "-c", "~/tollgate.yaml"
       ],
       "env": { "DATABASE_URL": "..." }
@@ -147,7 +147,7 @@ Configure multiple servers with different policies:
     "filesystem": {
       "command": "npx",
       "args": [
-        "-y", "@dotsetlabs/cli", "tollgate", "start",
+        "-y", "@dotsetlabs/tollgate", "tollgate", "start",
         "-s", "filesystem", "-c", "~/tollgate.yaml"
       ]
     }
@@ -180,7 +180,7 @@ Options:
 
 1. Ensure the config path is absolute
 2. Check Claude Desktop logs for errors
-3. Verify Tollgate is installed: `dotset tollgate --version`
+3. Verify Tollgate is installed: `tollgate --version`
 
 ### Approval prompts not appearing
 
@@ -190,8 +190,8 @@ The approval prompt appears in your terminal. Ensure you have a terminal window 
 
 ```bash
 # Test the config
-dotset tollgate validate -c ~/tollgate.yaml
+tollgate validate -c ~/tollgate.yaml
 
 # Test starting manually
-dotset tollgate start -s postgres -c ~/tollgate.yaml
+tollgate start -s postgres -c ~/tollgate.yaml
 ```

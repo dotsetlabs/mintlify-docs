@@ -7,28 +7,28 @@ description: 'Get protected in 60 seconds'
 
 This guide gets you from zero to protected in under a minute.
 
-## Install
-
-```bash
-npm install -g @dotsetlabs/cli
-```
-
 ---
 
 ## Mantle
 
 Mantle protects your CI/CD pipelines from secret leakage.
 
-### 1. Zero-Migration Setup
+### 1. Install
+
+```bash
+npm install -g @dotsetlabs/mantle
+```
+
+### 2. Zero-Migration Setup
 
 Mantle automatically detects `.env` files. If you already have one, you're ready to go:
 
 ```bash
 # Run with automatic protection
-dotset mantle run -- npm start
+mantle run -- npm start
 ```
 
-### 2. Protection Modes
+### 3. Protection Modes
 
 | Mode | Behavior | Use Case |
 |:-----|:---------|:---------|
@@ -38,22 +38,22 @@ dotset mantle run -- npm start
 
 ```bash
 # Redact secrets in real-time
-dotset mantle run --mode redact -- npm test
+mantle run --mode redact -- npm test
 ```
 
-### 3. Example Output
+### 4. Example Output
 
 ```bash
-$ dotset mantle run --mode redact -- node app.js
+$ mantle run --mode redact -- node app.js
 
-🛡️  mantle | mode: redact | secrets: 5 | providers: dotenv, environment
+mantle | mode: redact | secrets: 5 | providers: dotenv, environment
 
 Starting server...
 Connecting to database: [REDACTED]
 Using API key: [REDACTED]
 Server running on port 3000
 
-🛡️  mantle | exit: 0 | exposures: 2
+mantle | exit: 0 | exposures: 2
 ```
 
 <CardGroup>
@@ -71,17 +71,23 @@ Server running on port 3000
 
 Tollgate adds policy-based access control to MCP servers used by AI agents.
 
-### 1. Wrap Any MCP Server
+### 1. Install
+
+```bash
+npm install -g @dotsetlabs/tollgate
+```
+
+### 2. Wrap Any MCP Server
 
 Instantly protect any MCP server without configuration:
 
 ```bash
-dotset tollgate wrap npx @modelcontextprotocol/server-postgres
+tollgate wrap npx @modelcontextprotocol/server-postgres
 ```
 
 This prompts you for approval on every tool call.
 
-### 2. Default Actions
+### 3. Default Actions
 
 | Action | Behavior | Use Case |
 |:-------|:---------|:---------|
@@ -91,10 +97,10 @@ This prompts you for approval on every tool call.
 
 ```bash
 # Allow reads, prompt for everything else
-dotset tollgate wrap -d prompt npx @anthropic/mcp-server-filesystem ./src
+tollgate wrap -d prompt npx @anthropic/mcp-server-filesystem ./src
 ```
 
-### 3. Use with Claude Desktop
+### 4. Use with Claude Desktop
 
 Update your Claude Desktop config:
 
@@ -104,7 +110,7 @@ Update your Claude Desktop config:
     "postgres": {
       "command": "npx",
       "args": [
-        "-y", "@dotsetlabs/cli", "tollgate", "wrap",
+        "-y", "@dotsetlabs/tollgate", "wrap",
         "npx", "-y", "@modelcontextprotocol/server-postgres"
       ],
       "env": {
@@ -115,16 +121,16 @@ Update your Claude Desktop config:
 }
 ```
 
-### 4. Create a Policy File (Optional)
+### 5. Create a Policy File (Optional)
 
 For fine-grained control:
 
 ```bash
 # Generate config
-dotset tollgate init
+tollgate init
 
 # Start with config
-dotset tollgate start -s postgres
+tollgate start -s postgres
 ```
 
 <CardGroup>

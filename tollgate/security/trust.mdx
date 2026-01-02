@@ -95,10 +95,10 @@ Verify npm package integrity:
 
 ```bash
 # Check package signature
-npm audit signatures @dotsetlabs/cli
+npm audit signatures @dotsetlabs/tollgate
 
 # Compare with source
-npm pack @dotsetlabs/cli --dry-run
+npm pack @dotsetlabs/tollgate --dry-run
 ```
 
 ## Security Best Practices
@@ -133,12 +133,12 @@ npm pack @dotsetlabs/cli --dry-run
 
 1. **Review audit logs regularly**
    ```bash
-   dotset tollgate logs -n 100
+   tollgate logs -n 100
    ```
 
 2. **Export logs for long-term retention**
    ```bash
-   dotset tollgate export -f json -o audit-$(date +%Y%m%d).json
+   tollgate export -f json -o audit-$(date +%Y%m%d).json
    ```
 
 3. **Monitor for anomalies**
@@ -150,7 +150,7 @@ npm pack @dotsetlabs/cli --dry-run
 
 1. **Use fail-closed mode in production**
    ```bash
-   dotset tollgate start -s postgres --failure-mode fail-closed
+   tollgate start -s postgres --failure-mode fail-closed
    ```
 
 2. **Restrict file permissions**
@@ -169,17 +169,17 @@ If you suspect a security incident:
 
 1. **Export audit logs immediately**
    ```bash
-   dotset tollgate export -f json -o incident-$(date +%s).json
+   tollgate export -f json -o incident-$(date +%s).json
    ```
 
 2. **Review all tool calls**
    ```bash
-   dotset tollgate logs -n 10000 | grep -v "allow"
+   tollgate logs -n 10000 | grep -v "allow"
    ```
 
 3. **Check for policy violations**
    ```bash
-   dotset tollgate export --risk dangerous -f json
+   tollgate export --risk dangerous -f json
    ```
 
 4. **Rotate any exposed credentials**

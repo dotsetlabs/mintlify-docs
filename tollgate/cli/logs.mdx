@@ -10,7 +10,7 @@ Displays recent tool call audit logs from the Tollgate database.
 ## Usage
 
 ```bash
-dotset tollgate logs [options]
+tollgate logs [options]
 ```
 
 ## Options
@@ -24,13 +24,13 @@ dotset tollgate logs [options]
 
 ```bash
 # Show last 20 entries (default)
-dotset tollgate logs
+tollgate logs
 
 # Show last 100 entries
-dotset tollgate logs -n 100
+tollgate logs -n 100
 
 # Use custom audit database
-dotset tollgate logs --audit-path /var/log/tollgate.db
+tollgate logs --audit-path /var/log/tollgate.db
 ```
 
 ## Output Format
@@ -63,21 +63,21 @@ Each log entry displays:
 
 ```bash
 # Check recent activity after an issue
-dotset tollgate logs -n 50
+tollgate logs -n 50
 ```
 
 ### Auditing
 
 ```bash
 # Review all tool calls for compliance
-dotset tollgate logs -n 1000
+tollgate logs -n 1000
 ```
 
 ### Monitoring
 
 ```bash
 # Watch for denied operations
-dotset tollgate logs | grep deny
+tollgate logs | grep deny
 ```
 
 ## Related Commands

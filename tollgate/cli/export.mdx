@@ -10,7 +10,7 @@ Exports audit logs in various formats for compliance reporting, SIEM integration
 ## Usage
 
 ```bash
-dotset tollgate export [options]
+tollgate export [options]
 ```
 
 ## Options
@@ -34,7 +34,7 @@ dotset tollgate export [options]
 Complete JSON array of all records:
 
 ```bash
-dotset tollgate export -f json -o audit.json
+tollgate export -f json -o audit.json
 ```
 
 ### JSON Lines (Default)
@@ -42,7 +42,7 @@ dotset tollgate export -f json -o audit.json
 One JSON object per line, ideal for streaming:
 
 ```bash
-dotset tollgate export -f jsonl -o audit.jsonl
+tollgate export -f jsonl -o audit.jsonl
 ```
 
 ### CSV
@@ -50,7 +50,7 @@ dotset tollgate export -f jsonl -o audit.jsonl
 Comma-separated values for spreadsheet analysis:
 
 ```bash
-dotset tollgate export -f csv -o audit.csv
+tollgate export -f csv -o audit.csv
 ```
 
 ### CEF (Common Event Format)
@@ -58,7 +58,7 @@ dotset tollgate export -f csv -o audit.csv
 For SIEM integration (Splunk, Datadog, etc.):
 
 ```bash
-dotset tollgate export -f cef -o audit.cef
+tollgate export -f cef -o audit.cef
 ```
 
 ## Examples
@@ -67,33 +67,33 @@ dotset tollgate export -f cef -o audit.cef
 
 ```bash
 # Export all logs as JSONL to stdout
-dotset tollgate export
+tollgate export
 
 # Export as JSON to file
-dotset tollgate export -f json -o audit.json
+tollgate export -f json -o audit.json
 ```
 
 ### Filtering
 
 ```bash
 # Export logs from last 24 hours
-dotset tollgate export --since "2024-01-14T00:00:00Z"
+tollgate export --since "2024-01-14T00:00:00Z"
 
 # Export only postgres server logs
-dotset tollgate export -s postgres
+tollgate export -s postgres
 
 # Export only dangerous operations
-dotset tollgate export --risk dangerous
+tollgate export --risk dangerous
 
 # Combine filters
-dotset tollgate export -s postgres --risk write --since "2024-01-01"
+tollgate export -s postgres --risk write --since "2024-01-01"
 ```
 
 ### Compliance Reporting
 
 ```bash
 # Weekly compliance report
-dotset tollgate export \
+tollgate export \
   --since "2024-01-08T00:00:00Z" \
   --until "2024-01-15T00:00:00Z" \
   -f csv \
@@ -104,11 +104,11 @@ dotset tollgate export \
 
 ```bash
 # Export to Splunk
-dotset tollgate export -f cef | nc splunk-server 514
+tollgate export -f cef | nc splunk-server 514
 
 # Continuous export for real-time monitoring
 while true; do
-  dotset tollgate export -f cef --since "$(date -u -v-1M +%Y-%m-%dT%H:%M:%SZ)" | \
+  tollgate export -f cef --since "$(date -u -v-1M +%Y-%m-%dT%H:%M:%SZ)" | \
     nc siem-server 514
   sleep 60
 done
@@ -130,7 +130,7 @@ By default, tool arguments are redacted in exports. Use `--no-redact` to include
 
 ```bash
 # Includes PII/sensitive data - use with caution
-dotset tollgate export --no-redact -o full-audit.json
+tollgate export --no-redact -o full-audit.json
 ```
 
 > [!CAUTION]

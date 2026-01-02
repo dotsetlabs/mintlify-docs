@@ -18,10 +18,10 @@ The pattern is the same for any CI system:
 
 ```bash
 # 1. Install Mantle globally
-npm install -g @dotsetlabs/cli
+npm install -g @dotsetlabs/mantle
 
 # 2. Run your command with protection
-dotset mantle run --mode redact -- your-command-here
+mantle run --mode redact -- your-command-here
 ```
 
 ## Environment Variables
@@ -52,7 +52,7 @@ echo "DATABASE_URL=$DATABASE_URL" > .env
 echo "API_KEY=$API_KEY" >> .env
 
 # Mantle reads .env automatically
-dotset mantle run --mode redact -- npm test
+mantle run --mode redact -- npm test
 ```
 
 ## Docker-Based CI
@@ -63,7 +63,7 @@ If your CI uses Docker, include Mantle in your image or install during build:
 FROM node:20-alpine
 
 # Install Mantle globally
-RUN npm install -g @dotsetlabs/cli
+RUN npm install -g @dotsetlabs/mantle
 
 WORKDIR /app
 COPY . .
@@ -81,9 +81,9 @@ steps:
   - name: Build and Test
     image: node:20
     commands:
-      - npm install -g @dotsetlabs/cli
+      - npm install -g @dotsetlabs/mantle
       - npm ci
-      - dotset mantle run --mode redact -- npm test
+      - mantle run --mode redact -- npm test
     environment:
       DATABASE_URL: ${DATABASE_URL}
 ```
@@ -98,13 +98,13 @@ steps:
 
 ```bash
 # Detection only (audit mode)
-dotset mantle run --mode detect -- npm test
+mantle run --mode detect -- npm test
 
 # Redaction (recommended)
-dotset mantle run --mode redact -- npm test
+mantle run --mode redact -- npm test
 
 # Full blocking
-dotset mantle run --mode block -- npm test
+mantle run --mode block -- npm test
 ```
 
 ## Generating Compliance Reports
@@ -112,7 +112,7 @@ dotset mantle run --mode block -- npm test
 Add `--report` to generate an HTML audit artifact:
 
 ```bash
-dotset mantle run --mode redact --report -- npm test
+mantle run --mode redact --report -- npm test
 # Creates: mantle-report.html
 ```
 
@@ -124,7 +124,7 @@ Mantle works fully offline with no cloud dependencies:
 
 ```bash
 # Mantle works completely offline
-dotset mantle run --mode redact -- npm test
+mantle run --mode redact -- npm test
 ```
 
 When offline:

@@ -22,13 +22,13 @@ jobs:
       - checkout
       - run:
           name: Install Mantle
-          command: npm install -g @dotsetlabs/cli
+          command: npm install -g @dotsetlabs/mantle
       - run:
           name: Install dependencies
           command: npm ci
       - run:
           name: Run tests with protection
-          command: dotset mantle run --mode redact -- npm test
+          command: mantle run --mode redact -- npm test
 
 workflows:
   main:
@@ -51,10 +51,10 @@ jobs:
       - checkout
       - run:
           name: Install Mantle
-          command: npm install -g @dotsetlabs/cli
+          command: npm install -g @dotsetlabs/mantle
       - run:
           name: Deploy with protection
-          command: dotset mantle run --mode redact -- ./deploy.sh
+          command: mantle run --mode redact -- ./deploy.sh
 
 workflows:
   main:
@@ -84,8 +84,8 @@ jobs:
       API_KEY: $API_KEY
     steps:
       - checkout
-      - run: npm install -g @dotsetlabs/cli
-      - run: dotset mantle run --mode redact -- npm test
+      - run: npm install -g @dotsetlabs/mantle
+      - run: mantle run --mode redact -- npm test
 ```
 
 ## Using with .env Files
@@ -106,10 +106,10 @@ jobs:
             echo "API_KEY=$API_KEY" >> .env
       - run:
           name: Install Mantle
-          command: npm install -g @dotsetlabs/cli
+          command: npm install -g @dotsetlabs/mantle
       - run:
           name: Run tests
-          command: dotset mantle run --mode redact -- npm test
+          command: mantle run --mode redact -- npm test
 ```
 
 ## Caching Mantle Installation
@@ -131,13 +131,13 @@ jobs:
             - npm-global-v1-
       - run:
           name: Install Mantle
-          command: npm install -g @dotsetlabs/cli
+          command: npm install -g @dotsetlabs/mantle
       - save_cache:
           paths:
             - ~/.npm
           key: npm-global-v1-{{ checksum "package-lock.json" }}
       - run: npm ci
-      - run: dotset mantle run --mode redact -- npm test
+      - run: mantle run --mode redact -- npm test
 ```
 
 ## Complete Example
@@ -157,10 +157,10 @@ jobs:
       - node/install-packages
       - run:
           name: Install Mantle
-          command: npm install -g @dotsetlabs/cli
+          command: npm install -g @dotsetlabs/mantle
       - run:
           name: Run tests with protection
-          command: dotset mantle run --mode redact -- npm test
+          command: mantle run --mode redact -- npm test
 
   deploy:
     docker:
@@ -169,10 +169,10 @@ jobs:
       - checkout
       - run:
           name: Install Mantle
-          command: npm install -g @dotsetlabs/cli
+          command: npm install -g @dotsetlabs/mantle
       - run:
           name: Deploy with protection
-          command: dotset mantle run --mode redact -- ./scripts/deploy.sh
+          command: mantle run --mode redact -- ./scripts/deploy.sh
 
 workflows:
   build-and-deploy:
