@@ -1,0 +1,240 @@
+---
+title: serve
+description: 'Multi-server orchestration mode'
+---
+
+# tollgate serve
+
+Start Tollgate in orchestration mode to manage multiple MCP servers from a single process with an interactive CLI.
+
+## Usage
+
+```bash
+# Start orchestrator with interactive CLI
+tollgate serve
+
+# Auto-start all configured servers
+tollgate serve --all
+
+# Auto-start specific servers
+tollgate serve -s postgres -s github
+
+# Run without interactive mode
+tollgate serve --all --no-interactive
+```
+
+## Options
+
+| Option | Description | Default |
+|:-------|:------------|:--------|
+| `-c, --config <path>` | Path to tollgate.yaml config file | `./tollgate.yaml` |
+| `--audit-path <path>` | Custom path for audit database | `~/.tollgate/audit.db` |
+| `--timeout <ms>` | Approval timeout in milliseconds | `60000` |
+| `--approval <method>` | Approval method: `terminal`, `interactive` | `terminal` |
+| `--approval-port <port>` | Port for interactive approval UI | `9847` |
+| `--persist-sessions` | Persist session grants to disk | `false` |
+| `--session-path <path>` | Path for persistent session database | `~/.tollgate/sessions.db` |
+| `--dry-run` | Evaluate policies without executing tools | `false` |
+| `--failure-mode <mode>` | Behavior when upstream fails | `fail-closed` |
+| `--all` | Auto-start all configured servers | `false` |
+| `-s, --servers <names...>` | Specific servers to auto-start | none |
+| `--no-interactive` | Run without interactive CLI | `false` |
+
+## Interactive Commands
+
+When running in interactive mode, the following commands are available:
+
+| Command | Description |
+|:--------|:------------|
+| `status` / `ls` | Show all servers with status |
+| `start <n\|name>` | Start a server by number or name |
+| `stop <n\|name>` | Stop a server by number or name |
+| `restart <n\|name>` | Restart a server |
+| `start-all` | Start all configured servers |
+| `stop-all` | Stop all running servers |
+| `stats` | Show orchestrator statistics |
+| `logs <n\|name>` | Show recent logs for a server |
+| `help` | Show available commands |
+| `quit` / `exit` | Shutdown and exit |
+
+## Example Session
+
+```
+$ tollgate serve --all
+
+[tollgate] Starting orchestrator with 3 configured server(s)
+[tollgate] Starting postgres...
+[Event] Server postgres started
+[tollgate] Starting github...
+[Event] Server github started
+[tollgate] Starting filesystem...
+[Event] Server filesystem started
+
+Tollgate Multi-Server Orchestrator
+Type "help" for available commands, "quit" to exit
+
+  #  Server                Status      Health      Uptime      Calls
+  ──────────────────────────────────────────────────────────────────
+   1  postgres              running     healthy     0s          0
+   2  github                running     healthy     0s          0
+   3  filesystem            running     healthy     0s          0
+
+tollgate> stats
+
+Orchestrator Statistics
+────────────────────────────────────────
+  Total Servers:   3
+  Running:         3
+  Stopped:         0
+  Errors:          0
+  Uptime:          45s
+
+Request Statistics
+────────────────────────────────────────
+  Total Calls:     12
+  Denied:          2
+  Prompted:        3
+
+tollgate> stop 2
+Stopping github...
+Server "github" stopped successfully
+
+tollgate> status
+
+  #  Server                Status      Health      Uptime      Calls
+  ──────────────────────────────────────────────────────────────────
+   1  postgres              running     healthy     2m 30s      8
+   2  github                stopped     unknown     -           4
+   3  filesystem            running     healthy     2m 30s      0
+
+tollgate> quit
+[tollgate] Received SIGINT, shutting down...
+[tollgate] Shutdown complete
+```
+
+## Configuration
+
+The serve command uses the same `tollgate.yaml` configuration as the `start` command:
+
+```yaml
+version: "1"
+
+defaults:
+  action: prompt
+
+guardrails:
+  promptInjection:
+    enabled: true
+    action: deny
+
+servers:
+  postgres:
+    command: "npx"
+    args: ["-y", "@modelcontextprotocol/server-postgres"]
+    env:
+      DATABASE_URL: "${DATABASE_URL}"
+    tools:
+      query: { action: smart, analyzer: sql }
+
+  github:
+    command: "npx"
+    args: ["-y", "@modelcontextprotocol/server-github"]
+    env:
+      GITHUB_TOKEN: "${GITHUB_TOKEN}"
+    tools:
+      "*": { action: prompt }
+
+  filesystem:
+    command: "npx"
+    args: ["-y", "@modelcontextprotocol/server-filesystem"]
+    defaults:
+      action: smart
+      analyzer: filesystem
+```
+
+## Use Cases
+
+### Development Environment
+
+Run all your MCP servers with easy control:
+
+```bash
+tollgate serve --all --approval terminal
+```
+
+### Production Monitoring
+
+Run servers with persistence and monitoring:
+
+```bash
+tollgate serve --all \
+  --persist-sessions \
+  --failure-mode fail-closed \
+  --no-interactive
+```
+
+### Testing Specific Servers
+
+Start only the servers you need:
+
+```bash
+tollgate serve -s postgres -s filesystem --dry-run
+```
+
+## Events
+
+The orchestrator emits events for server lifecycle changes:
+
+| Event | Description |
+|:------|:------------|
+| `server:starting` | Server is starting |
+| `server:started` | Server started successfully |
+| `server:stopping` | Server is stopping |
+| `server:stopped` | Server stopped |
+| `server:error` | Server encountered an error |
+| `server:health` | Server health status changed |
+| `orchestrator:ready` | Orchestrator is ready |
+| `orchestrator:shutdown` | Orchestrator is shutting down |
+
+## vs. Multiple `tollgate start`
+
+| Feature | `tollgate serve` | Multiple `tollgate start` |
+|:--------|:-----------------|:--------------------------|
+| Processes | Single process | One per server |
+| Control | Interactive CLI | Separate terminals |
+| Health monitoring | Unified | Per-process |
+| Statistics | Aggregated | Per-server |
+| Memory usage | Lower | Higher |
+| Approval handler | Shared | Separate |
+| Session storage | Shared | Separate |
+
+## Graceful Shutdown
+
+When you exit the orchestrator (via `quit`, Ctrl+C, or SIGTERM):
+
+1. All running servers are stopped in parallel
+2. In-flight requests are allowed to complete (configurable timeout)
+3. Audit logs are flushed
+4. Session data is persisted (if enabled)
+
+```yaml
+resilience:
+  shutdown:
+    timeoutMs: 10000      # Max time for graceful shutdown
+    drainTimeoutMs: 5000  # Time to wait for in-flight requests
+```
+
+## Health Monitoring
+
+The orchestrator monitors upstream server health:
+
+```yaml
+resilience:
+  healthCheck:
+    enabled: true
+    intervalMs: 30000      # Check every 30 seconds
+    timeoutMs: 5000        # 5 second timeout per check
+    failureThreshold: 3    # Mark unhealthy after 3 failures
+```
+
+When a server becomes unhealthy, the failure mode is applied automatically.

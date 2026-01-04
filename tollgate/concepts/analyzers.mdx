@@ -15,6 +15,11 @@ Tollgate includes intelligent analyzers that inspect tool arguments to determine
 | `filesystem` | File system access | File paths |
 | `shell` | Command execution | Shell commands |
 | `http` | API requests | URLs, methods, headers |
+| `prompt-injection` | Security guardrail | All string arguments |
+
+<Note>
+The `prompt-injection` analyzer is typically used via the [guardrails](/tollgate/concepts/guardrails) configuration rather than as a policy analyzer.
+</Note>
 
 ## SQL Analyzer
 

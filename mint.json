@@ -87,6 +87,7 @@
                         "tollgate/cli/overview",
                         "tollgate/cli/wrap",
                         "tollgate/cli/start",
+                        "tollgate/cli/serve",
                         "tollgate/cli/init",
                         "tollgate/cli/templates",
                         "tollgate/cli/doctor",
@@ -101,7 +102,10 @@
                     "group": "Concepts",
                     "pages": [
                         "tollgate/concepts/policies",
+                        "tollgate/concepts/natural-language-policies",
                         "tollgate/concepts/analyzers",
+                        "tollgate/concepts/custom-analyzers",
+                        "tollgate/concepts/guardrails",
                         "tollgate/concepts/sessions",
                         "tollgate/concepts/approval",
                         "tollgate/concepts/audit"
@@ -112,6 +116,7 @@
                     "pages": [
                         "tollgate/guides/claude-desktop",
                         "tollgate/guides/cursor",
+                        "tollgate/guides/vscode",
                         "tollgate/guides/production"
                     ]
                 },
