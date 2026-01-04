@@ -22,7 +22,7 @@
     "anchors": [
         {
             "name": "Mantle",
-            "icon": "shield-halved",
+            "icon": "file-shield",
             "url": "https://github.com/dotsetlabs/mantle"
         },
         {
