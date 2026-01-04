@@ -17,7 +17,8 @@ npm install -g @dotsetlabs/mantle
 
 | Command | Description |
 |---------|-------------|
-| [`run`](/mantle/cli/run) | Run commands with protection |
+| [`run`](/mantle/cli/run) | Run commands with secret protection |
+| [`scan`](/mantle/cli/scan) | Scan files for secrets |
 
 ## Global Options
 
@@ -35,6 +36,9 @@ mantle run -- npm start
 # Redact secrets from output
 mantle run --mode redact -- npm test
 
-# Generate compliance report
-mantle run --report -- npm test
+# Scan files for secrets
+mantle scan src/
+
+# Generate SARIF report for GitHub
+mantle scan --format sarif . > results.sarif
 ```

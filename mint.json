@@ -47,7 +47,8 @@
                     "group": "CLI Commands",
                     "pages": [
                         "mantle/cli/overview",
-                        "mantle/cli/run"
+                        "mantle/cli/run",
+                        "mantle/cli/scan"
                     ]
                 },
                 {

@@ -1,0 +1,140 @@
+---
+title: mantle scan
+description: 'Scan files for secrets without running commands'
+---
+
+# mantle scan
+
+Scan files and directories for secrets without executing any commands. Useful for pre-commit hooks, CI checks, and security audits.
+
+## Usage
+
+```bash
+mantle scan [paths...] [options]
+```
+
+<Note>
+If no paths are provided, scans the current directory.
+</Note>
+
+## Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `-p, --providers <list>` | Comma-separated providers | `auto` |
+| `-s, --scope <scope>` | Environment scope | `development` |
+| `-f, --format <format>` | Output format: text, json, sarif, annotations | `text` |
+| `--preview` | Show before/after comparison for each finding | `false` |
+| `--min-confidence <n>` | Minimum confidence threshold (0.0-1.0) | `0.0` |
+| `--exit-on-findings` | Exit with code 1 if any findings | `false` |
+| `--baseline <file>` | Compare against baseline file | - |
+| `--stdin` | Read from stdin instead of files | `false` |
+| `-q, --quiet` | Suppress informational output | `false` |
+| `--debug` | Enable debug output | `false` |
+
+## Output Formats
+
+### text (default)
+Human-readable output with colors and severity indicators.
+
+```bash
+mantle scan src/
+```
+
+### json
+Structured JSON output for programmatic consumption.
+
+```bash
+mantle scan --format json src/
+```
+
+### sarif
+SARIF format for GitHub Code Scanning integration.
+
+```bash
+mantle scan --format sarif src/ > results.sarif
+```
+
+### annotations
+GitHub Actions workflow annotations format.
+
+```bash
+mantle scan --format annotations src/
+```
+
+## Examples
+
+### Basic scan
+
+```bash
+# Scan current directory
+mantle scan
+
+# Scan specific paths
+mantle scan src/ config/
+```
+
+### Pre-commit check
+
+```bash
+# Exit with error if secrets found
+mantle scan --exit-on-findings .
+```
+
+### CI/CD Integration
+
+```bash
+# Generate SARIF for GitHub Code Scanning
+mantle scan --format sarif . > results.sarif
+
+# Generate GitHub annotations
+mantle scan --format annotations .
+```
+
+### Baseline management
+
+```bash
+# Only report new findings (exclude known issues)
+mantle scan --baseline .mantle-baseline.json .
+```
+
+### Confidence filtering
+
+```bash
+# Only show high-confidence findings
+mantle scan --min-confidence 0.7 src/
+```
+
+### Reading from stdin
+
+```bash
+# Scan piped content
+cat sensitive-file.txt | mantle scan --stdin
+```
+
+## Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | Success (no findings, or findings without `--exit-on-findings`) |
+| `1` | Findings detected (with `--exit-on-findings`) |
+
+## Baseline Files
+
+Baseline files allow you to track known issues and only report new findings. The baseline is a JSON file containing fingerprints of previously identified secrets.
+
+```bash
+# Create initial baseline (manually review and edit)
+mantle scan --format json . > .mantle-baseline.json
+
+# Run against baseline
+mantle scan --baseline .mantle-baseline.json .
+```
+
+<Tip>
+Store your baseline file in version control to track resolved vs. new findings over time.
+</Tip>
+
+## Integration with CI/CD
+
+See the [GitHub Actions](/mantle/guides/github-actions), [GitLab CI](/mantle/guides/gitlab-ci), and [Generic CI](/mantle/guides/generic-ci) guides for complete CI/CD integration examples.

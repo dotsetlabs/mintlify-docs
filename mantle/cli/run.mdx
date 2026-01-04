@@ -21,12 +21,13 @@ Use `--` to separate dotset options from your command.
 
 | Option | Description | Default |
 |--------|-------------|---------|
+| `-m, --mode <mode>` | Protection mode: redact, block, detect | `redact` |
 | `-p, --providers <list>` | Comma-separated providers | `auto` |
 | `-s, --scope <scope>` | Environment scope | `development` |
-| `-m, --mode <mode>` | Protection mode | `redact` |
-| `--redact-text <text>` | Replacement text | `[REDACTED]` |
+| `-r, --redact-text <text>` | Custom redaction placeholder | `[REDACTED]` |
 | `-q, --quiet` | Suppress mantle output | `false` |
 | `--report` | Generate HTML protection report | `false` |
+| `--debug` | Enable debug output | `false` |
 
 ## Secret Resolution
 
