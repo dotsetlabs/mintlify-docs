@@ -2,8 +2,8 @@
     "$schema": "https://mintlify.com/schema.json",
     "name": "Dotset Labs",
     "logo": {
-        "dark": "/logo.svg",
-        "light": "/logo.svg"
+        "dark": "/logo/dark.svg",
+        "light": "/logo/light.svg"
     },
     "favicon": "/favicon.svg",
     "colors": {
@@ -22,12 +22,12 @@
     "anchors": [
         {
             "name": "Mantle",
-            "icon": "file-shield",
+            "icon": "shield-halved",
             "url": "https://github.com/dotsetlabs/mantle"
         },
         {
             "name": "Tollgate",
-            "icon": "road-barrier",
+            "icon": "lock",
             "url": "https://github.com/dotsetlabs/tollgate"
         }
     ],
