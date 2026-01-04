@@ -27,7 +27,7 @@
         },
         {
             "name": "Tollgate",
-            "icon": "lock",
+            "icon": "road-barrier",
             "url": "https://github.com/dotsetlabs/tollgate"
         }
     ],

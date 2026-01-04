@@ -1,0 +1,25 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="tollgate-gradient" x1="0" y1="0" x2="128" y2="128" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#34d399" />
+      <stop offset="0.5" stop-color="#22d3ee" />
+      <stop offset="1" stop-color="#fb923c" />
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="128" height="128" rx="28" fill="url(#tollgate-gradient)" />
+  <!-- Boom gate barrier arm (horizontal bar) - white -->
+  <rect x="22" y="38" width="84" height="12" rx="4" fill="white" />
+  <!-- Stripes on barrier -->
+  <rect x="38" y="38" width="6" height="12" fill="white" fill-opacity="0.3" />
+  <rect x="54" y="38" width="6" height="12" fill="white" fill-opacity="0.3" />
+  <rect x="70" y="38" width="6" height="12" fill="white" fill-opacity="0.3" />
+  <rect x="86" y="38" width="6" height="12" fill="white" fill-opacity="0.3" />
+  <!-- Gate post/stand -->
+  <rect x="16" y="34" width="24" height="72" rx="6" fill="white" fill-opacity="0.25" />
+  <rect x="18" y="36" width="20" height="68" rx="5" stroke="white" stroke-width="3" fill="none" />
+  <!-- Control box/button on post -->
+  <circle cx="28" cy="64" r="8" fill="white" />
+  <!-- Ground line -->
+  <rect x="10" y="102" width="108" height="4" rx="2" fill="white" fill-opacity="0.4" />
+</svg>
