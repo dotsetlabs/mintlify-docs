@@ -53,6 +53,7 @@
                     "pages": [
                         "hardpoint/cli/overview",
                         "hardpoint/cli/scan",
+                        "hardpoint/cli/baseline",
                         "hardpoint/cli/fix"
                     ]
                 },
@@ -89,7 +90,8 @@
                         "countersign/cli/overview",
                         "countersign/cli/verify",
                         "countersign/cli/sign",
-                        "countersign/cli/trust"
+                        "countersign/cli/trust",
+                        "countersign/cli/hook"
                     ]
                 },
                 {

@@ -1,0 +1,143 @@
+---
+title: baseline
+description: Manage suppression baselines
+---
+
+# hardpoint baseline
+
+Manage suppression baselines for tracking and controlling false positive suppressions.
+
+## Usage
+
+```bash
+hardpoint baseline <command> [flags]
+```
+
+## Commands
+
+| Command | Description |
+| ------- | ----------- |
+| `list` | List all suppressions in the current baseline |
+| `add` | Add a new suppression to the baseline |
+| `prune` | Remove expired or unused suppressions |
+
+## baseline list
+
+Display all suppressions defined in the baseline file.
+
+```bash
+hardpoint baseline list [flags]
+```
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+| `--expired` | | Only show expired suppressions |
+
+### Examples
+
+```bash
+# List all suppressions
+hardpoint baseline list
+
+# Show only expired suppressions
+hardpoint baseline list --expired
+```
+
+### Output
+
+```
+Baseline: /Users/dev/.hardpoint/baseline.yaml
+Suppressions: 3
+
+  AI-001
+    Reason: Intentional override for testing
+    File: testdata/**
+
+  SHELL-002
+    Reason: Official Homebrew installer
+    Pattern: homebrew
+
+  SECRET-001 [EXPIRED]
+    Reason: Temporary during migration
+    Expires: 2024-12-01T00:00:00Z
+```
+
+## baseline add
+
+Add a new suppression to the baseline file.
+
+```bash
+hardpoint baseline add <finding-id> [flags]
+```
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+| `--reason` | `-r` | Reason for the suppression (required) |
+| `--file` | `-f` | File glob pattern to match |
+| `--pattern` | `-p` | Regex pattern to match in line content |
+| `--expires` | `-e` | Expiration date (ISO 8601 format) |
+
+### Examples
+
+```bash
+# Add a basic suppression
+hardpoint baseline add AI-001 --reason "Known safe pattern"
+
+# Add suppression for specific files
+hardpoint baseline add SECRET-001 --reason "Test fixtures" --file "tests/**/*.env"
+
+# Add suppression with content pattern
+hardpoint baseline add SHELL-002 --reason "Official installers" --pattern "brew\.sh|nvm\.sh"
+
+# Add temporary suppression
+hardpoint baseline add GIT-001 --reason "Investigating" --expires "2025-03-01"
+```
+
+## baseline prune
+
+Remove expired or unused suppressions from the baseline.
+
+```bash
+hardpoint baseline prune [flags]
+```
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+| `--dry-run` | `-n` | Show what would be removed without modifying |
+| `--unused` | | Also remove suppressions that don't match any current findings |
+
+### Examples
+
+```bash
+# Remove expired suppressions
+hardpoint baseline prune
+
+# Preview what would be removed
+hardpoint baseline prune --dry-run
+
+# Remove both expired and unused suppressions
+hardpoint baseline prune --unused
+```
+
+### Output
+
+```
+Pruning baseline: /Users/dev/.hardpoint/baseline.yaml
+
+Removed 2 suppressions:
+  - SECRET-001 (expired: 2024-12-01)
+  - AI-003 (unused: no matching findings)
+
+Baseline updated successfully.
+```
+
+## Related
+
+- [Baseline & Suppressions](/hardpoint/concepts/baseline) - Understanding suppression configuration
+- [scan command](/hardpoint/cli/scan) - Running security scans

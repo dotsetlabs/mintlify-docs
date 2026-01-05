@@ -121,6 +121,26 @@ suppressions:
     expires: 2025-02-01T00:00:00Z
 ```
 
+## CLI Commands
+
+Hardpoint provides CLI commands to manage baselines:
+
+```bash
+# List all suppressions
+hardpoint baseline list
+
+# Add a new suppression
+hardpoint baseline add AI-001 --reason "Known safe pattern"
+
+# Remove expired suppressions
+hardpoint baseline prune
+
+# Preview what would be removed
+hardpoint baseline prune --dry-run
+```
+
+See [baseline command](/hardpoint/cli/baseline) for full documentation.
+
 ## Viewing Active Suppressions
 
 When running with `--verbose`, Hardpoint shows suppression statistics:

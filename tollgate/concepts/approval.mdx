@@ -92,27 +92,131 @@ tollgate start -s postgres --approval interactive --approval-port 3000
 - **Countdown timer** showing time until auto-deny
 - **Full argument display** for reviewing exactly what the agent wants to do
 
+## Webhook
+
+The webhook approval method sends approval requests to an external HTTP endpoint. Ideal for:
+
+- Automated approval workflows
+- Integration with ticketing systems (Slack, PagerDuty, etc.)
+- Custom approval UIs
+- Multi-team approval policies
+
+### Starting with Webhook Mode
+
+```bash
+# Use webhook for approvals
+tollgate start -s postgres --approval webhook
+
+# Requires webhookUrl in config
+```
+
+### Configuration
+
+```yaml
+approval:
+  method: webhook
+  timeout: 60000
+  webhookUrl: https://your-server.com/approve
+  webhookHeaders:
+    Authorization: Bearer ${APPROVAL_TOKEN}
+  webhookSecret: ${WEBHOOK_SECRET}  # For HMAC signing
+```
+
+### Request Format
+
+Tollgate sends a POST request to your webhook URL:
+
+```json
+{
+  "id": "req_abc123",
+  "server": "postgres",
+  "tool": "query",
+  "arguments": {
+    "query": "INSERT INTO users (name) VALUES ('Alice')"
+  },
+  "risk": "write",
+  "timestamp": "2025-01-04T10:30:00Z"
+}
+```
+
+### Response Format
+
+Your webhook should respond with:
+
+```json
+{
+  "approved": true,
+  "duration": "5min"
+}
+```
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `approved` | boolean | Whether to allow the request |
+| `duration` | string | Optional session grant duration: `once`, `5min`, `15min`, `30min`, `session` |
+
+### HMAC Signature
+
+If `webhookSecret` is configured, Tollgate signs the request body with HMAC-SHA256:
+
+```
+X-Tollgate-Signature: sha256=<hex-encoded-signature>
+```
+
+Verify the signature server-side:
+
+```javascript
+const crypto = require('crypto');
+
+function verifySignature(body, signature, secret) {
+  const expected = 'sha256=' + crypto
+    .createHmac('sha256', secret)
+    .update(body)
+    .digest('hex');
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expected)
+  );
+}
+```
+
+### Error Handling
+
+| Response | Behavior |
+| -------- | -------- |
+| 2xx with `approved: true` | Request allowed |
+| 2xx with `approved: false` | Request denied |
+| 4xx/5xx | Request denied with error logged |
+| Timeout | Request denied (default: 60s) |
+
 ## Configuration
 
 Set the approval method in `tollgate.yaml`:
 
 ```yaml
 approval:
-  method: interactive  # or 'terminal'
+  method: interactive  # 'terminal', 'interactive', or 'webhook'
   port: 9847          # for interactive mode
   timeout: 60000      # approval timeout in ms
+
+  # Webhook-specific settings
+  webhookUrl: https://your-server.com/approve
+  webhookHeaders:
+    Authorization: Bearer ${TOKEN}
+  webhookSecret: ${SECRET}
 ```
 
 ## Comparison
 
-| Feature | Terminal | Interactive |
-|---------|----------|-------------|
-| Requires terminal focus | Yes | No |
-| Browser required | No | Yes |
-| Keyboard shortcuts | Yes | No |
-| Visual risk indicators | Color-coded text | Color-coded badges |
-| Multiple pending requests | One at a time | Queue visible |
-| Best for | Active development | Background operation |
+| Feature | Terminal | Interactive | Webhook |
+|---------|----------|-------------|---------|
+| Requires terminal focus | Yes | No | No |
+| Browser required | No | Yes | No |
+| Keyboard shortcuts | Yes | No | No |
+| Visual risk indicators | Color-coded text | Color-coded badges | N/A |
+| Multiple pending requests | One at a time | Queue visible | Parallel |
+| Best for | Active development | Background operation | Automation |
+| Custom integration | No | No | Yes |
 
 ## Timeout Behavior
 

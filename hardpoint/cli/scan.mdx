@@ -31,6 +31,8 @@ hardpoint scan [scanner...] [flags]
 | `--severity` | `-s` | Minimum severity: `info`, `low`, `medium`, `high`, `critical` |
 | `--confidence` | `-c` | Minimum confidence: `low`, `medium`, `high` |
 | `--exclude` | `-e` | Paths to exclude (can be repeated) |
+| `--disable-rules` | | Rule IDs to disable (can be repeated) |
+| `--enable-rules` | | Only enable these rules, disable all others (can be repeated) |
 
 ## Examples
 
@@ -67,6 +69,26 @@ hardpoint scan --severity high
 
 ```bash
 hardpoint scan --exclude node_modules --exclude .git
+```
+
+### Disable Specific Rules
+
+```bash
+# Skip specific rules by ID
+hardpoint scan --disable-rules AI-001 --disable-rules SHELL-002
+
+# Multiple rules in one flag
+hardpoint scan --disable-rules AI-001,SECRET-003
+```
+
+### Enable Only Specific Rules
+
+```bash
+# Only run AI rules
+hardpoint scan --enable-rules AI-001 --enable-rules AI-002
+
+# Useful for focused scanning
+hardpoint scan ai --enable-rules AI-001
 ```
 
 ### Output Formats

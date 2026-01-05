@@ -1,0 +1,175 @@
+---
+title: hook
+description: Install package manager hooks for automatic verification
+---
+
+# countersign hook
+
+Install and manage package manager hooks that automatically verify packages before installation.
+
+## Usage
+
+```bash
+countersign hook <command> [flags]
+```
+
+## Commands
+
+| Command | Description |
+| ------- | ----------- |
+| `install` | Install verification hooks for your package manager |
+| `uninstall` | Remove previously installed hooks |
+
+## hook install
+
+Install verification hooks that run `countersign verify` automatically before package installations.
+
+```bash
+countersign hook install [flags]
+```
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+| `--package-manager` | `-p` | Package manager: `npm`, `pnpm`, `yarn` (auto-detected if not specified) |
+| `--min-score` | `-m` | Minimum trust score required (0-100, default: 70) |
+| `--strict` | | Fail on any verification warning (npm only) |
+| `--global` | `-g` | Install hooks globally |
+
+### Supported Package Managers
+
+| Package Manager | Hook Type | Configuration |
+| --------------- | --------- | ------------- |
+| npm | preinstall script | Modifies `package.json` |
+| pnpm | preinstall script | Modifies `package.json` |
+| yarn | preinstall script | Modifies `package.json` |
+
+### Examples
+
+```bash
+# Install hooks for auto-detected package manager
+countersign hook install
+
+# Install npm hooks with minimum score of 80
+countersign hook install --package-manager npm --min-score 80
+
+# Install strict hooks that fail on any warning
+countersign hook install --package-manager npm --strict
+
+# Install hooks globally
+countersign hook install --global
+```
+
+### What Gets Installed
+
+When you run `countersign hook install`, the following happens:
+
+**npm/pnpm/yarn:**
+```json
+{
+  "scripts": {
+    "preinstall": "countersign verify --min-score 70 \"$npm_package_name\" || exit 1"
+  }
+}
+```
+
+With `--strict`:
+```json
+{
+  "scripts": {
+    "preinstall": "countersign verify --min-score 70 --strict \"$npm_package_name\" || exit 1"
+  }
+}
+```
+
+## hook uninstall
+
+Remove verification hooks from your package manager configuration.
+
+```bash
+countersign hook uninstall [flags]
+```
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+| `--package-manager` | `-p` | Package manager: `npm`, `pnpm`, `yarn` (auto-detected if not specified) |
+| `--global` | `-g` | Uninstall global hooks |
+
+### Examples
+
+```bash
+# Remove hooks for auto-detected package manager
+countersign hook uninstall
+
+# Remove npm hooks specifically
+countersign hook uninstall --package-manager npm
+
+# Remove global hooks
+countersign hook uninstall --global
+```
+
+## How Hooks Work
+
+1. **Before Installation**: When you run `npm install <package>`, the preinstall hook triggers
+2. **Verification**: Countersign verifies the package's provenance and calculates a trust score
+3. **Decision**: If the score meets the minimum threshold, installation proceeds; otherwise, it fails
+4. **Feedback**: You see the trust score and any warnings before the package is installed
+
+### Example Output
+
+```
+$ npm install @some/mcp-server
+
+> preinstall
+> countersign verify --min-score 70 "@some/mcp-server"
+
+Verifying: @some/mcp-server@1.2.3
+
+Trust Score: 85/100
+
+  Provenance: Verified (GitHub Actions)
+  Signature: Valid (Sigstore)
+  Publisher: @anthropic (Trusted)
+  Age: 6 months
+  Downloads: 50,000/week
+
+Package verified. Proceeding with installation...
+```
+
+### Failed Verification
+
+```
+$ npm install @suspicious/package
+
+> preinstall
+> countersign verify --min-score 70 "@suspicious/package"
+
+Verifying: @suspicious/package@0.1.0
+
+Trust Score: 35/100
+
+  Provenance: Not found
+  Signature: Not found
+  Publisher: Unknown
+  Age: 2 days
+  Downloads: 12/week
+
+Trust score 35 is below minimum threshold 70.
+Installation blocked.
+```
+
+## Best Practices
+
+1. **Set appropriate thresholds**: Start with 70 and adjust based on your security requirements
+2. **Use strict mode in CI**: Add `--strict` in CI/CD pipelines for maximum security
+3. **Review warnings**: Don't blindly approve packages; investigate low scores
+4. **Update regularly**: Keep countersign updated to get the latest security checks
+
+## Related
+
+- [verify command](/countersign/cli/verify) - Manual package verification
+- [trust command](/countersign/cli/trust) - Manage trusted publishers
+- [Trust Scoring](/countersign/concepts/trust-scoring) - How trust scores are calculated

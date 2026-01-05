@@ -24,6 +24,7 @@ npm install @dotsetlabs/countersign
 | `verify` | Verify package provenance and signatures |
 | `sign` | Sign packages for distribution |
 | `trust` | Manage trusted publishers |
+| `hook` | Install package manager hooks for automatic verification |
 | `version` | Print version information |
 
 ## Global Flags
@@ -49,6 +50,9 @@ countersign trust add anthropic
 
 # Sign a package for distribution
 countersign sign ./dist
+
+# Install verification hooks
+countersign hook install --min-score 80
 ```
 
 ## Exit Codes
