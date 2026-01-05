@@ -1,0 +1,161 @@
+---
+title: Security & Trust Model
+description: Countersign's security model and trust assumptions
+---
+
+# Security & Trust Model
+
+This document explains Countersign's security model, threat model, and trust assumptions.
+
+## What Countersign Does
+
+Countersign verifies the **provenance** and **authenticity** of MCP server packages:
+
+| Verification | What It Proves |
+| ------------ | -------------- |
+| Signature | Package wasn't tampered with after signing |
+| Certificate | Signer's identity was verified by OIDC provider |
+| Transparency | Signature exists in public, immutable log |
+| Provenance | Package was built from specific source code |
+
+## What Countersign Does NOT Do
+
+Countersign is **not**:
+
+| Not | Why |
+| --- | --- |
+| Code analysis | We verify who signed, not what code does |
+| Vulnerability scanner | Use npm audit, Snyk, etc. for CVEs |
+| Malware detection | Malicious code can be validly signed |
+| Permission system | Use Tollgate for runtime controls |
+
+**Signed ≠ Safe**. A malicious author can sign malicious code. Countersign tells you WHO published the code, not WHETHER the code is safe.
+
+## Threat Model
+
+### Threats Countersign Mitigates
+
+| Threat | How Countersign Helps |
+| ------ | --------------------- |
+| Package hijacking | Signature validates publisher identity |
+| Registry tampering | Signature validates package contents |
+| Dependency confusion | Provenance links to source repository |
+| Typosquatting | Trust scores flag unknown publishers |
+| Insider compromise (registry) | Transparency log provides audit trail |
+
+### Threats Countersign Does NOT Mitigate
+
+| Threat | Why Not |
+| ------ | ------- |
+| Malicious maintainer | Valid signature from malicious author |
+| Account compromise | Attacker signs with stolen credentials |
+| Supply chain upstream | Dependencies not automatically verified |
+| Zero-day vulnerabilities | Not a code analyzer |
+
+## Trust Assumptions
+
+Countersign trusts:
+
+### 1. SIGSTORE Infrastructure
+
+- **Fulcio CA**: Issues certificates correctly
+- **Rekor**: Maintains immutable transparency log
+- **Root of trust**: Embedded in Countersign binary
+
+### 2. OIDC Providers
+
+- GitHub, Google, Microsoft identity verification
+- These providers correctly authenticate users
+
+### 3. npm Registry
+
+- Serves signed packages without modification
+- Package contents match what was published
+
+### 4. Your Trust Configuration
+
+- Publishers you add to trust list are trustworthy
+- Your minimum score thresholds are appropriate
+
+## Defense in Depth
+
+Countersign is one layer in a defense-in-depth strategy:
+
+```
+┌─────────────────────────────────────────┐
+│           Your AI Workflow              │
+├─────────────────────────────────────────┤
+│  1. Hardpoint   │ Scan dev environment  │
+├─────────────────┼───────────────────────┤
+│  2. Countersign │ Verify before install │  ← You are here
+├─────────────────┼───────────────────────┤
+│  3. Tollgate    │ Control at runtime    │
+└─────────────────┴───────────────────────┘
+```
+
+Use all three for comprehensive protection:
+
+1. **Hardpoint**: Detect threats already in your environment
+2. **Countersign**: Prevent installing unverified packages
+3. **Tollgate**: Control what installed packages can do
+
+## Transparency Log
+
+All signatures are logged in Rekor, a public transparency log:
+
+```bash
+# Search for signatures
+rekor-cli search --email publisher@example.com
+
+# Verify log inclusion
+rekor-cli verify --artifact package.tgz
+```
+
+Benefits:
+- **Non-repudiation**: Signer can't deny signing
+- **Auditability**: Anyone can verify entries
+- **Tamper evidence**: Log is append-only
+
+## Incident Response
+
+If a signed package is found to be malicious:
+
+1. **Revocation**: Certificate can be revoked (future signatures invalid)
+2. **Log evidence**: Rekor proves who signed and when
+3. **Attribution**: OIDC identity links to real person/org
+4. **Timeline**: Determine exactly when malicious version appeared
+
+## Best Practices
+
+### For Users
+
+1. **Don't disable verification** for convenience
+2. **Set appropriate thresholds** (≥60 for dev, ≥80 for prod)
+3. **Review MEDIUM scores** before installing
+4. **Combine with runtime controls** (Tollgate)
+
+### For Publishers
+
+1. **Sign all releases** with CI/CD automation
+2. **Use workload identity** (GitHub Actions OIDC)
+3. **Enable 2FA** on your npm account
+4. **Include build provenance** (`npm publish --provenance`)
+
+## Limitations
+
+Be aware of these limitations:
+
+| Limitation | Impact |
+| ---------- | ------ |
+| First-party trust | You must decide who to trust |
+| Key timeline | Certificate valid only during signing |
+| Offline mode | Requires cached root certificates |
+| Private packages | May not support SIGSTORE |
+
+## Reporting Security Issues
+
+Report security vulnerabilities to: security@dotsetlabs.com
+
+- PGP key available at: https://dotsetlabs.com/.well-known/pgp-key.txt
+- Response within 48 hours
+- Coordinated disclosure preferred

@@ -1,0 +1,167 @@
+---
+title: Trust Scoring
+description: How Countersign calculates package trust scores
+---
+
+# Trust Scoring
+
+Countersign calculates a trust score (0-100) for every package based on multiple signals. This score helps you make informed decisions about what to install.
+
+## Score Components
+
+The trust score is composed of four weighted components:
+
+| Component | Max Points | Weight |
+| --------- | ---------- | ------ |
+| Publisher Reputation | 40 | 40% |
+| Signature Status | 25 | 25% |
+| Provenance Data | 20 | 20% |
+| Package Hygiene | 15 | 15% |
+
+## Publisher Reputation (40 points)
+
+Who published this package?
+
+| Signal | Points |
+| ------ | ------ |
+| Verified organization | +35 |
+| User-trusted publisher | +30 |
+| 2FA enabled | +5 |
+| Long-standing account (>1 year) | +3 |
+| Multiple packages | +2 |
+| Unknown/new publisher | 0 |
+
+### Example
+
+```
+Publisher: anthropic (verified org)
+  ├─ Verified organization    +35
+  └─ 2FA enabled              +5
+                              ───
+                               40/40
+```
+
+## Signature Status (25 points)
+
+Is there a valid cryptographic signature?
+
+| Signal | Points |
+| ------ | ------ |
+| Valid SIGSTORE signature | +25 |
+| Valid GPG signature | +20 |
+| npm provenance attestation | +15 |
+| Signature present but invalid | 0 |
+| No signature | 0 |
+
+### Example
+
+```
+Signature: SIGSTORE
+  ├─ Signature valid          +25
+  └─ Logged in Rekor          ✓
+                              ───
+                               25/25
+```
+
+## Provenance Data (20 points)
+
+Can we trace the build to source code?
+
+| Signal | Points |
+| ------ | ------ |
+| Full build provenance | +20 |
+| Source repository linked | +10 |
+| Build attestation only | +8 |
+| Partial provenance | +5 |
+| No provenance | 0 |
+
+### Example
+
+```
+Provenance: Full
+  ├─ GitHub Actions build     +10
+  ├─ Source commit linked     +5
+  └─ Build log available      +5
+                              ───
+                               20/20
+```
+
+## Package Hygiene (15 points)
+
+Does the package follow security best practices?
+
+| Signal | Points |
+| ------ | ------ |
+| No install scripts | +5 |
+| Minimal dependencies (<5) | +5 |
+| No network calls in postinstall | +3 |
+| Clean dependency tree | +2 |
+| Has install scripts | -5 |
+| Excessive dependencies | -3 |
+
+### Example
+
+```
+Hygiene: Good
+  ├─ No install scripts       +5
+  ├─ 2 dependencies           +5
+  └─ No postinstall network   +3
+                              ───
+                               13/15
+```
+
+## Trust Levels
+
+Scores map to human-readable trust levels:
+
+| Score | Level | Color | Recommendation |
+| ----- | ----- | ----- | -------------- |
+| 80-100 | HIGH | 🟢 Green | Safe to install |
+| 50-79 | MEDIUM | 🟡 Yellow | Review before installing |
+| 20-49 | LOW | 🟠 Orange | Exercise caution |
+| 0-19 | CRITICAL | 🔴 Red | Do not install |
+
+## Viewing Score Breakdown
+
+```bash
+countersign verify --detailed @example/package
+```
+
+```
+@example/package@1.0.0
+
+Trust Score Breakdown:
+  ├─ Publisher Reputation    35/40
+  │    └─ Verified org: example
+  ├─ Signature Status        25/25
+  │    └─ SIGSTORE signature valid
+  ├─ Provenance Data         15/20
+  │    └─ Source linked, no build log
+  └─ Package Hygiene         10/15
+       └─ 3 dependencies, no scripts
+
+Overall: 85/100 (HIGH) 🟢
+```
+
+## Customizing Thresholds
+
+Set minimum score requirements:
+
+```bash
+# Require HIGH trust (80+)
+countersign verify --min-score 80 @some/package
+
+# Set in CI/CD
+COUNTERSIGN_MIN_SCORE=70 countersign verify @some/package
+```
+
+## Trusted Publishers Override
+
+Packages from trusted publishers get a reputation bonus:
+
+```bash
+# Add trusted publisher
+countersign trust add anthropic
+
+# Their packages now start with +35 reputation
+```

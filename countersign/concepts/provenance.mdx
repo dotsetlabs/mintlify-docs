@@ -1,0 +1,111 @@
+---
+title: Package Provenance
+description: Understanding software supply chain provenance
+---
+
+# Package Provenance
+
+Provenance is the verifiable record of how a software package was built and published. It answers the critical question: "Can I trust this package?"
+
+## The Supply Chain Problem
+
+Traditional package management trusts anyone who can publish to a registry:
+
+```
+Developer → npm publish → Registry → Your Machine
+     ↑
+  Who is this?
+  What did they build?
+  From what source?
+```
+
+Without provenance, you're installing code from strangers.
+
+## What Provenance Provides
+
+Provenance creates an auditable chain from source to package:
+
+```
+Source Code → CI Build → Signed Package → Registry → Your Machine
+     ↓            ↓            ↓
+  Git commit   Build log   Certificate
+     ↓            ↓            ↓
+            All publicly verifiable
+```
+
+## Provenance Components
+
+### Build Attestation
+
+Proves the package was built from a specific source:
+
+```json
+{
+  "subject": "@example/mcp-server@1.0.0",
+  "predicate": {
+    "buildType": "github-actions",
+    "builder": "github.com/actions/runner",
+    "sourceRepository": "github.com/example/mcp-server",
+    "sourceCommit": "abc123..."
+  }
+}
+```
+
+### Signature
+
+Cryptographic proof that binds the attestation to an identity:
+
+- **Identity**: Who signed (e.g., `deploy@github.com`)
+- **Certificate**: Issued by SIGSTORE Fulcio CA
+- **Transparency**: Logged in Rekor public ledger
+
+### Transparency Log
+
+Public, append-only record that provides:
+
+- Non-repudiation (signer can't deny signing)
+- Audit trail (anyone can verify)
+- Tamper evidence (entries can't be modified)
+
+## Verifying Provenance
+
+When you run `countersign verify`, it checks:
+
+1. **Signature validity** - Is the cryptographic signature correct?
+2. **Certificate chain** - Was the certificate issued by a trusted CA?
+3. **Transparency log** - Is the signature logged in Rekor?
+4. **Build attestation** - Does it link to a known source?
+
+```bash
+countersign verify @example/mcp-server
+```
+
+```
+Provenance Check:
+  ✓ Signature valid (SIGSTORE)
+  ✓ Certificate from Fulcio CA
+  ✓ Entry found in Rekor
+  ✓ Built from github.com/example/mcp-server
+```
+
+## Why MCP Servers Need Provenance
+
+MCP servers are especially sensitive because they:
+
+- Execute with your AI assistant's permissions
+- Can access files, run commands, make network requests
+- Often run without explicit user approval per action
+
+A compromised MCP server could:
+
+- Exfiltrate sensitive code or credentials
+- Inject malicious instructions into AI conversations
+- Establish persistence on your development machine
+
+Provenance verification is your first line of defense.
+
+## Further Reading
+
+- [Trust Scoring](/countersign/concepts/trust-scoring) - How Countersign calculates trust
+- [Signatures](/countersign/concepts/signatures) - Deep dive into SIGSTORE
+- [Verifying Packages](/countersign/guides/verifying-packages) - Practical guide

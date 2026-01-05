@@ -21,14 +21,19 @@
     },
     "anchors": [
         {
-            "name": "Tollgate",
-            "icon": "lock",
-            "url": "https://github.com/dotsetlabs/tollgate"
-        },
-        {
             "name": "Hardpoint",
             "icon": "radar",
             "url": "https://github.com/dotsetlabs/hardpoint"
+        },
+        {
+            "name": "Countersign",
+            "icon": "signature",
+            "url": "https://github.com/dotsetlabs/countersign"
+        },
+        {
+            "name": "Tollgate",
+            "icon": "lock",
+            "url": "https://github.com/dotsetlabs/tollgate"
         }
     ],
     "navigation": [
@@ -38,6 +43,77 @@
                 "introduction",
                 "quickstart",
                 "installation"
+            ]
+        },
+        {
+            "group": "Hardpoint",
+            "pages": [
+                {
+                    "group": "CLI Commands",
+                    "pages": [
+                        "hardpoint/cli/overview",
+                        "hardpoint/cli/scan",
+                        "hardpoint/cli/fix"
+                    ]
+                },
+                {
+                    "group": "Concepts",
+                    "pages": [
+                        "hardpoint/concepts/scanners",
+                        "hardpoint/concepts/findings",
+                        "hardpoint/concepts/baseline"
+                    ]
+                },
+                {
+                    "group": "Guides",
+                    "pages": [
+                        "hardpoint/guides/local-development",
+                        "hardpoint/guides/github-actions",
+                        "hardpoint/guides/gitlab-ci"
+                    ]
+                },
+                {
+                    "group": "Security",
+                    "pages": [
+                        "hardpoint/security/trust"
+                    ]
+                }
+            ]
+        },
+        {
+            "group": "Countersign",
+            "pages": [
+                {
+                    "group": "CLI Commands",
+                    "pages": [
+                        "countersign/cli/overview",
+                        "countersign/cli/verify",
+                        "countersign/cli/sign",
+                        "countersign/cli/trust"
+                    ]
+                },
+                {
+                    "group": "Concepts",
+                    "pages": [
+                        "countersign/concepts/provenance",
+                        "countersign/concepts/trust-scoring",
+                        "countersign/concepts/signatures"
+                    ]
+                },
+                {
+                    "group": "Guides",
+                    "pages": [
+                        "countersign/guides/verifying-packages",
+                        "countersign/guides/signing-packages",
+                        "countersign/guides/ci-integration"
+                    ]
+                },
+                {
+                    "group": "Security",
+                    "pages": [
+                        "countersign/security/trust"
+                    ]
+                }
             ]
         },
         {
@@ -85,41 +161,6 @@
                     "group": "Security",
                     "pages": [
                         "tollgate/security/trust"
-                    ]
-                }
-            ]
-        },
-        {
-            "group": "Hardpoint",
-            "pages": [
-                {
-                    "group": "CLI Commands",
-                    "pages": [
-                        "hardpoint/cli/overview",
-                        "hardpoint/cli/scan",
-                        "hardpoint/cli/fix"
-                    ]
-                },
-                {
-                    "group": "Concepts",
-                    "pages": [
-                        "hardpoint/concepts/scanners",
-                        "hardpoint/concepts/findings",
-                        "hardpoint/concepts/baseline"
-                    ]
-                },
-                {
-                    "group": "Guides",
-                    "pages": [
-                        "hardpoint/guides/local-development",
-                        "hardpoint/guides/github-actions",
-                        "hardpoint/guides/gitlab-ci"
-                    ]
-                },
-                {
-                    "group": "Security",
-                    "pages": [
-                        "hardpoint/security/trust"
                     ]
                 }
             ]

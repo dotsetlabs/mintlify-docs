@@ -1,0 +1,169 @@
+---
+title: Signatures
+description: Understanding cryptographic signatures in Countersign
+---
+
+# Cryptographic Signatures
+
+Countersign uses SIGSTORE, the industry standard for software signing, to verify package authenticity without requiring publishers to manage long-lived keys.
+
+## Why SIGSTORE?
+
+Traditional code signing has problems:
+
+| Problem | Traditional | SIGSTORE |
+| ------- | ----------- | -------- |
+| Key management | You manage keys | Keyless (ephemeral) |
+| Key compromise | Keys can be stolen | Keys exist only seconds |
+| Identity binding | Keys ≠ identity | Identity verified via OIDC |
+| Transparency | Trust the signer | Public verifiable ledger |
+
+## How Keyless Signing Works
+
+```
+1. Developer authenticates with OIDC provider (GitHub, Google)
+         │
+         ▼
+2. SIGSTORE Fulcio issues short-lived certificate
+   Binds: email ↔ public key
+         │
+         ▼
+3. Developer signs the artifact
+         │
+         ▼
+4. Signature logged in Rekor transparency log
+         │
+         ▼
+5. Certificate and key are discarded
+```
+
+The key exists only long enough to sign—no key to steal.
+
+## SIGSTORE Components
+
+### Fulcio (Certificate Authority)
+
+Issues short-lived certificates based on OIDC identity:
+
+```json
+{
+  "issuer": "https://github.com/login/oauth",
+  "subject": "developer@example.com",
+  "validFor": "10 minutes"
+}
+```
+
+### Rekor (Transparency Log)
+
+Public, immutable record of all signatures:
+
+```json
+{
+  "logIndex": 12345678,
+  "integratedTime": "2024-01-15T10:30:00Z",
+  "body": {
+    "signature": "base64...",
+    "certificate": "base64...",
+    "payload": "package-digest"
+  }
+}
+```
+
+Anyone can search Rekor to verify a signature existed.
+
+### Cosign (Signing Tool)
+
+What Countersign uses under the hood:
+
+```bash
+# Signing (happens in countersign sign)
+cosign sign-blob artifact.tar.gz
+
+# Verification (happens in countersign verify)
+cosign verify-blob artifact.tar.gz --signature sig.sig
+```
+
+## Verification Process
+
+When you run `countersign verify`:
+
+```
+1. Fetch package from npm registry
+         │
+         ▼
+2. Check for .sigstore/ attestation bundle
+         │
+         ▼
+3. Verify signature matches package contents
+         │
+         ▼
+4. Verify certificate chain (Fulcio → Root CA)
+         │
+         ▼
+5. Check Rekor for transparency log entry
+         │
+         ▼
+6. Extract identity from certificate
+         │
+         ▼
+✓ Package authenticity confirmed
+```
+
+## Signature Bundle Format
+
+Signed packages include:
+
+```
+package/
+├── dist/
+├── package.json
+└── .sigstore/
+    ├── bundle.json        # Combined attestation
+    ├── signature.sig      # Detached signature
+    └── certificate.pem    # Signing certificate
+```
+
+The `bundle.json` follows the SIGSTORE bundle format:
+
+```json
+{
+  "mediaType": "application/vnd.dev.sigstore.bundle+json;version=0.1",
+  "verificationMaterial": {
+    "certificate": { "rawBytes": "..." },
+    "tlogEntries": [{ "logIndex": "12345678" }]
+  },
+  "messageSignature": {
+    "signature": "..."
+  }
+}
+```
+
+## Identity Types
+
+SIGSTORE supports multiple identity providers:
+
+| Provider | Identity Format |
+| -------- | --------------- |
+| GitHub Actions | `https://github.com/owner/repo` |
+| GitHub OAuth | `user@github.com` |
+| Google | `user@gmail.com` |
+| Microsoft | `user@microsoft.com` |
+
+## Offline Verification
+
+Signatures can be verified offline if you have:
+
+1. The signature bundle
+2. The Fulcio root certificate (bundled with Countersign)
+3. The Rekor public key (bundled with Countersign)
+
+```bash
+# Works without network
+countersign verify --offline @some/package
+```
+
+## Further Reading
+
+- [sigstore.dev](https://sigstore.dev) - SIGSTORE project
+- [Fulcio](https://github.com/sigstore/fulcio) - Certificate authority
+- [Rekor](https://github.com/sigstore/rekor) - Transparency log

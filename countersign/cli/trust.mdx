@@ -1,0 +1,122 @@
+---
+title: countersign trust
+description: Manage trusted publishers
+---
+
+# countersign trust
+
+Manage your list of trusted MCP server publishers.
+
+## Usage
+
+```bash
+countersign trust <subcommand> [options]
+```
+
+## Subcommands
+
+| Subcommand | Description |
+| ---------- | ----------- |
+| `list` | List trusted publishers |
+| `add` | Add a trusted publisher |
+| `remove` | Remove a trusted publisher |
+| `show` | Show details about a publisher |
+
+## Examples
+
+### List Trusted Publishers
+
+```bash
+countersign trust list
+```
+
+Output:
+```
+Trusted Publishers:
+  ├─ anthropic (organization)
+  │    └─ Added: 2024-01-15
+  ├─ modelcontextprotocol (organization)
+  │    └─ Added: 2024-01-15
+  └─ mycompany (organization)
+       └─ Added: 2024-02-01
+```
+
+### Add a Publisher
+
+```bash
+# Trust an npm organization
+countersign trust add anthropic
+
+# Trust with a note
+countersign trust add mycompany --note "Internal MCP servers"
+```
+
+### Remove a Publisher
+
+```bash
+countersign trust remove untrusted-org
+```
+
+### Show Publisher Details
+
+```bash
+countersign trust show anthropic
+```
+
+Output:
+```
+Publisher: anthropic
+Type: npm organization
+Verified: Yes
+Trust Level: HIGH
+
+Packages:
+  └─ @modelcontextprotocol/server-filesystem
+  └─ @modelcontextprotocol/server-brave-search
+  └─ @modelcontextprotocol/server-github
+```
+
+## Trust Store Location
+
+Trust settings are stored in:
+
+| Platform | Location |
+| -------- | -------- |
+| macOS | `~/Library/Application Support/countersign/trust.json` |
+| Linux | `~/.config/countersign/trust.json` |
+| Windows | `%APPDATA%\countersign\trust.json` |
+
+## Default Trusted Publishers
+
+Countersign ships with default trust for:
+
+- `anthropic` - Official Anthropic packages
+- `modelcontextprotocol` - Official MCP SDK and servers
+
+You can remove these defaults if desired:
+
+```bash
+countersign trust remove anthropic --force
+```
+
+## Trust Policies
+
+### Organization Trust
+
+When you trust an organization, all packages published by that organization receive a reputation bonus in the trust score calculation.
+
+### Individual Trust
+
+You can also trust individual maintainers:
+
+```bash
+countersign trust add user:johndoe
+```
+
+### Scope Trust
+
+Trust all packages under a scope:
+
+```bash
+countersign trust add @mycompany
+```
