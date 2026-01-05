@@ -1,0 +1,129 @@
+---
+title: scan
+description: Run security scans on your environment
+---
+
+# hardpoint scan
+
+Run security scans on your development environment.
+
+## Usage
+
+```bash
+hardpoint scan [scanner...] [flags]
+```
+
+## Available Scanners
+
+| Scanner | Description |
+| ------- | ----------- |
+| `ai` | Scan AI configuration files (mcp.json, .cursorrules, CLAUDE.md) |
+| `shell` | Scan shell configurations for backdoors |
+| `git` | Check git hooks integrity |
+| `network` | Detect exposed localhost services |
+| `secrets` | Find secrets in configuration files |
+
+## Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+| `--path` | `-p` | Path to scan (default: home directory) |
+| `--severity` | `-s` | Minimum severity: `info`, `low`, `medium`, `high`, `critical` |
+| `--confidence` | `-c` | Minimum confidence: `low`, `medium`, `high` |
+| `--exclude` | `-e` | Paths to exclude (can be repeated) |
+
+## Examples
+
+### Run All Scanners
+
+```bash
+hardpoint scan
+```
+
+### Run Specific Scanners
+
+```bash
+# Only AI scanner
+hardpoint scan ai
+
+# Multiple scanners
+hardpoint scan ai shell secrets
+```
+
+### Scan a Project Directory
+
+```bash
+hardpoint scan --path /path/to/project
+```
+
+### Filter by Severity
+
+```bash
+# Only high and critical findings
+hardpoint scan --severity high
+```
+
+### Exclude Paths
+
+```bash
+hardpoint scan --exclude node_modules --exclude .git
+```
+
+### Output Formats
+
+```bash
+# JSON output
+hardpoint scan --output json
+
+# SARIF for GitHub Code Scanning
+hardpoint scan --output sarif > results.sarif
+```
+
+## Output
+
+### Terminal Output
+
+```
+Hardpoint Security Scan
+=======================
+
+Scanning: /Users/dev
+Scanners: ai, shell, git, network, secrets
+
+Findings
+--------
+
+  CRITICAL  AI-001: Instruction Override Detected
+            File: .cursorrules:15
+            Pattern attempts to override AI safety guidelines
+
+  HIGH      SHELL-002: Curl Pipe to Shell
+            File: .bashrc:42
+            Command downloads and executes remote script
+
+  MEDIUM    SECRET-001: AWS Access Key
+            File: .env:3
+            Hardcoded AWS credentials detected
+
+Summary: 1 critical, 1 high, 1 medium (3 total)
+```
+
+### JSON Output
+
+```json
+{
+  "version": "0.1.0",
+  "scan_time": "2025-01-04T10:30:00Z",
+  "findings": [
+    {
+      "id": "AI-001",
+      "title": "Instruction Override Detected",
+      "severity": "critical",
+      "confidence": "high",
+      "file_path": ".cursorrules",
+      "line_number": 15,
+      "remediation": "Remove instruction override attempts"
+    }
+  ]
+}
+```

@@ -1,0 +1,140 @@
+---
+title: Security & Trust
+description: How Hardpoint keeps your environment secure
+---
+
+# Security & Trust
+
+Hardpoint is designed with security as a core principle. Here's what you need to know.
+
+## Privacy by Design
+
+### No Network Access
+
+Hardpoint runs entirely locally. It never:
+
+- Phones home
+- Uploads scan results
+- Connects to external services
+- Collects telemetry
+
+### No Data Collection
+
+- No usage analytics
+- No crash reporting
+- No feature flags
+- Your code stays on your machine
+
+### Open Source
+
+All code is publicly auditable:
+
+- [GitHub Repository](https://github.com/dotsetlabs/hardpoint)
+- MIT License
+- Full source code access
+
+## How Scanning Works
+
+### Local Pattern Matching
+
+Hardpoint uses local regex pattern matching:
+
+1. Reads files from your filesystem
+2. Matches against bundled rule definitions
+3. Reports findings locally
+4. No external processing
+
+### Rule Definitions
+
+Rules are embedded in the binary:
+
+```yaml
+# Example rule structure
+- id: AI-001
+  pattern: '(?i)ignore\s+(all\s+)?previous\s+instructions'
+  severity: critical
+```
+
+Rules never change without a new release.
+
+## Supply Chain Security
+
+### Minimal Dependencies
+
+Hardpoint has only 2 direct dependencies:
+
+- `github.com/spf13/cobra` - CLI framework
+- `gopkg.in/yaml.v3` - YAML parsing
+
+### Reproducible Builds
+
+Builds are reproducible and verifiable:
+
+```bash
+# Verify checksum
+sha256sum hardpoint
+# Compare against published checksums.txt
+```
+
+### Signed Releases
+
+All releases include:
+
+- SHA256 checksums
+- Provenance attestation
+- Signed with Sigstore
+
+## Threat Model
+
+### What Hardpoint Protects Against
+
+| Threat | Protection |
+| ------ | ---------- |
+| Prompt injection in AI configs | Pattern detection |
+| Hidden Unicode attacks | Character analysis |
+| Shell backdoors | Command pattern matching |
+| Credential exposure | Secret pattern + entropy detection |
+| Git hook attacks | Hook content analysis |
+| Service exposure | Network binding checks |
+
+### What Hardpoint Does NOT Protect Against
+
+| Threat | Reason |
+| ------ | ------ |
+| Runtime attacks | Static analysis only |
+| Obfuscated malware | Pattern-based detection |
+| Zero-day exploits | Known pattern matching |
+| Network intrusion | Local scanning only |
+
+## Responsible Disclosure
+
+Found a security issue? Please report it:
+
+- Email: security@dotsetlabs.com
+- Do NOT open public issues for security vulnerabilities
+- We'll respond within 48 hours
+
+See our [Security Policy](https://github.com/dotsetlabs/hardpoint/security/policy) for details.
+
+## Compliance
+
+Hardpoint can help with:
+
+- **SOC 2**: Developer environment security controls
+- **ISO 27001**: Secure development practices
+- **PCI DSS**: Protecting cardholder data
+- **HIPAA**: Preventing credential exposure
+
+Use SARIF output for audit trail:
+
+```bash
+hardpoint scan --output sarif > scan-$(date +%Y%m%d).sarif
+```
+
+## Best Practices
+
+1. **Run regularly** - Daily scans catch issues early
+2. **Use in CI/CD** - Automate security checks
+3. **Review suppressions** - Don't ignore real issues
+4. **Keep updated** - New rules catch new threats
+5. **Report issues** - Help improve detection

@@ -21,14 +21,14 @@
     },
     "anchors": [
         {
-            "name": "Mantle",
-            "icon": "shield-halved",
-            "url": "https://github.com/dotsetlabs/mantle"
-        },
-        {
             "name": "Tollgate",
             "icon": "lock",
             "url": "https://github.com/dotsetlabs/tollgate"
+        },
+        {
+            "name": "Hardpoint",
+            "icon": "radar",
+            "url": "https://github.com/dotsetlabs/hardpoint"
         }
     ],
     "navigation": [
@@ -38,45 +38,6 @@
                 "introduction",
                 "quickstart",
                 "installation"
-            ]
-        },
-        {
-            "group": "Mantle",
-            "pages": [
-                {
-                    "group": "CLI Commands",
-                    "pages": [
-                        "mantle/cli/overview",
-                        "mantle/cli/run",
-                        "mantle/cli/scan"
-                    ]
-                },
-                {
-                    "group": "Concepts",
-                    "pages": [
-                        "mantle/concepts/protection-modes",
-                        "mantle/concepts/secrets",
-                        "mantle/concepts/scopes",
-                        "mantle/concepts/security-policies"
-                    ]
-                },
-                {
-                    "group": "CI/CD Guides",
-                    "pages": [
-                        "mantle/guides/github-actions",
-                        "mantle/guides/gitlab-ci",
-                        "mantle/guides/circleci",
-                        "mantle/guides/jenkins",
-                        "mantle/guides/generic-ci"
-                    ]
-                },
-                {
-                    "group": "Security",
-                    "pages": [
-                        "mantle/security/encryption",
-                        "mantle/security/trust"
-                    ]
-                }
             ]
         },
         {
@@ -117,7 +78,6 @@
                     "pages": [
                         "tollgate/guides/claude-desktop",
                         "tollgate/guides/cursor",
-                        "tollgate/guides/vscode",
                         "tollgate/guides/production"
                     ]
                 },
@@ -130,108 +90,44 @@
             ]
         },
         {
+            "group": "Hardpoint",
+            "pages": [
+                {
+                    "group": "CLI Commands",
+                    "pages": [
+                        "hardpoint/cli/overview",
+                        "hardpoint/cli/scan",
+                        "hardpoint/cli/fix"
+                    ]
+                },
+                {
+                    "group": "Concepts",
+                    "pages": [
+                        "hardpoint/concepts/scanners",
+                        "hardpoint/concepts/findings",
+                        "hardpoint/concepts/baseline"
+                    ]
+                },
+                {
+                    "group": "Guides",
+                    "pages": [
+                        "hardpoint/guides/local-development",
+                        "hardpoint/guides/github-actions",
+                        "hardpoint/guides/gitlab-ci"
+                    ]
+                },
+                {
+                    "group": "Security",
+                    "pages": [
+                        "hardpoint/security/trust"
+                    ]
+                }
+            ]
+        },
+        {
             "group": "API Reference",
             "pages": [
                 "api/_index",
-                {
-                    "group": "Mantle API",
-                    "pages": [
-                        "api/mantle/_index",
-                        {
-                            "group": "Classes",
-                            "pages": [
-                                "api/mantle/classes/aggregatemantleerror",
-                                "api/mantle/classes/artifactmanager",
-                                "api/mantle/classes/batchprofiler",
-                                "api/mantle/classes/circuitbreaker",
-                                "api/mantle/classes/circuitopenerror",
-                                "api/mantle/classes/configurationerror",
-                                "api/mantle/classes/errorcollector",
-                                "api/mantle/classes/lrucache",
-                                "api/mantle/classes/patterncompilationerror",
-                                "api/mantle/classes/profiler",
-                                "api/mantle/classes/providererror",
-                                "api/mantle/classes/ratelimiter",
-                                "api/mantle/classes/redactor",
-                                "api/mantle/classes/secretresolver",
-                                "api/mantle/classes/mantleerror"
-                            ]
-                        },
-                        {
-                            "group": "Interfaces",
-                            "pages": [
-                                "api/mantle/interfaces/allowlistconfig",
-                                "api/mantle/interfaces/allowlistentry",
-                                "api/mantle/interfaces/artifactinfo",
-                                "api/mantle/interfaces/artifactoptions",
-                                "api/mantle/interfaces/auditentry",
-                                "api/mantle/interfaces/awssecretsmanageroptions",
-                                "api/mantle/interfaces/baseline",
-                                "api/mantle/interfaces/baselinediff",
-                                "api/mantle/interfaces/baselinefinding",
-                                "api/mantle/interfaces/baselineversion",
-                                "api/mantle/interfaces/batchmetrics",
-                                "api/mantle/interfaces/cachemetrics",
-                                "api/mantle/interfaces/ciconfig",
-                                "api/mantle/interfaces/cidefaultconfig",
-                                "api/mantle/interfaces/cienvironment"
-                            ]
-                        },
-                        {
-                            "group": "Functions",
-                            "pages": [
-                                "api/mantle/functions/addtobaseline",
-                                "api/mantle/functions/applyenvironmentdefaults",
-                                "api/mantle/functions/calculatethroughput",
-                                "api/mantle/functions/clearpatterncache",
-                                "api/mantle/functions/comparebaselines",
-                                "api/mantle/functions/completepipeline",
-                                "api/mantle/functions/createdefaultconfig",
-                                "api/mantle/functions/createemptybaseline",
-                                "api/mantle/functions/creategithubannotation",
-                                "api/mantle/functions/createpipelinecontext",
-                                "api/mantle/functions/detectcienvironment",
-                                "api/mantle/functions/detectenvironment",
-                                "api/mantle/functions/determineexitcode",
-                                "api/mantle/functions/disableprofiling",
-                                "api/mantle/functions/enableprofiling"
-                            ]
-                        },
-                        {
-                            "group": "Type Aliases",
-                            "pages": [
-                                "api/mantle/type-aliases/ciprovider",
-                                "api/mantle/type-aliases/circuitstate",
-                                "api/mantle/type-aliases/configoutputformat",
-                                "api/mantle/type-aliases/detectionsignal",
-                                "api/mantle/type-aliases/errorcode",
-                                "api/mantle/type-aliases/exitcode",
-                                "api/mantle/type-aliases/findingseverity",
-                                "api/mantle/type-aliases/findingstatus",
-                                "api/mantle/type-aliases/outputformat",
-                                "api/mantle/type-aliases/protectionmode",
-                                "api/mantle/type-aliases/providersource",
-                                "api/mantle/type-aliases/scope",
-                                "api/mantle/type-aliases/severity"
-                            ]
-                        },
-                        {
-                            "group": "Variables",
-                            "pages": [
-                                "api/mantle/variables/config_filename",
-                                "api/mantle/variables/config_template",
-                                "api/mantle/variables/current_schema_version",
-                                "api/mantle/variables/default_baseline_file",
-                                "api/mantle/variables/default_redact_text",
-                                "api/mantle/variables/dotset_config_dir",
-                                "api/mantle/variables/errorcodes",
-                                "api/mantle/variables/exitcodes",
-                                "api/mantle/variables/package_name",
-                                "api/mantle/variables/mantle_config_path"
-                            ]
-                        }
-                    ]
-                },
                 {
                     "group": "Tollgate API",
                     "pages": [

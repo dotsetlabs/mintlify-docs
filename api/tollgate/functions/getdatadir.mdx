@@ -14,6 +14,15 @@ function getDataDir(): string;
 
 Defined in: src/tollgate/utils/config.ts:59
 
+Returns the Tollgate data directory path where runtime data is stored.
+
+The data directory is used for storing:
+- Audit logs (SQLite database)
+- Session data (when persistent sessions are enabled)
+- Other runtime data
+
 ## Returns
 
 `string`
+
+The path to the Tollgate data directory (`~/.tollgate`).

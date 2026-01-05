@@ -1,32 +1,16 @@
 ---
 title: Introduction
-description: 'Security tools for modern development workflows'
+description: 'Security tools for the AI era'
 ---
 
 # Dotset Labs
 
-**Security tools for CI/CD and AI agents.**
+**Security tools for the AI era.**
 
-Dotset Labs provides two security tools as separate npm packages:
+Dotset Labs provides security tools for developers working with AI assistants:
 
-- **[Mantle](/mantle/cli/overview)** - Secret detection and log sanitization for CI/CD pipelines
 - **[Tollgate](/tollgate/cli/overview)** - Policy-based access control for AI agents using MCP
-
----
-
-## Mantle
-
-Secrets leak in build logs every day. Debug statements, error messages, and verbose logging expose API keys, tokens, and credentials.
-
-**Mantle** intercepts output streams and redacts secrets in real-time — with **zero migration** and **dynamic secret detection**.
-
-```bash
-npm install -g @dotsetlabs/mantle
-mantle run -- npm start
-```
-
-> [!NOTE]
-> Mantle processes secrets locally and never sends values to the cloud. [Learn more →](/mantle/security/trust)
+- **[Hardpoint](/hardpoint/cli/overview)** - Developer environment security scanner for the AI era
 
 ---
 
@@ -46,23 +30,39 @@ tollgate wrap npx @modelcontextprotocol/server-postgres
 
 ---
 
+## Hardpoint
+
+AI coding assistants introduce new attack surfaces. Malicious `.cursorrules` files, prompt injection in `CLAUDE.md`, hidden Unicode characters, and backdoors in shell configs can compromise your development environment.
+
+**Hardpoint** scans your environment for these AI-era threats — detecting issues that traditional security tools miss.
+
+```bash
+brew install dotsetlabs/tap/hardpoint
+hardpoint scan
+```
+
+> [!NOTE]
+> Hardpoint runs entirely locally with no network access. [Learn more →](/hardpoint/security/trust)
+
+---
+
 ## Quick Install
 
 ```bash
-# For CI/CD secret protection
-npm install -g @dotsetlabs/mantle
-
 # For MCP access control
 npm install -g @dotsetlabs/tollgate
+
+# For dev environment security
+brew install dotsetlabs/tap/hardpoint
 ```
 
 ## Next Steps
 
 <CardGroup>
-  <Card title="Mantle Quickstart" icon="shield-halved" href="/quickstart#mantle">
-    Protect your CI/CD in 60 seconds
-  </Card>
   <Card title="Tollgate Quickstart" icon="lock" href="/quickstart#tollgate">
     Add access control to MCP servers
+  </Card>
+  <Card title="Hardpoint Quickstart" icon="radar" href="/quickstart#hardpoint">
+    Scan your dev environment
   </Card>
 </CardGroup>

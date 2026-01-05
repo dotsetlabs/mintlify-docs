@@ -1,0 +1,94 @@
+---
+title: fix
+description: Auto-fix certain security findings
+---
+
+# hardpoint fix
+
+Automatically fix certain security findings. Not all findings can be auto-fixed.
+
+## Usage
+
+```bash
+hardpoint fix <finding-id> [file...] [flags]
+```
+
+## Flags
+
+| Flag | Description |
+| ---- | ----------- |
+| `--list` | List findings that can be auto-fixed |
+
+## Fixable Findings
+
+| Finding ID | Description |
+| ---------- | ----------- |
+| `AI-003` | Strip hidden Unicode characters from file |
+
+## Examples
+
+### List Fixable Findings
+
+```bash
+hardpoint fix --list
+```
+
+Output:
+```
+Fixable findings:
+
+  AI-003     Strip hidden Unicode characters from file
+```
+
+### Fix Hidden Unicode
+
+```bash
+# Fix a single file
+hardpoint fix AI-003 README.md
+
+# Fix multiple files
+hardpoint fix AI-003 CLAUDE.md .cursorrules docs/*.md
+```
+
+Output:
+```
+  README.md: removed 3 hidden character(s)
+  CLAUDE.md: no hidden Unicode found
+  .cursorrules: removed 1 hidden character(s)
+
+Fixed 2 file(s)
+```
+
+## How It Works
+
+### AI-003: Hidden Unicode
+
+Hidden Unicode characters can be used to inject invisible instructions into AI configuration files. This fix removes:
+
+- **Zero-width characters**: Used to hide text from humans
+- **RTL override**: Can reverse text display direction
+- **Homoglyphs**: Characters that look like ASCII but aren't
+- **Invisible separators**: Hidden formatting characters
+
+Before:
+```
+# Project Guidelines
+Follow best practices[INVISIBLE INJECTION HERE]
+```
+
+After:
+```
+# Project Guidelines
+Follow best practices
+```
+
+## Adding New Fixes
+
+Hardpoint's fix system is extensible. To request a new auto-fix:
+
+1. Open an issue on [GitHub](https://github.com/dotsetlabs/hardpoint/issues)
+2. Describe the finding and proposed fix
+3. Include example files if possible
+
+[!NOTE]
+Auto-fixes are conservative and designed to be safe. When in doubt, they leave content unchanged and report the issue for manual review.

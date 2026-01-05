@@ -1,0 +1,102 @@
+---
+title: GitLab CI
+description: Integrate Hardpoint with GitLab CI/CD
+---
+
+# GitLab CI Integration
+
+Run Hardpoint in your GitLab CI/CD pipelines.
+
+## Basic Pipeline
+
+```yaml
+# .gitlab-ci.yml
+stages:
+  - security
+
+hardpoint:
+  stage: security
+  image: golang:1.23-alpine
+  before_script:
+    - wget -qO- https://github.com/dotsetlabs/hardpoint/releases/latest/download/hardpoint_linux_amd64.tar.gz | tar xz
+    - chmod +x hardpoint
+  script:
+    - ./hardpoint scan --severity high
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+```
+
+## With Artifacts
+
+Save scan results as artifacts:
+
+```yaml
+hardpoint:
+  stage: security
+  image: golang:1.23-alpine
+  before_script:
+    - wget -qO- https://github.com/dotsetlabs/hardpoint/releases/latest/download/hardpoint_linux_amd64.tar.gz | tar xz
+  script:
+    - ./hardpoint scan --output json > security-report.json
+  artifacts:
+    paths:
+      - security-report.json
+    reports:
+      codequality: security-report.json
+    expire_in: 1 week
+  allow_failure: true
+```
+
+## SAST Integration
+
+Use SARIF output with GitLab SAST:
+
+```yaml
+hardpoint-sast:
+  stage: security
+  image: golang:1.23-alpine
+  before_script:
+    - wget -qO- https://github.com/dotsetlabs/hardpoint/releases/latest/download/hardpoint_linux_amd64.tar.gz | tar xz
+  script:
+    - ./hardpoint scan --output sarif > gl-sast-report.sarif
+  artifacts:
+    reports:
+      sast: gl-sast-report.sarif
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+```
+
+## Scanning Specific Paths
+
+```yaml
+hardpoint:
+  stage: security
+  script:
+    - ./hardpoint scan --path ./src
+    - ./hardpoint scan --path ./config --severity critical
+```
+
+## Parallel Scanning
+
+```yaml
+.hardpoint-base:
+  stage: security
+  before_script:
+    - wget -qO- https://github.com/dotsetlabs/hardpoint/releases/latest/download/hardpoint_linux_amd64.tar.gz | tar xz
+
+scan-ai:
+  extends: .hardpoint-base
+  script:
+    - ./hardpoint scan ai
+
+scan-shell:
+  extends: .hardpoint-base
+  script:
+    - ./hardpoint scan shell
+
+scan-secrets:
+  extends: .hardpoint-base
+  script:
+    - ./hardpoint scan secrets
+```

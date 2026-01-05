@@ -14,10 +14,22 @@ function startWrapMode(options): Promise<void>;
 
 Defined in: src/tollgate/proxy/bridge.ts:217
 
+Starts Tollgate in wrap mode, which proxies a single MCP server with policy controls.
+This is useful for quickly adding security controls to any MCP server without
+creating a configuration file.
+
 ## Parameters
 
 ### options
 
+[`WrapOptions`](../interfaces/WrapOptions.md)
+
+Configuration for wrap mode including the command to run, default action,
+approval settings, and session options.
+
 ## Returns
 
 `Promise`\<`void`\>
+
+Resolves when the wrapped server starts successfully. The function will keep
+running until the server is shut down via SIGINT or SIGTERM.

@@ -9,64 +9,6 @@ This guide gets you from zero to protected in under a minute.
 
 ---
 
-## Mantle
-
-Mantle protects your CI/CD pipelines from secret leakage.
-
-### 1. Install
-
-```bash
-npm install -g @dotsetlabs/mantle
-```
-
-### 2. Zero-Migration Setup
-
-Mantle automatically detects `.env` files. If you already have one, you're ready to go:
-
-```bash
-# Run with automatic protection
-mantle run -- npm start
-```
-
-### 3. Protection Modes
-
-| Mode | Behavior | Use Case |
-|:-----|:---------|:---------|
-| `detect` | Warning in logs | Auditing |
-| `redact` | Replaces secrets (default) | **Recommended** |
-| `block` | Suppresses lines | High Privacy |
-
-```bash
-# Redact secrets in real-time
-mantle run --mode redact -- npm test
-```
-
-### 4. Example Output
-
-```bash
-$ mantle run --mode redact -- node app.js
-
-mantle | mode: redact | secrets: 5 | providers: dotenv, environment
-
-Starting server...
-Connecting to database: [REDACTED]
-Using API key: [REDACTED]
-Server running on port 3000
-
-mantle | exit: 0 | exposures: 2
-```
-
-<CardGroup>
-  <Card title="Protection Modes" icon="shield-halved" href="/mantle/concepts/protection-modes">
-    Learn about detect, redact, and block
-  </Card>
-  <Card title="GitHub Actions" icon="github" href="/mantle/guides/github-actions">
-    Protect your GitHub Actions workflows
-  </Card>
-</CardGroup>
-
----
-
 ## Tollgate
 
 Tollgate adds policy-based access control to MCP servers used by AI agents.
@@ -139,5 +81,85 @@ tollgate start -s postgres
   </Card>
   <Card title="Claude Desktop" icon="robot" href="/tollgate/guides/claude-desktop">
     Full Claude Desktop integration guide
+  </Card>
+</CardGroup>
+
+---
+
+## Hardpoint
+
+Hardpoint scans your developer environment for AI-era security threats.
+
+### 1. Install
+
+```bash
+# macOS / Linux
+brew install dotsetlabs/tap/hardpoint
+
+# From source
+go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
+```
+
+### 2. Run a Scan
+
+```bash
+hardpoint scan
+```
+
+### 3. Example Output
+
+```bash
+$ hardpoint scan
+
+Hardpoint Security Scan
+=======================
+
+Scanning: /Users/dev
+Scanners: ai, shell, git, network, secrets
+
+Findings
+--------
+
+  CRITICAL  AI-001: Instruction Override Detected
+            File: .cursorrules:15
+            Pattern attempts to override AI safety guidelines
+
+  HIGH      AI-002: Hidden Unicode Characters
+            File: CLAUDE.md:8
+            Zero-width characters detected
+
+Summary: 1 critical, 1 high (2 total)
+```
+
+### 4. Scanners
+
+| Scanner | Description |
+|:--------|:------------|
+| `ai` | AI config files (.cursorrules, mcp.json, CLAUDE.md) |
+| `shell` | Shell configs (.bashrc, .zshrc) |
+| `git` | Git hooks and config |
+| `network` | Exposed localhost services |
+| `secrets` | Hardcoded credentials |
+
+```bash
+# Run specific scanners
+hardpoint scan ai secrets
+```
+
+### 5. Auto-Fix
+
+Some findings can be fixed automatically:
+
+```bash
+# Strip hidden Unicode characters
+hardpoint fix AI-003 CLAUDE.md
+```
+
+<CardGroup>
+  <Card title="Scanners" icon="radar" href="/hardpoint/concepts/scanners">
+    Learn about each scanner
+  </Card>
+  <Card title="GitHub Actions" icon="github" href="/hardpoint/guides/github-actions">
+    Add Hardpoint to your CI/CD
   </Card>
 </CardGroup>

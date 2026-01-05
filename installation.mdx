@@ -5,42 +5,7 @@ description: 'Install Dotset Labs tools'
 
 # Installation
 
-Mantle and Tollgate are separate npm packages that can be installed independently.
-
----
-
-## Mantle (Secret Detection)
-
-### npm (Recommended)
-
-```bash
-npm install -g @dotsetlabs/mantle
-```
-
-### Yarn
-
-```bash
-yarn global add @dotsetlabs/mantle
-```
-
-### pnpm
-
-```bash
-pnpm add -g @dotsetlabs/mantle
-```
-
-### Verify Installation
-
-```bash
-mantle --version
-```
-
-### Quick Start
-
-```bash
-cd your-project
-mantle run -- npm start
-```
+Tollgate and Hardpoint can be installed independently based on your needs.
 
 ---
 
@@ -78,20 +43,59 @@ tollgate wrap npx @modelcontextprotocol/server-postgres
 
 ---
 
+## Hardpoint (Dev Environment Scanner)
+
+### Homebrew (macOS / Linux)
+
+```bash
+brew install dotsetlabs/tap/hardpoint
+```
+
+### Go Install
+
+```bash
+go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
+```
+
+### Download Binary
+
+Download the latest release from [GitHub Releases](https://github.com/dotsetlabs/hardpoint/releases).
+
+### Verify Installation
+
+```bash
+hardpoint --version
+```
+
+### Quick Start
+
+```bash
+hardpoint scan
+```
+
+---
+
 ## Requirements
 
-- **Node.js**: 20 or later
+- **Tollgate**: Node.js 20 or later
+- **Hardpoint**: Go 1.21 or later (for building from source)
 
 ## Updating
 
 ```bash
-npm update -g @dotsetlabs/mantle
+# Tollgate
 npm update -g @dotsetlabs/tollgate
+
+# Hardpoint (Homebrew)
+brew upgrade dotsetlabs/tap/hardpoint
 ```
 
 ## Uninstalling
 
 ```bash
-npm uninstall -g @dotsetlabs/mantle
+# Tollgate
 npm uninstall -g @dotsetlabs/tollgate
+
+# Hardpoint (Homebrew)
+brew uninstall hardpoint
 ```

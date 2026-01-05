@@ -1,0 +1,59 @@
+---
+title: CLI Overview
+description: Hardpoint command-line interface reference
+---
+
+# Hardpoint CLI
+
+Hardpoint is a security scanner for developer environments in the AI era. It detects threats that traditional security tools miss.
+
+## Installation
+
+```bash
+# macOS / Linux
+brew install dotsetlabs/tap/hardpoint
+
+# From source
+go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
+```
+
+## Commands
+
+| Command | Description |
+| ------- | ----------- |
+| `scan` | Run security scans on your environment |
+| `fix` | Auto-fix certain security findings |
+| `version` | Print version information |
+
+## Global Flags
+
+| Flag | Description |
+| ---- | ----------- |
+| `--config` | Config file path (default: `$HOME/.hardpoint.yaml`) |
+| `-o, --output` | Output format: `terminal`, `json`, `sarif` |
+| `-v, --verbose` | Enable verbose output |
+| `-q, --quiet` | Only output findings |
+| `--no-color` | Disable colored output |
+
+## Quick Start
+
+```bash
+# Run all scanners
+hardpoint scan
+
+# Run specific scanner
+hardpoint scan ai
+
+# Output as JSON
+hardpoint scan --output json
+
+# Show only high severity findings
+hardpoint scan --severity high
+```
+
+## Exit Codes
+
+| Code | Meaning |
+| ---- | ------- |
+| `0` | No critical findings |
+| `1` | Critical findings detected |
