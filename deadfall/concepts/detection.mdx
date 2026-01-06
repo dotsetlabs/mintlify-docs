@@ -1,0 +1,230 @@
+---
+title: Detection Strategies
+description: 'How Deadfall detects anomalies'
+---
+
+# Detection Strategies
+
+Deadfall uses multiple detection strategies to identify suspicious MCP server activity. Each strategy can be configured independently.
+
+## Detection Types
+
+### Volume Spikes
+
+Detects unusual increases in tool invocations compared to baseline.
+
+```yaml
+alerts:
+  - type: volume_spike
+    threshold: 3x      # Alert at 3x normal volume
+    window: 5m         # Measured over 5-minute windows
+```
+
+**What it catches:**
+- Data exfiltration attempts
+- Runaway scripts or loops
+- Compromised agents making bulk requests
+
+**Example alert:**
+```
+ALERT: volume_spike
+Server: postgres-mcp
+Tool: query
+Observed: 470 calls/5min
+Baseline: 10 calls/5min
+Ratio: 47x
+```
+
+### Off-Hours Activity
+
+Alerts on activity outside defined working hours.
+
+```yaml
+alerts:
+  - type: off_hours
+    schedule: "9am-6pm weekdays"
+    timezone: America/New_York
+```
+
+**Schedule formats:**
+- `9am-6pm` - Daily time range
+- `9am-6pm weekdays` - Monday through Friday
+- `9am-6pm Mon-Fri` - Explicit days
+- `cron: 0 9-18 * * 1-5` - Cron expression
+
+**What it catches:**
+- After-hours unauthorized access
+- Compromised credentials used outside normal patterns
+- Automated attacks during low-monitoring periods
+
+### New Patterns
+
+Detects tool usage patterns not seen during baseline learning.
+
+```yaml
+alerts:
+  - type: new_patterns
+    sensitivity: medium  # low, medium, high
+```
+
+**Sensitivity levels:**
+- `low` - Only alert on completely new tool/argument combinations
+- `medium` - Alert on statistically unusual patterns
+- `high` - Alert on any deviation from baseline
+
+**What it catches:**
+- New attack techniques
+- Changed agent behavior
+- Compromised or modified MCP servers
+
+### Sequence Detection
+
+Identifies suspicious sequences of operations.
+
+```yaml
+alerts:
+  - type: sequence
+    patterns:
+      - name: data_exfiltration
+        sequence:
+          - tool: query
+            match: "SELECT.*FROM"
+          - tool: write_file
+            within: 60s
+        severity: critical
+```
+
+**Built-in sequences:**
+- `read_then_export` - Query followed by file write
+- `enumerate_then_access` - List operations followed by bulk reads
+- `modify_then_delete` - Updates followed by deletions
+
+**What it catches:**
+- Multi-step attacks
+- Data theft patterns
+- Privilege escalation attempts
+
+### Sensitive Paths
+
+Monitors access to sensitive file paths or database tables.
+
+```yaml
+alerts:
+  - type: sensitive_paths
+    patterns:
+      - "**/.env*"
+      - "**/secrets/**"
+      - "**/credentials*"
+    tables:
+      - users
+      - api_keys
+      - sessions
+```
+
+**What it catches:**
+- Credential theft attempts
+- Unauthorized access to sensitive data
+- Configuration file access
+
+## Baseline Learning
+
+Deadfall learns normal behavior during a baseline period:
+
+### Automatic Baseline
+
+```yaml
+monitors:
+  - server: postgres-mcp
+    baseline: auto
+    baseline_duration: 60m  # Learning period
+```
+
+During baseline learning:
+1. All activity is recorded
+2. Statistical models are built
+3. No alerts are generated
+
+### Manual Baseline
+
+```yaml
+monitors:
+  - server: postgres-mcp
+    baseline: manual
+    baseline_file: ./postgres-baseline.json
+```
+
+Export and import baselines:
+```bash
+# Export current baseline
+deadfall baseline export -s postgres-mcp -o baseline.json
+
+# Import baseline
+deadfall baseline import -s postgres-mcp baseline.json
+```
+
+### No Baseline
+
+```yaml
+monitors:
+  - server: postgres-mcp
+    baseline: none
+```
+
+Without a baseline, only threshold-based detection works (volume, off-hours, sensitive paths).
+
+## Severity Levels
+
+| Level | Description | Example |
+|:------|:------------|:--------|
+| `low` | Unusual but likely benign | New tool used |
+| `medium` | Suspicious, warrants investigation | Off-hours access |
+| `high` | Likely malicious | Volume spike 10x+ |
+| `critical` | Active attack indicators | Data exfiltration sequence |
+
+Configure severity overrides:
+
+```yaml
+alerts:
+  - type: volume_spike
+    threshold: 3x
+    severity: medium   # Override default
+
+  - type: volume_spike
+    threshold: 10x
+    severity: critical
+```
+
+## Combining Strategies
+
+Multiple detection strategies can work together:
+
+```yaml
+monitors:
+  - server: postgres-mcp
+    baseline: auto
+    alerts:
+      - type: volume_spike
+        threshold: 3x
+      - type: off_hours
+        schedule: "9am-6pm weekdays"
+      - type: new_patterns
+        sensitivity: medium
+      - type: sequence
+        patterns:
+          - name: exfiltration
+            sequence: [query, write_file]
+      - type: sensitive_paths
+        tables: [users, api_keys]
+```
+
+Alerts from multiple strategies are correlated:
+
+```
+ALERT: Correlated Activity
+Server: postgres-mcp
+Detections:
+  - off_hours (11:42 PM)
+  - volume_spike (23x baseline)
+  - sensitive_paths (users table)
+Combined Severity: CRITICAL
+```

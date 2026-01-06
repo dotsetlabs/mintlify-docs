@@ -27,12 +27,16 @@ jobs:
         with:
           node-version: '20'
 
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
       - name: Install dependencies
         run: npm ci
 
       - name: Verify MCP servers
         run: |
-          npm install -g @dotsetlabs/countersign
+          go install github.com/dotsetlabs/countersign/cmd/countersign@latest
           countersign verify --from-package package.json --min-score 60
 ```
 
@@ -41,10 +45,9 @@ jobs:
 ```yaml
 # .gitlab-ci.yml
 verify:
-  image: node:20
+  image: golang:1.22
   script:
-    - npm ci
-    - npm install -g @dotsetlabs/countersign
+    - go install github.com/dotsetlabs/countersign/cmd/countersign@latest
     - countersign verify --from-package package.json --min-score 60
 ```
 
@@ -61,7 +64,7 @@ jobs:
       - checkout
       - run: npm ci
       - run: |
-          npm install -g @dotsetlabs/countersign
+          go install github.com/dotsetlabs/countersign/cmd/countersign@latest
           countersign verify --from-package package.json --min-score 60
 ```
 
@@ -168,24 +171,25 @@ Cache Countersign for faster builds:
 ### GitHub Actions
 
 ```yaml
-- uses: actions/cache@v3
+- uses: actions/setup-go@v5
   with:
-    path: ~/.npm
-    key: ${{ runner.os }}-countersign-${{ hashFiles('**/package-lock.json') }}
+    go-version: '1.22'
+    cache: true  # Automatically caches Go modules
 
 - name: Install Countersign
-  run: npm install -g @dotsetlabs/countersign
+  run: go install github.com/dotsetlabs/countersign/cmd/countersign@latest
 ```
 
 ### GitLab CI
 
 ```yaml
 verify:
+  image: golang:1.22
   cache:
     paths:
-      - node_modules/
+      - /go/pkg/mod/
   script:
-    - npm install -g @dotsetlabs/countersign
+    - go install github.com/dotsetlabs/countersign/cmd/countersign@latest
     - countersign verify --from-package package.json
 ```
 

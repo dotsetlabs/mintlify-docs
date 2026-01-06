@@ -1,0 +1,182 @@
+---
+title: export
+description: 'Export activity logs'
+---
+
+# deadfall export
+
+Export activity logs for compliance, analysis, or integration with external systems.
+
+## Usage
+
+```bash
+deadfall export [options]
+```
+
+## Options
+
+| Option | Description | Default |
+|:-------|:------------|:--------|
+| `-f, --format <fmt>` | Output format: `json`, `csv`, `cef` | `json` |
+| `-o, --output <file>` | Output file (or `-` for stdout) | stdout |
+| `--last <duration>` | Time range (e.g., `24h`, `7d`) | All |
+| `--from <datetime>` | Start time (ISO 8601) | - |
+| `--to <datetime>` | End time (ISO 8601) | - |
+| `-s, --server <name>` | Filter by server | All |
+| `--severity <level>` | Minimum severity | All |
+| `--alerts-only` | Export only alert events | `false` |
+| `--compress` | Gzip compress output | `false` |
+
+## Examples
+
+### Basic Export
+
+```bash
+# Export all logs as JSON
+deadfall export -o activity.json
+
+# Export last 24 hours
+deadfall export --last 24h -o daily.json
+
+# Export to stdout
+deadfall export -f json
+```
+
+### Filtered Export
+
+```bash
+# High severity only
+deadfall export --severity high -o incidents.json
+
+# Specific server
+deadfall export -s postgres-mcp -o postgres-activity.json
+
+# Alerts only
+deadfall export --alerts-only -o alerts.json
+```
+
+### Format Options
+
+```bash
+# CSV for spreadsheets
+deadfall export -f csv -o activity.csv
+
+# CEF for SIEM integration
+deadfall export -f cef -o activity.cef
+
+# Compressed JSON
+deadfall export -f json --compress -o activity.json.gz
+```
+
+## Output Formats
+
+### JSON
+
+```json
+{
+  "exported_at": "2024-01-15T15:00:00Z",
+  "period": {
+    "from": "2024-01-14T15:00:00Z",
+    "to": "2024-01-15T15:00:00Z"
+  },
+  "events": [
+    {
+      "id": "evt_abc123",
+      "timestamp": "2024-01-15T14:32:01Z",
+      "server": "postgres-mcp",
+      "tool": "query",
+      "arguments": {"sql": "SELECT..."},
+      "alert": {
+        "type": "volume_spike",
+        "severity": "high",
+        "details": {"ratio": 47}
+      }
+    }
+  ],
+  "summary": {
+    "total_events": 1523,
+    "alerts": 12,
+    "by_severity": {
+      "low": 5,
+      "medium": 4,
+      "high": 2,
+      "critical": 1
+    }
+  }
+}
+```
+
+### CSV
+
+```csv
+id,timestamp,server,tool,severity,alert_type,description
+evt_abc123,2024-01-15T14:32:01Z,postgres-mcp,query,high,volume_spike,"47x normal volume"
+evt_def456,2024-01-15T14:33:42Z,postgres-mcp,query,critical,sequence,"read → export"
+```
+
+### CEF (Common Event Format)
+
+```
+CEF:0|DotsetLabs|Deadfall|1.0|volume_spike|Volume Spike Detected|7|src=postgres-mcp spt=query msg=47x normal query volume
+CEF:0|DotsetLabs|Deadfall|1.0|sequence|Suspicious Sequence|9|src=postgres-mcp msg=read to export sequence detected
+```
+
+## SIEM Integration
+
+### Splunk
+
+```bash
+# Export CEF format for Splunk
+deadfall export -f cef --last 24h | \
+  curl -k -H "Authorization: Splunk $SPLUNK_TOKEN" \
+  -d @- https://splunk.example.com:8088/services/collector/raw
+```
+
+### Datadog
+
+```bash
+# Export JSON and send to Datadog
+deadfall export -f json --last 1h | \
+  curl -X POST "https://http-intake.logs.datadoghq.com/v1/input/$DD_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d @-
+```
+
+### Elastic/ELK
+
+```bash
+# Export for Elasticsearch
+deadfall export -f json --last 24h -o - | \
+  jq -c '.events[]' | \
+  while read event; do
+    curl -X POST "http://elasticsearch:9200/deadfall/_doc" \
+      -H "Content-Type: application/json" \
+      -d "$event"
+  done
+```
+
+## Compliance Reporting
+
+### Daily Reports
+
+```bash
+# Cron job for daily exports
+0 0 * * * deadfall export --last 24h -o /var/log/deadfall/$(date +\%Y\%m\%d).json
+```
+
+### Monthly Archives
+
+```bash
+# Archive monthly logs
+deadfall export --from "2024-01-01" --to "2024-01-31" \
+  --compress -o /archive/deadfall-2024-01.json.gz
+```
+
+## Exit Codes
+
+| Code | Meaning |
+|:-----|:--------|
+| `0` | Success |
+| `1` | No data in range |
+| `2` | Output error |
+| `3` | Invalid options |

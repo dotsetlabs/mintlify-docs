@@ -5,7 +5,59 @@ description: 'Install Dotset Labs tools'
 
 # Installation
 
-Tollgate and Hardpoint can be installed independently based on your needs.
+Dotset Labs tools can be installed independently based on your needs.
+
+---
+
+## Hardpoint (Dev Environment Scanner)
+
+### Go Install
+
+```bash
+go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
+```
+
+### Download Binary
+
+Download the latest release from [GitHub Releases](https://github.com/dotsetlabs/hardpoint/releases).
+
+### Verify Installation
+
+```bash
+hardpoint --version
+```
+
+### Quick Start
+
+```bash
+hardpoint scan
+```
+
+---
+
+## Countersign (Supply Chain Verification)
+
+### Go Install
+
+```bash
+go install github.com/dotsetlabs/countersign/cmd/countersign@latest
+```
+
+### Download Binary
+
+Download the latest release from [GitHub Releases](https://github.com/dotsetlabs/countersign/releases).
+
+### Verify Installation
+
+```bash
+countersign --version
+```
+
+### Quick Start
+
+```bash
+countersign verify @modelcontextprotocol/server-postgres
+```
 
 ---
 
@@ -43,53 +95,70 @@ tollgate wrap npx @modelcontextprotocol/server-postgres
 
 ---
 
-## Hardpoint (Dev Environment Scanner)
+## Deadfall (Canary Tokens)
 
 ### Go Install
 
 ```bash
-go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
+go install github.com/dotsetlabs/deadfall/cmd/deadfall@latest
 ```
 
 ### Download Binary
 
-Download the latest release from [GitHub Releases](https://github.com/dotsetlabs/hardpoint/releases).
+Download the latest release from [GitHub Releases](https://github.com/dotsetlabs/deadfall/releases).
 
 ### Verify Installation
 
 ```bash
-hardpoint --version
+deadfall --version
 ```
 
 ### Quick Start
 
 ```bash
-hardpoint scan
+deadfall init
+deadfall watch
 ```
 
 ---
 
 ## Requirements
 
-- **Tollgate**: Node.js 20 or later
-- **Hardpoint**: Go 1.21 or later (for building from source)
+| Tool | Requirements |
+|:-----|:-------------|
+| **Hardpoint** | Go 1.22+ (for building from source) |
+| **Countersign** | Go 1.22+ (for building from source) |
+| **Tollgate** | Node.js 20+ |
+| **Deadfall** | Go 1.22+ (for building from source) |
 
 ## Updating
 
 ```bash
+# Hardpoint (reinstall latest)
+go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
+
+# Countersign (reinstall latest)
+go install github.com/dotsetlabs/countersign/cmd/countersign@latest
+
 # Tollgate
 npm update -g @dotsetlabs/tollgate
 
-# Hardpoint (reinstall latest)
-go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
+# Deadfall (reinstall latest)
+go install github.com/dotsetlabs/deadfall/cmd/deadfall@latest
 ```
 
 ## Uninstalling
 
 ```bash
+# Hardpoint (remove binary from GOPATH)
+rm $(go env GOPATH)/bin/hardpoint
+
+# Countersign (remove binary from GOPATH)
+rm $(go env GOPATH)/bin/countersign
+
 # Tollgate
 npm uninstall -g @dotsetlabs/tollgate
 
-# Hardpoint (remove binary from GOPATH)
-rm $(go env GOPATH)/bin/hardpoint
+# Deadfall (remove binary from GOPATH)
+rm $(go env GOPATH)/bin/deadfall
 ```

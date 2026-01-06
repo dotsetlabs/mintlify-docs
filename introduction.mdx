@@ -9,24 +9,10 @@ description: 'Security tools for the AI era'
 
 Dotset Labs provides security tools for developers working with AI assistants:
 
-- **[Tollgate](/tollgate/cli/overview)** - Policy-based access control for AI agents using MCP
 - **[Hardpoint](/hardpoint/cli/overview)** - Developer environment security scanner for the AI era
-
----
-
-## Tollgate
-
-AI agents using MCP servers have full access to powerful tools — databases, filesystems, and APIs. Without access control, a single prompt injection or misunderstood request can cause damage.
-
-**Tollgate** adds policy-based access control to any MCP server, letting you allow, deny, or prompt for approval on each tool call. Identify risks early with automated server scanning and 50+ pre-built policy templates.
-
-```bash
-npm install -g @dotsetlabs/tollgate
-tollgate wrap npx @modelcontextprotocol/server-postgres
-```
-
-> [!NOTE]
-> Tollgate runs entirely locally with no cloud dependencies. [Learn more →](/tollgate/security/trust)
+- **[Countersign](/countersign/cli/overview)** - MCP server supply chain verification
+- **[Tollgate](/tollgate/cli/overview)** - Policy-based access control for AI agents using MCP
+- **[Deadfall](/deadfall/cli/overview)** - Activity monitoring and anomaly detection for MCP servers
 
 ---
 
@@ -46,23 +32,84 @@ hardpoint scan
 
 ---
 
+## Countersign
+
+MCP servers need supply chain verification. Before installing, verify packages were built from trusted source code.
+
+**Countersign** checks Sigstore signatures, SLSA provenance, and transparency logs.
+
+```bash
+go install github.com/dotsetlabs/countersign/cmd/countersign@latest
+countersign verify @modelcontextprotocol/server-postgres
+```
+
+> [!NOTE]
+> Countersign verifies using industry-standard cryptography. [Learn more →](/countersign/security/trust)
+
+---
+
+## Tollgate
+
+AI agents using MCP servers have full access to powerful tools — databases, filesystems, and APIs. Without access control, a single prompt injection or misunderstood request can cause damage.
+
+**Tollgate** adds policy-based access control to any MCP server, letting you allow, deny, or prompt for approval on each tool call. Identify risks early with automated server scanning and 50+ pre-built policy templates.
+
+```bash
+npm install -g @dotsetlabs/tollgate
+tollgate wrap npx @modelcontextprotocol/server-postgres
+```
+
+> [!NOTE]
+> Tollgate runs entirely locally with no cloud dependencies. [Learn more →](/tollgate/security/trust)
+
+---
+
+## Deadfall
+
+AI agents explore your filesystem looking for credentials and config files. Deadfall plants tripwires — fake credential files that trigger alerts when accessed.
+
+**Deadfall** generates canary tokens (fake .env files, SSH keys, MCP configs) and monitors them for access.
+
+```bash
+go install github.com/dotsetlabs/deadfall/cmd/deadfall@latest
+deadfall init
+deadfall watch
+```
+
+> [!NOTE]
+> Deadfall processes everything locally. [Learn more →](/deadfall/security/trust)
+
+---
+
 ## Quick Install
 
 ```bash
+# For dev environment security
+go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
+
+# For supply chain verification
+go install github.com/dotsetlabs/countersign/cmd/countersign@latest
+
 # For MCP access control
 npm install -g @dotsetlabs/tollgate
 
-# For dev environment security
-go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
+# For activity monitoring
+go install github.com/dotsetlabs/deadfall/cmd/deadfall@latest
 ```
 
 ## Next Steps
 
 <CardGroup>
+  <Card title="Hardpoint Quickstart" icon="radar" href="/quickstart#hardpoint">
+    Scan your dev environment
+  </Card>
+  <Card title="Countersign Quickstart" icon="signature" href="/quickstart#countersign">
+    Verify package provenance
+  </Card>
   <Card title="Tollgate Quickstart" icon="lock" href="/quickstart#tollgate">
     Add access control to MCP servers
   </Card>
-  <Card title="Hardpoint Quickstart" icon="radar" href="/quickstart#hardpoint">
-    Scan your dev environment
+  <Card title="Deadfall Quickstart" icon="bell" href="/quickstart#deadfall">
+    Monitor MCP activity
   </Card>
 </CardGroup>

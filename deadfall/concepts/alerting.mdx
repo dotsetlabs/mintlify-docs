@@ -1,0 +1,239 @@
+---
+title: Alert Routing
+description: 'Configure where and how alerts are sent'
+---
+
+# Alert Routing
+
+Deadfall can route alerts to multiple destinations based on severity and type.
+
+## Alert Channels
+
+### Slack
+
+```yaml
+alerts:
+  slack:
+    webhook: ${SLACK_WEBHOOK_URL}
+    channel: "#security-alerts"
+    severity: medium+
+    mention: "@oncall"  # Optional mention for high/critical
+```
+
+**Slack message format:**
+
+```
+🚨 Deadfall Alert: volume_spike
+
+Server: postgres-mcp
+Severity: HIGH
+Time: 2024-01-15 14:32:01 UTC
+
+Details:
+• Tool: query
+• Observed: 470 calls/5min
+• Baseline: 10 calls/5min
+• Ratio: 47x
+
+View logs: deadfall query --last 1h -s postgres-mcp
+```
+
+### Email
+
+```yaml
+alerts:
+  email:
+    smtp:
+      host: smtp.example.com
+      port: 587
+      user: ${SMTP_USER}
+      pass: ${SMTP_PASS}
+    from: deadfall@example.com
+    to:
+      - security@example.com
+      - oncall@example.com
+    severity: high+
+```
+
+### Webhook
+
+Send alerts to any HTTP endpoint:
+
+```yaml
+alerts:
+  webhook:
+    url: https://api.example.com/alerts
+    method: POST
+    headers:
+      Authorization: "Bearer ${API_TOKEN}"
+      Content-Type: application/json
+    severity: medium+
+```
+
+**Webhook payload:**
+
+```json
+{
+  "source": "deadfall",
+  "timestamp": "2024-01-15T14:32:01Z",
+  "severity": "high",
+  "type": "volume_spike",
+  "server": "postgres-mcp",
+  "details": {
+    "tool": "query",
+    "observed": 470,
+    "baseline": 10,
+    "ratio": 47
+  }
+}
+```
+
+### PagerDuty
+
+```yaml
+alerts:
+  pagerduty:
+    routing_key: ${PAGERDUTY_ROUTING_KEY}
+    severity_mapping:
+      critical: critical
+      high: error
+      medium: warning
+      low: info
+```
+
+### Console
+
+For local development or daemon mode:
+
+```yaml
+alerts:
+  console:
+    severity: low+
+    format: detailed  # or: compact, json
+```
+
+## Severity Filtering
+
+Each channel can filter by severity:
+
+| Filter | Receives |
+|:-------|:---------|
+| `low+` | low, medium, high, critical |
+| `medium+` | medium, high, critical |
+| `high+` | high, critical |
+| `critical` | critical only |
+
+```yaml
+alerts:
+  # Critical only to PagerDuty
+  pagerduty:
+    severity: critical
+
+  # High and above to Slack
+  slack:
+    severity: high+
+
+  # Everything to console
+  console:
+    severity: low+
+```
+
+## Alert Deduplication
+
+Prevent alert fatigue with deduplication:
+
+```yaml
+alerts:
+  slack:
+    webhook: ${SLACK_WEBHOOK_URL}
+    dedupe:
+      window: 5m        # Group similar alerts within 5 minutes
+      key: [server, type]  # Group by these fields
+```
+
+**Grouped alert:**
+
+```
+🚨 Deadfall Alert: volume_spike (3 occurrences)
+
+Server: postgres-mcp
+Severity: HIGH
+First: 2024-01-15 14:32:01 UTC
+Last: 2024-01-15 14:36:45 UTC
+Count: 3
+
+...
+```
+
+## Alert Throttling
+
+Limit alert volume:
+
+```yaml
+alerts:
+  slack:
+    webhook: ${SLACK_WEBHOOK_URL}
+    throttle:
+      max: 10          # Max 10 alerts
+      window: 1h       # Per hour
+      overflow: digest # Send summary when throttled
+```
+
+## Custom Templates
+
+Customize alert messages:
+
+```yaml
+alerts:
+  slack:
+    webhook: ${SLACK_WEBHOOK_URL}
+    template: |
+      *Alert: {{ .Type }}*
+      Server: `{{ .Server }}`
+      Severity: {{ .Severity }}
+      {{ if .Details.Ratio }}Ratio: {{ .Details.Ratio }}x baseline{{ end }}
+```
+
+## Alert Actions
+
+Define automated responses:
+
+```yaml
+alerts:
+  - type: volume_spike
+    threshold: 10x
+    severity: critical
+    actions:
+      - notify: [slack, pagerduty]
+      - webhook:
+          url: https://api.example.com/block-agent
+          method: POST
+          body: {"server": "{{ .Server }}"}
+```
+
+## Testing Alerts
+
+Test your alert configuration:
+
+```bash
+# Send test alert to all channels
+deadfall test-alert --severity high
+
+# Test specific channel
+deadfall test-alert --channel slack
+
+# Dry run (show what would be sent)
+deadfall test-alert --dry-run
+```
+
+## Alert History
+
+View sent alerts:
+
+```bash
+# List recent alerts
+deadfall alerts --last 24h
+
+# Show alert details
+deadfall alerts show alert_abc123
+```

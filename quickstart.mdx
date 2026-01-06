@@ -9,6 +9,82 @@ This guide gets you from zero to protected in under a minute.
 
 ---
 
+## Hardpoint
+
+Hardpoint scans your developer environment for AI-era security threats.
+
+### 1. Install
+
+```bash
+go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
+```
+
+### 2. Run a Scan
+
+```bash
+hardpoint scan
+```
+
+### 3. Example Output
+
+```bash
+$ hardpoint scan
+
+Hardpoint Security Scan
+=======================
+
+Scanning: /Users/dev
+Scanners: ai, shell, git, network, secrets
+
+Findings
+--------
+
+  CRITICAL  AI-001: Instruction Override Detected
+            File: .cursorrules:15
+            Pattern attempts to override AI safety guidelines
+
+  HIGH      AI-002: Hidden Unicode Characters
+            File: CLAUDE.md:8
+            Zero-width characters detected
+
+Summary: 1 critical, 1 high (2 total)
+```
+
+### 4. Scanners
+
+| Scanner | Description |
+|:--------|:------------|
+| `ai` | AI config files (.cursorrules, mcp.json, CLAUDE.md) |
+| `shell` | Shell configs (.bashrc, .zshrc) |
+| `git` | Git hooks and config |
+| `network` | Exposed localhost services |
+| `secrets` | Hardcoded credentials |
+
+```bash
+# Run specific scanners
+hardpoint scan ai secrets
+```
+
+### 5. Auto-Fix
+
+Some findings can be fixed automatically:
+
+```bash
+# Strip hidden Unicode characters
+hardpoint fix AI-003 CLAUDE.md
+```
+
+<CardGroup>
+  <Card title="Scanners" icon="radar" href="/hardpoint/concepts/scanners">
+    Learn about each scanner
+  </Card>
+  <Card title="GitHub Actions" icon="github" href="/hardpoint/guides/github-actions">
+    Add Hardpoint to your CI/CD
+  </Card>
+</CardGroup>
+
+---
+
 ## Tollgate
 
 Tollgate adds policy-based access control to MCP servers used by AI agents.
@@ -86,76 +162,106 @@ tollgate start -s postgres
 
 ---
 
-## Hardpoint
+## Deadfall
 
-Hardpoint scans your developer environment for AI-era security threats.
+Deadfall generates canary tokens — fake credential files that alert you when accessed by AI agents or attackers.
 
 ### 1. Install
 
 ```bash
-go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
+go install github.com/dotsetlabs/deadfall/cmd/deadfall@latest
 ```
 
-### 2. Run a Scan
+### 2. Initialize Canaries
 
 ```bash
-hardpoint scan
+deadfall init
 ```
 
-### 3. Example Output
+This creates a `.deadfall/` directory and generates a default `.env.production` canary with fake AWS keys.
+
+### 3. Generate More Canaries
 
 ```bash
-$ hardpoint scan
+# Fake MCP config with "admin" tools
+deadfall generate mcp
 
-Hardpoint Security Scan
+# Fake SSH key
+deadfall generate ssh
+
+# Fake Cursor rules with secrets
+deadfall generate cursor-rules
+```
+
+### 4. Watch for Access
+
+```bash
+deadfall watch
+```
+
+### 5. Example Output
+
+```bash
+$ deadfall watch
+
+Deadfall Canary Monitor
 =======================
+Watching: 3 canaries
 
-Scanning: /Users/dev
-Scanners: ai, shell, git, network, secrets
-
-Findings
---------
-
-  CRITICAL  AI-001: Instruction Override Detected
-            File: .cursorrules:15
-            Pattern attempts to override AI safety guidelines
-
-  HIGH      AI-002: Hidden Unicode Characters
-            File: CLAUDE.md:8
-            Zero-width characters detected
-
-Summary: 1 critical, 1 high (2 total)
+[TRIGGER] 2026-01-05 14:32:15
+  Canary: .env.production
+  Type: env
+  Access: READ
+  Process: cursor (PID 12345)
+  User: developer
 ```
 
-### 4. Scanners
+### 6. Canary Types
 
-| Scanner | Description |
-|:--------|:------------|
-| `ai` | AI config files (.cursorrules, mcp.json, CLAUDE.md) |
-| `shell` | Shell configs (.bashrc, .zshrc) |
-| `git` | Git hooks and config |
-| `network` | Exposed localhost services |
-| `secrets` | Hardcoded credentials |
+| Type | Description |
+|:-----|:------------|
+| `env` | Fake .env with AWS keys, API tokens |
+| `mcp` | Fake MCP server config with admin tools |
+| `ssh` | Fake SSH private key |
+| `aws` | Fake AWS credentials |
+| `cursor-rules` | Fake .cursorrules with secrets |
+| `claude-md` | Fake CLAUDE.md with credentials |
 
-```bash
-# Run specific scanners
-hardpoint scan ai secrets
-```
-
-### 5. Auto-Fix
-
-Some findings can be fixed automatically:
+### 7. Webhook Alerts
 
 ```bash
-# Strip hidden Unicode characters
-hardpoint fix AI-003 CLAUDE.md
+deadfall watch --webhook https://hooks.slack.com/services/XXX
 ```
 
 <CardGroup>
-  <Card title="Scanners" icon="radar" href="/hardpoint/concepts/scanners">
-    Learn about each scanner
-  </Card>
-  <Card title="GitHub Actions" icon="github" href="/hardpoint/guides/github-actions">
-    Add Hardpoint to your CI/CD
+  <Card title="Canary Generation" icon="bell" href="/deadfall/cli/generate">
+    All canary types
   </Card>
 </CardGroup>
+
+---
+
+## Defense in Depth
+
+Use all four tools together for complete protection:
+
+```
+PRE-INSTALL          AT INSTALL           AT RUNTIME          CONTINUOUS
+    │                    │                    │                   │
+    ▼                    ▼                    ▼                   ▼
+┌─────────┐        ┌────────────┐        ┌─────────┐        ┌──────────┐
+│Hardpoint│   →    │Countersign │   →    │Tollgate │   →    │ Deadfall │
+│  scan   │        │  verify    │        │  wrap   │        │  watch   │
+└─────────┘        └────────────┘        └─────────┘        └──────────┘
+    │                    │                    │                   │
+    ▼                    ▼                    ▼                   ▼
+ Detect              Verify              Enforce             Monitor
+ threats            provenance           policies           activity
+```
+
+```bash
+# Complete security workflow
+hardpoint scan                                    # Scan environment
+countersign verify @modelcontextprotocol/server  # Verify package
+tollgate wrap npx server                          # Protect with Tollgate
+```

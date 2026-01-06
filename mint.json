@@ -34,6 +34,11 @@
             "name": "Tollgate",
             "icon": "lock",
             "url": "https://github.com/dotsetlabs/tollgate"
+        },
+        {
+            "name": "Deadfall",
+            "icon": "bell",
+            "url": "https://github.com/dotsetlabs/deadfall"
         }
     ],
     "navigation": [
@@ -163,6 +168,41 @@
                     "group": "Security",
                     "pages": [
                         "tollgate/security/trust"
+                    ]
+                }
+            ]
+        },
+        {
+            "group": "Deadfall",
+            "pages": [
+                {
+                    "group": "CLI Commands",
+                    "pages": [
+                        "deadfall/cli/overview",
+                        "deadfall/cli/watch",
+                        "deadfall/cli/query",
+                        "deadfall/cli/init",
+                        "deadfall/cli/export"
+                    ]
+                },
+                {
+                    "group": "Concepts",
+                    "pages": [
+                        "deadfall/concepts/detection",
+                        "deadfall/concepts/alerting",
+                        "deadfall/concepts/audit"
+                    ]
+                },
+                {
+                    "group": "Guides",
+                    "pages": [
+                        "deadfall/guides/getting-started"
+                    ]
+                },
+                {
+                    "group": "Security",
+                    "pages": [
+                        "deadfall/security/trust"
                     ]
                 }
             ]

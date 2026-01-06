@@ -22,7 +22,7 @@ A malicious MCP server could compromise your entire development environment. Ver
 
 ```bash
 # Install Countersign
-npm install -g @dotsetlabs/countersign
+go install github.com/dotsetlabs/countersign/cmd/countersign@latest
 
 # Verify before installing
 countersign verify @modelcontextprotocol/server-filesystem
@@ -151,9 +151,12 @@ verify-mcp:
   runs-on: ubuntu-latest
   steps:
     - uses: actions/checkout@v4
+    - uses: actions/setup-go@v5
+      with:
+        go-version: '1.22'
     - name: Verify MCP servers
       run: |
-        npm install -g @dotsetlabs/countersign
+        go install github.com/dotsetlabs/countersign/cmd/countersign@latest
         countersign verify --from-package package.json --min-score 70
 ```
 

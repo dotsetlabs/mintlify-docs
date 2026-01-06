@@ -1,0 +1,70 @@
+---
+title: CLI Overview
+description: 'Deadfall command-line interface'
+---
+
+# CLI Reference
+
+Deadfall generates deceptive canary files — fake credentials, API keys, and MCP tools — to detect when AI agents or intruders access sensitive-looking resources.
+
+## Installation
+
+```bash
+go install github.com/dotsetlabs/deadfall/cmd/deadfall@latest
+```
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| [`init`](/deadfall/cli/init) | Initialize canaries in current project |
+| [`generate`](/deadfall/cli/generate) | Generate canary files of various types |
+| [`list`](/deadfall/cli/list) | List all registered canaries |
+| [`watch`](/deadfall/cli/watch) | Monitor canaries for access |
+| [`remove`](/deadfall/cli/remove) | Remove a canary from tracking |
+| [`triggers`](/deadfall/cli/triggers) | View historical trigger events |
+| `version` | Print version information |
+
+## Global Options
+
+```bash
+deadfall --version    # Show version
+deadfall --help       # Show help
+--log-level           # DEBUG, INFO, WARN, ERROR
+--log-format          # text or json
+```
+
+## Quick Examples
+
+```bash
+# Initialize canaries in your project
+deadfall init
+
+# Generate a fake .env file with AWS keys
+deadfall generate env
+
+# Generate a fake MCP config with admin tools
+deadfall generate mcp
+
+# List all canaries
+deadfall list
+
+# Watch for access (alerts when canary is touched)
+deadfall watch
+```
+
+## Canary Types
+
+Deadfall can generate many types of fake credential files:
+
+| Type | Description |
+|:-----|:------------|
+| `env` | Fake .env with AWS keys, API tokens |
+| `mcp` | Fake MCP server config with admin tools |
+| `ssh` | Fake SSH private key |
+| `aws` | Fake AWS credentials |
+| `kubeconfig` | Fake Kubernetes config |
+| `gcp` | Fake GCP service account |
+| `azure` | Fake Azure credentials |
+| `cursor-rules` | Fake .cursorrules with secrets |
+| `claude-md` | Fake CLAUDE.md with credentials |
