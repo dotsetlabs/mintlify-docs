@@ -45,12 +45,6 @@ tollgate wrap npx @modelcontextprotocol/server-postgres
 
 ## Hardpoint (Dev Environment Scanner)
 
-### Homebrew (macOS / Linux)
-
-```bash
-brew install dotsetlabs/tap/hardpoint
-```
-
 ### Go Install
 
 ```bash
@@ -86,8 +80,8 @@ hardpoint scan
 # Tollgate
 npm update -g @dotsetlabs/tollgate
 
-# Hardpoint (Homebrew)
-brew upgrade dotsetlabs/tap/hardpoint
+# Hardpoint (reinstall latest)
+go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
 ```
 
 ## Uninstalling
@@ -96,6 +90,6 @@ brew upgrade dotsetlabs/tap/hardpoint
 # Tollgate
 npm uninstall -g @dotsetlabs/tollgate
 
-# Hardpoint (Homebrew)
-brew uninstall hardpoint
+# Hardpoint (remove binary from GOPATH)
+rm $(go env GOPATH)/bin/hardpoint
 ```
