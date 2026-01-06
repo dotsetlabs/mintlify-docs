@@ -26,11 +26,6 @@
             "url": "https://github.com/dotsetlabs/hardpoint"
         },
         {
-            "name": "Countersign",
-            "icon": "signature",
-            "url": "https://github.com/dotsetlabs/countersign"
-        },
-        {
             "name": "Tollgate",
             "icon": "lock",
             "url": "https://github.com/dotsetlabs/tollgate"
@@ -82,43 +77,6 @@
                     "group": "Security",
                     "pages": [
                         "hardpoint/security/trust"
-                    ]
-                }
-            ]
-        },
-        {
-            "group": "Countersign",
-            "pages": [
-                {
-                    "group": "CLI Commands",
-                    "pages": [
-                        "countersign/cli/overview",
-                        "countersign/cli/verify",
-                        "countersign/cli/sign",
-                        "countersign/cli/trust",
-                        "countersign/cli/hook"
-                    ]
-                },
-                {
-                    "group": "Concepts",
-                    "pages": [
-                        "countersign/concepts/provenance",
-                        "countersign/concepts/trust-scoring",
-                        "countersign/concepts/signatures"
-                    ]
-                },
-                {
-                    "group": "Guides",
-                    "pages": [
-                        "countersign/guides/verifying-packages",
-                        "countersign/guides/signing-packages",
-                        "countersign/guides/ci-integration"
-                    ]
-                },
-                {
-                    "group": "Security",
-                    "pages": [
-                        "countersign/security/trust"
                     ]
                 }
             ]

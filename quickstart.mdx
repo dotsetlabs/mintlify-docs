@@ -243,25 +243,25 @@ deadfall watch --webhook https://hooks.slack.com/services/XXX
 
 ## Defense in Depth
 
-Use all four tools together for complete protection:
+Use all three tools together for complete protection:
 
 ```
-PRE-INSTALL          AT INSTALL           AT RUNTIME          CONTINUOUS
-    │                    │                    │                   │
-    ▼                    ▼                    ▼                   ▼
-┌─────────┐        ┌────────────┐        ┌─────────┐        ┌──────────┐
-│Hardpoint│   →    │Countersign │   →    │Tollgate │   →    │ Deadfall │
-│  scan   │        │  verify    │        │  wrap   │        │  watch   │
-└─────────┘        └────────────┘        └─────────┘        └──────────┘
-    │                    │                    │                   │
-    ▼                    ▼                    ▼                   ▼
- Detect              Verify              Enforce             Monitor
- threats            provenance           policies           activity
+   SCAN                  CONTROL                 DETECT
+     │                      │                      │
+     ▼                      ▼                      ▼
+┌─────────┐           ┌─────────┐           ┌──────────┐
+│Hardpoint│     →     │Tollgate │     →     │ Deadfall │
+│  scan   │           │  wrap   │           │  watch   │
+└─────────┘           └─────────┘           └──────────┘
+     │                      │                      │
+     ▼                      ▼                      ▼
+  Detect                Enforce                 Monitor
+  threats              policies                activity
 ```
 
 ```bash
 # Complete security workflow
 hardpoint scan                                    # Scan environment
-countersign verify @modelcontextprotocol/server  # Verify package
 tollgate wrap npx server                          # Protect with Tollgate
+deadfall watch                                    # Monitor for intruders
 ```

@@ -10,9 +10,8 @@ description: 'Security tools for the AI era'
 Dotset Labs provides security tools for developers working with AI assistants:
 
 - **[Hardpoint](/hardpoint/cli/overview)** - Developer environment security scanner for the AI era
-- **[Countersign](/countersign/cli/overview)** - MCP server supply chain verification
 - **[Tollgate](/tollgate/cli/overview)** - Policy-based access control for AI agents using MCP
-- **[Deadfall](/deadfall/cli/overview)** - Activity monitoring and anomaly detection for MCP servers
+- **[Deadfall](/deadfall/cli/overview)** - Canary tokens and honeypots for detecting AI agent misbehavior
 
 ---
 
@@ -29,22 +28,6 @@ hardpoint scan
 
 > [!NOTE]
 > Hardpoint runs entirely locally with no network access. [Learn more →](/hardpoint/security/trust)
-
----
-
-## Countersign
-
-MCP servers need supply chain verification. Before installing, verify packages were built from trusted source code.
-
-**Countersign** checks Sigstore signatures, SLSA provenance, and transparency logs.
-
-```bash
-go install github.com/dotsetlabs/countersign/cmd/countersign@latest
-countersign verify @modelcontextprotocol/server-postgres
-```
-
-> [!NOTE]
-> Countersign verifies using industry-standard cryptography. [Learn more →](/countersign/security/trust)
 
 ---
 
@@ -87,13 +70,10 @@ deadfall watch
 # For dev environment security
 go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
 
-# For supply chain verification
-go install github.com/dotsetlabs/countersign/cmd/countersign@latest
-
 # For MCP access control
 npm install -g @dotsetlabs/tollgate
 
-# For activity monitoring
+# For canary tokens and honeypots
 go install github.com/dotsetlabs/deadfall/cmd/deadfall@latest
 ```
 
@@ -103,13 +83,10 @@ go install github.com/dotsetlabs/deadfall/cmd/deadfall@latest
   <Card title="Hardpoint Quickstart" icon="radar" href="/quickstart#hardpoint">
     Scan your dev environment
   </Card>
-  <Card title="Countersign Quickstart" icon="signature" href="/quickstart#countersign">
-    Verify package provenance
-  </Card>
   <Card title="Tollgate Quickstart" icon="lock" href="/quickstart#tollgate">
     Add access control to MCP servers
   </Card>
   <Card title="Deadfall Quickstart" icon="bell" href="/quickstart#deadfall">
-    Monitor MCP activity
+    Deploy canary tokens
   </Card>
 </CardGroup>

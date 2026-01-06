@@ -35,32 +35,6 @@ hardpoint scan
 
 ---
 
-## Countersign (Supply Chain Verification)
-
-### Go Install
-
-```bash
-go install github.com/dotsetlabs/countersign/cmd/countersign@latest
-```
-
-### Download Binary
-
-Download the latest release from [GitHub Releases](https://github.com/dotsetlabs/countersign/releases).
-
-### Verify Installation
-
-```bash
-countersign --version
-```
-
-### Quick Start
-
-```bash
-countersign verify @modelcontextprotocol/server-postgres
-```
-
----
-
 ## Tollgate (MCP Access Control)
 
 ### npm (Recommended)
@@ -127,7 +101,6 @@ deadfall watch
 | Tool | Requirements |
 |:-----|:-------------|
 | **Hardpoint** | Go 1.22+ (for building from source) |
-| **Countersign** | Go 1.22+ (for building from source) |
 | **Tollgate** | Node.js 20+ |
 | **Deadfall** | Go 1.22+ (for building from source) |
 
@@ -136,9 +109,6 @@ deadfall watch
 ```bash
 # Hardpoint (reinstall latest)
 go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
-
-# Countersign (reinstall latest)
-go install github.com/dotsetlabs/countersign/cmd/countersign@latest
 
 # Tollgate
 npm update -g @dotsetlabs/tollgate
@@ -152,9 +122,6 @@ go install github.com/dotsetlabs/deadfall/cmd/deadfall@latest
 ```bash
 # Hardpoint (remove binary from GOPATH)
 rm $(go env GOPATH)/bin/hardpoint
-
-# Countersign (remove binary from GOPATH)
-rm $(go env GOPATH)/bin/countersign
 
 # Tollgate
 npm uninstall -g @dotsetlabs/tollgate
