@@ -164,7 +164,7 @@ tollgate start -s postgres
 
 ## Deadfall
 
-Deadfall generates canary tokens — fake credential files that alert you when accessed by AI agents or attackers.
+Deadfall detects AI agent compromise by exploiting their instruction-following behavior. Trapped files instruct agents to call a verification tool — triggering an alert.
 
 ### 1. Install
 
@@ -172,70 +172,72 @@ Deadfall generates canary tokens — fake credential files that alert you when a
 go install github.com/dotsetlabs/deadfall/cmd/deadfall@latest
 ```
 
-### 2. Initialize Canaries
+### 2. Initialize
 
 ```bash
 deadfall init
 ```
 
-This creates a `.deadfall/` directory and generates a default `.env.production` canary with fake AWS keys.
+This creates `deadfall.json` and updates `.gitignore`.
 
-### 3. Generate More Canaries
-
-```bash
-# Fake MCP config with "admin" tools
-deadfall generate mcp
-
-# Fake SSH key
-deadfall generate ssh
-
-# Fake Cursor rules with secrets
-deadfall generate cursor-rules
-```
-
-### 4. Watch for Access
+### 3. Create Trap Files
 
 ```bash
-deadfall watch
+# AI-specific traps (generate complete files)
+deadfall trap cursor-rules          # .cursorrules for Cursor
+deadfall trap claude-context        # CLAUDE.md for Claude
+deadfall trap copilot-instructions  # .github/copilot-instructions.md
+deadfall trap mcp-config            # mcp.json honeypot
 ```
 
-### 5. Example Output
+### 4. Configure MCP Client
+
+Add Deadfall's Honey-MCP server to your MCP client:
 
 ```bash
-$ deadfall watch
-
-Deadfall Canary Monitor
-=======================
-Watching: 3 canaries
-
-[TRIGGER] 2026-01-05 14:32:15
-  Canary: .env.production
-  Type: env
-  Access: READ
-  Process: cursor (PID 12345)
-  User: developer
+# Auto-configure Claude Desktop and Cursor
+deadfall init --mcp
 ```
 
-### 6. Canary Types
-
-| Type | Description |
-|:-----|:------------|
-| `env` | Fake .env with AWS keys, API tokens |
-| `mcp` | Fake MCP server config with admin tools |
-| `ssh` | Fake SSH private key |
-| `aws` | Fake AWS credentials |
-| `cursor-rules` | Fake .cursorrules with secrets |
-| `claude-md` | Fake CLAUDE.md with credentials |
-
-### 7. Webhook Alerts
+### 5. Start the Server
 
 ```bash
-deadfall watch --webhook https://hooks.slack.com/services/XXX
+deadfall serve
 ```
+
+### 6. Example Alert
+
+When an AI reads a trapped file:
+
+```bash
+[ALERT] Trap Triggered
+  File: .cursorrules
+  Type: cursor-rules
+  Token: abc123def456...
+  Time: 2026-01-05T14:32:15
+
+✓ Desktop notification sent
+✓ Logged to deadfall_alerts.log
+```
+
+### 7. Trap Types
+
+| Type | Default Path | Target |
+|:-----|:-------------|:-------|
+| `cursor-rules` | `.cursorrules` | Cursor AI |
+| `claude-context` | `CLAUDE.md` | Claude Code |
+| `copilot-instructions` | `.github/copilot-instructions.md` | GitHub Copilot |
+| `mcp-config` | `mcp.json` | MCP clients |
+| `context` | `CONTEXT.md` | Generic context |
+| `code` | `main.go` | Source code |
+| `env` | `.env.example` | Environment files |
 
 <CardGroup>
-  <Card title="Canary Generation" icon="bell" href="/deadfall/cli/generate">
-    All canary types
+  <Card title="Trap Command" icon="bell" href="/deadfall/cli/trap">
+    All trap types and options
+  </Card>
+  <Card title="How Detection Works" icon="magnifying-glass" href="/deadfall/concepts/detection">
+    Cognitive honeypot mechanism
   </Card>
 </CardGroup>
 
@@ -251,17 +253,17 @@ Use all three tools together for complete protection:
      ▼                      ▼                      ▼
 ┌─────────┐           ┌─────────┐           ┌──────────┐
 │Hardpoint│     →     │Tollgate │     →     │ Deadfall │
-│  scan   │           │  wrap   │           │  watch   │
+│  scan   │           │  wrap   │           │  serve   │
 └─────────┘           └─────────┘           └──────────┘
      │                      │                      │
      ▼                      ▼                      ▼
-  Detect                Enforce                 Monitor
-  threats              policies                activity
+  Detect                Enforce                 Detect
+  threats              policies               compromise
 ```
 
 ```bash
 # Complete security workflow
 hardpoint scan                                    # Scan environment
 tollgate wrap npx server                          # Protect with Tollgate
-deadfall watch                                    # Monitor for intruders
+deadfall trap cursor-rules && deadfall serve     # Detect AI compromise
 ```

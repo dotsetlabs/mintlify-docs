@@ -5,7 +5,8 @@ description: 'Deadfall command-line interface'
 
 # CLI Reference
 
-Deadfall generates deceptive canary files — fake credentials, API keys, and MCP tools — to detect when AI agents or intruders access sensitive-looking resources.
+Deadfall detects AI agent compromise by exploiting their instruction-following behavior.
+When an AI agent reads a trapped file, it encounters instructions to call a verification tool — which triggers an alert.
 
 ## Installation
 
@@ -17,12 +18,10 @@ go install github.com/dotsetlabs/deadfall/cmd/deadfall@latest
 
 | Command | Description |
 |---------|-------------|
-| [`init`](/deadfall/cli/init) | Initialize canaries in current project |
-| [`generate`](/deadfall/cli/generate) | Generate canary files of various types |
-| [`list`](/deadfall/cli/list) | List all registered canaries |
-| [`watch`](/deadfall/cli/watch) | Monitor canaries for access |
-| [`remove`](/deadfall/cli/remove) | Remove a canary from tracking |
-| [`triggers`](/deadfall/cli/triggers) | View historical trigger events |
+| [`init`](/deadfall/cli/init) | Initialize Deadfall in current project |
+| [`trap`](/deadfall/cli/trap) | Create trap files or inject traps into existing files |
+| [`status`](/deadfall/cli/status) | List all registered traps |
+| [`serve`](/deadfall/cli/serve) | Start the Honey-MCP server |
 | `version` | Print version information |
 
 ## Global Options
@@ -30,41 +29,49 @@ go install github.com/dotsetlabs/deadfall/cmd/deadfall@latest
 ```bash
 deadfall --version    # Show version
 deadfall --help       # Show help
---log-level           # DEBUG, INFO, WARN, ERROR
---log-format          # text or json
+deadfall -v           # Verbose output
+deadfall --json       # JSON output format
+deadfall --config     # Custom config file path
 ```
 
 ## Quick Examples
 
 ```bash
-# Initialize canaries in your project
+# Initialize Deadfall in your project
 deadfall init
 
-# Generate a fake .env file with AWS keys
-deadfall generate env
+# Create a trap in a context file
+deadfall trap context CONTEXT.md
 
-# Generate a fake MCP config with admin tools
-deadfall generate mcp
+# Create AI-specific trap files
+deadfall trap cursor-rules          # Creates .cursorrules
+deadfall trap claude-context        # Creates CLAUDE.md
+deadfall trap mcp-config            # Creates mcp.json
 
-# List all canaries
-deadfall list
+# Check status of all traps
+deadfall status
 
-# Watch for access (alerts when canary is touched)
-deadfall watch
+# Start the Honey-MCP server
+deadfall serve
 ```
 
-## Canary Types
+## Trap Types
 
-Deadfall can generate many types of fake credential files:
+Deadfall supports two categories of trap types:
 
-| Type | Description |
-|:-----|:------------|
-| `env` | Fake .env with AWS keys, API tokens |
-| `mcp` | Fake MCP server config with admin tools |
-| `ssh` | Fake SSH private key |
-| `aws` | Fake AWS credentials |
-| `kubeconfig` | Fake Kubernetes config |
-| `gcp` | Fake GCP service account |
-| `azure` | Fake Azure credentials |
-| `cursor-rules` | Fake .cursorrules with secrets |
-| `claude-md` | Fake CLAUDE.md with credentials |
+### Generic Types (Inject into Existing Files)
+
+| Type | Default Path | Description |
+|:-----|:-------------|:------------|
+| `context` | `CONTEXT.md` | Context/instruction files (Markdown, text) |
+| `code` | `main.go` | Source code files |
+| `env` | `.env.example` | Environment files |
+
+### AI-Specific Types (Generate Complete Files)
+
+| Type | Default Path | Target AI |
+|:-----|:-------------|:----------|
+| `cursor-rules` | `.cursorrules` | Cursor AI |
+| `claude-context` | `CLAUDE.md` | Claude Code |
+| `copilot-instructions` | `.github/copilot-instructions.md` | GitHub Copilot |
+| `mcp-config` | `mcp.json` | MCP clients |

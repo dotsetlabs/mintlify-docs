@@ -1,265 +1,123 @@
 ---
-title: Trust Model
+title: Trust & Security
 description: 'Understanding Deadfall security architecture'
 ---
 
-# Trust Model
+# Trust & Security
 
-Deadfall monitors MCP server activity and detects anomalies. This document explains the security architecture and trust model.
+Deadfall is designed with privacy and security as core principles.
 
 ## Security Guarantees
 
-### Complete Logging
-
-- **All tool calls recorded** - No selective logging
-- **Tamper-evident storage** - SHA-256 checksums on records
-- **Configurable retention** - Meet compliance requirements
-
 ### Local Processing
 
-- **Runs entirely locally** - No cloud dependencies
-- **No telemetry** - Usage data never leaves your machine
-- **Works offline** - No internet required for core features
+- **Runs entirely locally** — No cloud dependencies
+- **No telemetry** — Usage data never leaves your machine
+- **No account required** — No signup, no tracking
+- **Works offline** — No internet required for core features
 
-### Privacy by Default
+### Open Source
 
-- **PII redaction** - Sensitive data redacted from logs
-- **Configurable patterns** - Define what to redact
-- **Export controls** - Redaction applies to exports
+Deadfall is fully open source under the MIT license:
+
+```bash
+# Clone and audit
+git clone https://github.com/dotsetlabs/deadfall
+cd deadfall
+```
+
+All code is auditable. No obfuscation, no analytics, no phone-home.
+
+## What Deadfall Stores
+
+### Configuration File (deadfall.json)
+
+```json
+{
+  "traps": [
+    {
+      "path": ".cursorrules",
+      "token": "abc123...",
+      "type": "cursor-rules",
+      "created_at": "2026-01-05T14:32:00Z"
+    }
+  ]
+}
+```
+
+This file tracks:
+- File paths with traps
+- Unique tokens for correlation
+- Trap types and creation times
+
+### Alert Log (deadfall_alerts.log)
+
+Plain-text log file with timestamps and alert details:
+
+```
+2026-01-05T14:32:15-05:00 [critical] [Trap Triggered]: AI agent read trapped file | file=.cursorrules
+```
 
 ## Threat Model
 
 ### What Deadfall Protects Against
 
-| Threat | Protection |
-|:-------|:-----------|
-| Undetected data exfiltration | Volume spike detection |
-| After-hours unauthorized access | Off-hours alerting |
-| Novel attack patterns | Baseline anomaly detection |
-| Multi-step attacks | Sequence detection |
-| Audit trail gaps | Complete activity logging |
+| Threat | How |
+|:-------|:----|
+| AI agent compromise | Cognitive honeypots detect instruction following |
+| Credential-seeking agents | Honeypot tools attract and alert on access attempts |
+| Unknown threats | AI-specific traps are read automatically by assistants |
 
 ### What Deadfall Does NOT Protect Against
 
 | Threat | Why | Mitigation |
 |:-------|:----|:-----------|
-| Real-time blocking | Deadfall monitors, doesn't enforce | Use Tollgate for enforcement |
-| Malicious MCP server | Monitors server output, not internals | Use trusted servers |
-| Compromised Deadfall | Attacker has local access | Verify package integrity |
-| Alert fatigue bypass | User ignores alerts | Tune thresholds, use escalation |
+| Real-time blocking | Deadfall detects, doesn't prevent | Use [Tollgate](https://github.com/dotsetlabs/tollgate) |
+| Non-AI threats | Relies on instruction-following behavior | Use traditional honeypots |
+| Disabled MCP server | Traps require the server running | Keep server running |
 
 ## Trust Boundaries
 
-### Trusted Components
+### Trusted
 
-1. **Deadfall binary** - Assumed uncompromised
-2. **Configuration file** - Assumed correct
-3. **Local filesystem** - Assumed secure
-4. **Alert channels** - Assumed configured correctly
+1. **Deadfall binary** — Built from open source
+2. **Local filesystem** — OS-level security
+3. **MCP client** — Configured by user
 
-### Untrusted Components
+### Untrusted
 
-1. **MCP servers** - May be compromised
-2. **Tool arguments** - May contain malicious content
-3. **Activity patterns** - May be manipulated
-4. **Alert recipients** - May ignore alerts
+1. **AI agents** — May be compromised
+2. **Network** — Webhook delivery should use HTTPS
 
-## Data Security
+## Best Practices
 
-### Storage
-
-```
-~/.dotset/deadfall/
-├── activity.db      # SQLite database (encrypted at rest optional)
-├── baseline.json    # Learned patterns
-└── config.yaml      # Symlink to config
-```
-
-### Encryption at Rest
-
-```yaml
-logging:
-  encryption:
-    enabled: true
-    key_file: ~/.dotset/deadfall.key
-```
-
-Generate encryption key:
+### File Permissions
 
 ```bash
-deadfall keygen > ~/.dotset/deadfall.key
-chmod 600 ~/.dotset/deadfall.key
+# Restrict config file
+chmod 600 deadfall.json
+
+# Restrict log file  
+chmod 600 deadfall_alerts.log
 ```
 
-### Access Control
+### Git Ignore
 
-```bash
-# Restrict database access
-chmod 600 ~/.dotset/deadfall/activity.db
+Always add to `.gitignore`:
 
-# Restrict config
-chmod 600 deadfall.yaml
 ```
-
-## Verification
-
-### Open Source
-
-Deadfall is open source. Audit the code:
-
-```bash
-# Clone and review
-git clone https://github.com/dotsetlabs/deadfall
-cd deadfall
-
-# Or read online
-https://github.com/dotsetlabs/deadfall
+deadfall.json
+deadfall_alerts.log
 ```
-
-### Package Verification
-
-```bash
-# Check npm package signature
-npm audit signatures @dotsetlabs/deadfall
-
-# Compare with source
-npm pack @dotsetlabs/deadfall --dry-run
-```
-
-### Integrity Verification
-
-```bash
-# Verify log integrity
-deadfall audit verify
-
-# Output
-✓ 15,234 records verified
-✓ No tampering detected
-✓ Checksum chain valid
-```
-
-## Alert Security
 
 ### Webhook Security
 
-```yaml
-alerts:
-  webhook:
-    url: https://api.example.com/alerts
-    headers:
-      Authorization: "Bearer ${API_TOKEN}"
-    tls:
-      verify: true
-      ca_cert: /path/to/ca.pem  # Optional custom CA
-```
-
-### Slack Security
-
-- Use Slack's webhook URL rotation
-- Restrict webhook to specific channels
-- Monitor webhook usage in Slack admin
-
-### Email Security
-
-```yaml
-alerts:
-  email:
-    smtp:
-      host: smtp.example.com
-      port: 587
-      tls: required
-      auth:
-        user: ${SMTP_USER}
-        pass: ${SMTP_PASS}
-```
-
-## Security Best Practices
-
-### Configuration
-
-1. **Use environment variables for secrets**
-   ```yaml
-   alerts:
-     slack:
-       webhook: ${SLACK_WEBHOOK_URL}  # Not hardcoded
-   ```
-
-2. **Restrict file permissions**
-   ```bash
-   chmod 600 deadfall.yaml
-   chmod 600 ~/.dotset/deadfall/*
-   ```
-
-3. **Enable encryption for sensitive environments**
-   ```yaml
-   logging:
-     encryption:
-       enabled: true
-   ```
-
-### Operations
-
-1. **Review alerts promptly**
-   - Don't let alert fatigue develop
-   - Tune thresholds to reduce noise
-
-2. **Verify integrity regularly**
-   ```bash
-   deadfall audit verify
-   ```
-
-3. **Export logs for long-term retention**
-   ```bash
-   deadfall export --last 30d --compress -o /archive/$(date +%Y%m).json.gz
-   ```
-
-### Deployment
-
-1. **Run with minimal privileges**
-   - Don't run as root
-   - Use dedicated service account
-
-2. **Isolate network access**
-   - Only allow outbound to alert destinations
-   - Block unnecessary connections
-
-3. **Monitor Deadfall itself**
-   - Log Deadfall process health
-   - Alert on Deadfall failures
-
-## Incident Response
-
-If you suspect a security incident:
-
-1. **Preserve logs immediately**
-   ```bash
-   deadfall export -o incident-$(date +%s).json
-   ```
-
-2. **Verify log integrity**
-   ```bash
-   deadfall audit verify
-   ```
-
-3. **Review alert history**
-   ```bash
-   deadfall alerts --last 7d
-   ```
-
-4. **Check for tampering**
-   ```bash
-   # Compare database modification time
-   ls -la ~/.dotset/deadfall/activity.db
-
-   # Check process list for anomalies
-   ps aux | grep deadfall
-   ```
+If using webhook alerts, always use HTTPS URLs and keep webhook URLs secret.
 
 ## Reporting Security Issues
 
 Report security vulnerabilities to:
 
-- **Email**: security@dotsetlabs.com
 - **GitHub Security Advisories**: https://github.com/dotsetlabs/deadfall/security
 
 Please do not open public issues for security vulnerabilities.

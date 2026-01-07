@@ -137,18 +137,17 @@
                     "group": "CLI Commands",
                     "pages": [
                         "deadfall/cli/overview",
-                        "deadfall/cli/watch",
-                        "deadfall/cli/query",
                         "deadfall/cli/init",
-                        "deadfall/cli/export"
+                        "deadfall/cli/trap",
+                        "deadfall/cli/status",
+                        "deadfall/cli/serve"
                     ]
                 },
                 {
                     "group": "Concepts",
                     "pages": [
                         "deadfall/concepts/detection",
-                        "deadfall/concepts/alerting",
-                        "deadfall/concepts/audit"
+                        "deadfall/concepts/alerting"
                     ]
                 },
                 {

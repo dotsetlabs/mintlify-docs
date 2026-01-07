@@ -1,239 +1,106 @@
 ---
-title: Alert Routing
-description: 'Configure where and how alerts are sent'
+title: Alerting
+description: 'How Deadfall alerts you to detected activity'
 ---
 
-# Alert Routing
+# Alerting
 
-Deadfall can route alerts to multiple destinations based on severity and type.
+When a trap is triggered or a honeypot tool is called, Deadfall sends alerts through multiple channels.
 
 ## Alert Channels
 
-### Slack
+### 1. Console Logging
 
-```yaml
-alerts:
-  slack:
-    webhook: ${SLACK_WEBHOOK_URL}
-    channel: "#security-alerts"
-    severity: medium+
-    mention: "@oncall"  # Optional mention for high/critical
-```
-
-**Slack message format:**
+Structured logs are written to the terminal when running `deadfall serve`:
 
 ```
-🚨 Deadfall Alert: volume_spike
-
-Server: postgres-mcp
-Severity: HIGH
-Time: 2024-01-15 14:32:01 UTC
-
-Details:
-• Tool: query
-• Observed: 470 calls/5min
-• Baseline: 10 calls/5min
-• Ratio: 47x
-
-View logs: deadfall query --last 1h -s postgres-mcp
+ERROR Security Alert severity=critical title="Trap Triggered" file=.cursorrules trap_type=cursor-rules token=abc123...
 ```
 
-### Email
+### 2. File Logging
 
-```yaml
-alerts:
-  email:
-    smtp:
-      host: smtp.example.com
-      port: 587
-      user: ${SMTP_USER}
-      pass: ${SMTP_PASS}
-    from: deadfall@example.com
-    to:
-      - security@example.com
-      - oncall@example.com
-    severity: high+
+All alerts are written to `deadfall_alerts.log`:
+
+```
+2026-01-05T14:32:15-05:00 [critical] [Trap Triggered]: AI agent read trapped file and followed instruction | file=.cursorrules | trap_type=cursor-rules | token=abc123...
 ```
 
-### Webhook
+**Log rotation:** When the log exceeds 10MB, it's rotated to `deadfall_alerts.log.bak`.
 
-Send alerts to any HTTP endpoint:
+### 3. Desktop Notifications
 
-```yaml
-alerts:
-  webhook:
-    url: https://api.example.com/alerts
-    method: POST
-    headers:
-      Authorization: "Bearer ${API_TOKEN}"
-      Content-Type: application/json
-    severity: medium+
+Cross-platform desktop notifications via system tray:
+
+```
+🚨 Deadfall: Trap Triggered
+AI agent read trapped file and followed instruction
+```
+
+**Supported platforms:**
+- macOS (native notifications)
+- Linux (libnotify)
+- Windows (toast notifications)
+
+### 4. Webhook Delivery
+
+Send alerts to external services (Slack, Discord, custom endpoints):
+
+```go
+// Configure programmatically
+alerter.SetWebhookURL("https://hooks.slack.com/services/XXX")
 ```
 
 **Webhook payload:**
 
 ```json
 {
-  "source": "deadfall",
-  "timestamp": "2024-01-15T14:32:01Z",
-  "severity": "high",
-  "type": "volume_spike",
-  "server": "postgres-mcp",
-  "details": {
-    "tool": "query",
-    "observed": 470,
-    "baseline": 10,
-    "ratio": 47
+  "event": "deadfall_alert",
+  "timestamp": "2026-01-05T14:32:15Z",
+  "severity": "critical",
+  "title": "Trap Triggered",
+  "message": "AI agent read trapped file and followed instruction",
+  "hostname": "developer-macbook",
+  "context": {
+    "token": "abc123def456...",
+    "file": ".cursorrules",
+    "trap_type": "cursor-rules",
+    "created_at": "2026-01-05T10:00:00Z"
   }
 }
 ```
 
-### PagerDuty
+**Retry logic:** Failed webhook deliveries are retried 3 times with exponential backoff (1s, 2s, 4s).
 
-```yaml
-alerts:
-  pagerduty:
-    routing_key: ${PAGERDUTY_ROUTING_KEY}
-    severity_mapping:
-      critical: critical
-      high: error
-      medium: warning
-      low: info
-```
+## Severity Levels
 
-### Console
+| Severity | Description | Example |
+|:---------|:------------|:--------|
+| `critical` | High-confidence compromise detection | Trap triggered, secret access attempt |
+| `warning` | Suspicious activity | Unknown token, private file access |
+| `info` | Informational | Normal system events |
 
-For local development or daemon mode:
+## Rate Limiting
 
-```yaml
-alerts:
-  console:
-    severity: low+
-    format: detailed  # or: compact, json
-```
+To prevent alert spam, Deadfall enforces a minimum interval between alerts (100ms). During rapid-fire triggers, some alerts may be suppressed.
 
-## Severity Filtering
+## Alert Context
 
-Each channel can filter by severity:
+Trap-triggered alerts include rich context for investigation:
 
-| Filter | Receives |
-|:-------|:---------|
-| `low+` | low, medium, high, critical |
-| `medium+` | medium, high, critical |
-| `high+` | high, critical |
-| `critical` | critical only |
+| Field | Description |
+|-------|-------------|
+| `token` | Unique trap identifier |
+| `file` | Path to the file that was read |
+| `trap_type` | Type of trap (cursor-rules, claude-context, etc.) |
+| `created_at` | When the trap was deployed |
 
-```yaml
-alerts:
-  # Critical only to PagerDuty
-  pagerduty:
-    severity: critical
+## Viewing Alert History
 
-  # High and above to Slack
-  slack:
-    severity: high+
-
-  # Everything to console
-  console:
-    severity: low+
-```
-
-## Alert Deduplication
-
-Prevent alert fatigue with deduplication:
-
-```yaml
-alerts:
-  slack:
-    webhook: ${SLACK_WEBHOOK_URL}
-    dedupe:
-      window: 5m        # Group similar alerts within 5 minutes
-      key: [server, type]  # Group by these fields
-```
-
-**Grouped alert:**
-
-```
-🚨 Deadfall Alert: volume_spike (3 occurrences)
-
-Server: postgres-mcp
-Severity: HIGH
-First: 2024-01-15 14:32:01 UTC
-Last: 2024-01-15 14:36:45 UTC
-Count: 3
-
-...
-```
-
-## Alert Throttling
-
-Limit alert volume:
-
-```yaml
-alerts:
-  slack:
-    webhook: ${SLACK_WEBHOOK_URL}
-    throttle:
-      max: 10          # Max 10 alerts
-      window: 1h       # Per hour
-      overflow: digest # Send summary when throttled
-```
-
-## Custom Templates
-
-Customize alert messages:
-
-```yaml
-alerts:
-  slack:
-    webhook: ${SLACK_WEBHOOK_URL}
-    template: |
-      *Alert: {{ .Type }}*
-      Server: `{{ .Server }}`
-      Severity: {{ .Severity }}
-      {{ if .Details.Ratio }}Ratio: {{ .Details.Ratio }}x baseline{{ end }}
-```
-
-## Alert Actions
-
-Define automated responses:
-
-```yaml
-alerts:
-  - type: volume_spike
-    threshold: 10x
-    severity: critical
-    actions:
-      - notify: [slack, pagerduty]
-      - webhook:
-          url: https://api.example.com/block-agent
-          method: POST
-          body: {"server": "{{ .Server }}"}
-```
-
-## Testing Alerts
-
-Test your alert configuration:
+Check the log file for alert history:
 
 ```bash
-# Send test alert to all channels
-deadfall test-alert --severity high
+cat deadfall_alerts.log
 
-# Test specific channel
-deadfall test-alert --channel slack
-
-# Dry run (show what would be sent)
-deadfall test-alert --dry-run
-```
-
-## Alert History
-
-View sent alerts:
-
-```bash
-# List recent alerts
-deadfall alerts --last 24h
-
-# Show alert details
-deadfall alerts show alert_abc123
+# Or tail for real-time monitoring
+tail -f deadfall_alerts.log
 ```

@@ -1,0 +1,83 @@
+---
+title: status
+description: 'List all registered traps'
+---
+
+# deadfall status
+
+Display all traps currently registered in the project.
+
+## Usage
+
+```bash
+deadfall status [flags]
+```
+
+## Description
+
+The `status` command lists all active traps with their:
+- File path
+- Trap type
+- Token (for correlation)
+- Creation timestamp
+
+## Flags
+
+| Flag | Description |
+|------|-------------|
+| `--json` | Output in JSON format |
+| `-v, --verbose` | Enable verbose output |
+
+## Examples
+
+### List All Traps
+
+```bash
+deadfall status
+```
+
+Output:
+```
+Active Traps (3):
+  • [cursor-rules] .cursorrules
+    Token: abc123def456789012345678901234ab
+    Created: 05 Jan 26 14:32 EST
+
+  • [claude-context] CLAUDE.md
+    Token: def456789012345678901234567890cd
+    Created: 05 Jan 26 14:35 EST
+
+  • [context] CONTEXT.md
+    Token: 789012345678901234567890123456ef
+    Created: 05 Jan 26 14:40 EST
+```
+
+### JSON Output
+
+```bash
+deadfall status --json
+```
+
+Output:
+```json
+{
+  "count": 3,
+  "traps": [
+    {
+      "path": ".cursorrules",
+      "token": "abc123def456789012345678901234ab",
+      "type": "cursor-rules",
+      "created_at": "2026-01-05T14:32:00Z"
+    }
+  ]
+}
+```
+
+### No Traps
+
+If no traps are registered:
+
+```
+No active traps.
+Run 'deadfall trap <type> <path>' to create one.
+```

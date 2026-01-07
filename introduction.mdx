@@ -11,7 +11,7 @@ Dotset Labs provides security tools for developers working with AI assistants:
 
 - **[Hardpoint](/hardpoint/cli/overview)** - Developer environment security scanner for the AI era
 - **[Tollgate](/tollgate/cli/overview)** - Policy-based access control for AI agents using MCP
-- **[Deadfall](/deadfall/cli/overview)** - Canary tokens and honeypots for detecting AI agent misbehavior
+- **[Deadfall](/deadfall/cli/overview)** - Cognitive honeypots for detecting AI agent compromise
 
 ---
 
@@ -49,14 +49,15 @@ tollgate wrap npx @modelcontextprotocol/server-postgres
 
 ## Deadfall
 
-AI agents explore your filesystem looking for credentials and config files. Deadfall plants tripwires — fake credential files that trigger alerts when accessed.
+AI agents automatically read configuration files like `.cursorrules` and `CLAUDE.md`. Deadfall exploits this behavior — embedding trap instructions that trigger alerts when followed.
 
-**Deadfall** generates canary tokens (fake .env files, SSH keys, MCP configs) and monitors them for access.
+**Deadfall** uses cognitive honeypots to detect AI agent compromise by exploiting their instruction-following behavior.
 
 ```bash
 go install github.com/dotsetlabs/deadfall/cmd/deadfall@latest
 deadfall init
-deadfall watch
+deadfall trap cursor-rules
+deadfall serve
 ```
 
 > [!NOTE]
@@ -73,7 +74,7 @@ go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
 # For MCP access control
 npm install -g @dotsetlabs/tollgate
 
-# For canary tokens and honeypots
+# For cognitive honeypots
 go install github.com/dotsetlabs/deadfall/cmd/deadfall@latest
 ```
 
@@ -87,6 +88,6 @@ go install github.com/dotsetlabs/deadfall/cmd/deadfall@latest
     Add access control to MCP servers
   </Card>
   <Card title="Deadfall Quickstart" icon="bell" href="/quickstart#deadfall">
-    Deploy canary tokens
+    Detect AI agent compromise
   </Card>
 </CardGroup>
