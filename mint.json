@@ -140,7 +140,8 @@
                         "deadfall/cli/init",
                         "deadfall/cli/trap",
                         "deadfall/cli/status",
-                        "deadfall/cli/serve"
+                        "deadfall/cli/serve",
+                        "deadfall/cli/test"
                     ]
                 },
                 {
