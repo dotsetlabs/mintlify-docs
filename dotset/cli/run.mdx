@@ -1,0 +1,141 @@
+---
+title: run
+description: 'Run all security tools together'
+---
+
+# dotset run
+
+The main orchestration command that runs all three Dotset tools together, providing comprehensive protection for your MCP server.
+
+## Usage
+
+```bash
+dotset run [options] -- <command> [args...]
+```
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `-c, --config <path>` | Path to dotset.yaml configuration |
+| `--skip-scan` | Skip Hardpoint pre-flight scan |
+| `--skip-deadfall` | Skip Deadfall honeypot server |
+
+## Examples
+
+```bash
+# Full protection for a PostgreSQL MCP server
+dotset run -- npx @modelcontextprotocol/server-postgres
+
+# Skip the security scan
+dotset run --skip-scan -- npx @anthropic/mcp-server-filesystem ./
+
+# Use custom config file
+dotset run -c ./my-config.yaml -- npx server-command
+```
+
+## What It Does
+
+The `dotset run` command orchestrates all three security tools in sequence:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         dotset run                               │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  1. HARDPOINT SCAN (pre-flight check)                           │
+│     ├─ Scans environment for AI-era threats                     │
+│     ├─ Checks for malicious configs, hidden chars, backdoors    │
+│     └─ Aborts if critical issues found                          │
+│                                                                  │
+│  2. DEADFALL SERVER (optional background)                       │
+│     ├─ Starts Honey-MCP server                                  │
+│     └─ Monitors for trap triggers                               │
+│                                                                  │
+│  3. TOLLGATE PROXY (wraps your command)                         │
+│     ├─ Intercepts all MCP tool calls                            │
+│     ├─ Applies access control policies                          │
+│     └─ Prompts for approval when needed                         │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## Configuration
+
+The `run` command uses settings from `dotset.yaml`:
+
+```yaml
+version: '1'
+
+hardpoint:
+  scanOnStart: true        # Enable pre-flight scan
+  minSeverity: medium      # Minimum severity to report
+
+tollgate:
+  timeout: 60000           # Approval timeout (ms)
+  approvalMethod: terminal # terminal | interactive
+
+deadfall:
+  autoServe: false         # Auto-start honeypot server
+```
+
+## Summary Output
+
+After the command completes, a summary is displayed:
+
+```bash
+───────────────────────────────────────
+Dotset Run Summary
+
+  Hardpoint:  ✓ passed
+  Deadfall:   ✓ ran
+  Tollgate:   ✓ completed
+───────────────────────────────────────
+```
+
+## Skip Options
+
+### --skip-scan
+
+Skip the Hardpoint pre-flight security scan:
+
+```bash
+dotset run --skip-scan -- npx server-command
+```
+
+Use this when:
+- You've already run a scan recently
+- You're in a trusted environment
+- You need faster startup time
+
+### --skip-deadfall
+
+Skip starting the Deadfall honeypot server:
+
+```bash
+dotset run --skip-deadfall -- npx server-command
+```
+
+Use this when:
+- You don't need honeypot detection
+- Deadfall isn't configured with traps
+- You're running in a minimal environment
+
+## Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | Success |
+| `1` | Hardpoint scan failed or Tollgate error |
+
+## Important Notes
+
+> Each tool operates independently. Dotset orchestrates them but does not provide deep integration between tools.
+
+The `run` command is a convenience wrapper — you can always run each tool separately if you need more control.
+
+## See Also
+
+- [Orchestration Guide](/dotset/guides/orchestration) — Understanding the workflow
+- [Configuration Guide](/dotset/guides/configuration) — Full dotset.yaml reference
+- [Architecture](/dotset/concepts/architecture) — How the tools work together

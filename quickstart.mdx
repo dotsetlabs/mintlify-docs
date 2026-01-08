@@ -9,6 +9,36 @@ This guide gets you from zero to protected in under a minute.
 
 ---
 
+## Unified CLI (Recommended)
+
+The fastest way to get full protection is with the Dotset unified CLI:
+
+```bash
+# Install
+npm install -g @dotsetlabs/dotset
+
+# Set up dependencies
+dotset doctor --install
+
+# Run with full protection
+dotset run -- npx @modelcontextprotocol/server-filesystem ./
+```
+
+This runs all three tools together:
+1. **Hardpoint** scans for threats
+2. **Deadfall** monitors for compromise
+3. **Tollgate** controls tool access
+
+See the [Dotset CLI Quickstart](/dotset/guides/getting-started) for more details.
+
+---
+
+## Individual Tools
+
+You can also use each tool independently:
+
+---
+
 ## Hardpoint
 
 Hardpoint scans your developer environment for AI-era security threats.

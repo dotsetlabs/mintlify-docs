@@ -1,0 +1,265 @@
+---
+title: Configuration
+description: 'Complete dotset.yaml reference'
+---
+
+# Configuration Reference
+
+Dotset uses a YAML configuration file (`dotset.yaml`) to configure all three security tools from a single location.
+
+## File Location
+
+Dotset searches for configuration in this order:
+
+1. `dotset.yaml`
+2. `dotset.yml`
+3. `.dotset.yaml`
+4. `.dotset.yml`
+
+The search starts in the current directory and walks up to parent directories.
+
+## Creating Configuration
+
+```bash
+dotset init
+```
+
+Or with a custom path:
+
+```bash
+dotset init -o .dotset.yaml
+```
+
+## Full Schema
+
+```yaml
+# Dotset Configuration
+# Version is required
+version: '1'
+
+# Hardpoint (Security Scanner) Configuration
+hardpoint:
+  # Run scan automatically when using `dotset run`
+  scanOnStart: true  # default: true
+
+  # Minimum severity level to report
+  # Options: info, low, medium, high, critical
+  minSeverity: medium  # default: medium
+
+  # Paths to exclude from scanning (glob patterns)
+  excludePaths:
+    - node_modules/**
+    - .git/**
+    - vendor/**
+
+  # Additional paths to include in scan
+  additionalPaths:
+    - ../shared-config/
+
+# Tollgate (Access Control) Configuration
+tollgate:
+  # Approval timeout in milliseconds
+  timeout: 60000  # default: 60000 (1 minute)
+
+  # How to prompt for approval
+  # Options: terminal, interactive, webhook
+  approvalMethod: terminal  # default: terminal
+
+  # Port for interactive approval UI
+  approvalPort: 3000
+
+  # MCP server configurations
+  servers:
+    postgres:
+      command: npx
+      args: ["-y", "@modelcontextprotocol/server-postgres"]
+      env:
+        DATABASE_URL: "${DATABASE_URL}"
+      defaultAction: prompt  # allow, deny, or prompt
+      analyzer: sql
+
+    filesystem:
+      command: npx
+      args: ["-y", "@anthropic/mcp-server-filesystem", "./"]
+      defaultAction: prompt
+      analyzer: filesystem
+
+# Deadfall (Honeypot) Configuration
+deadfall:
+  # Auto-start honeypot server with `dotset run`
+  autoServe: false  # default: false
+
+  # Trap configurations
+  traps:
+    - type: cursor-rules
+      path: .cursorrules
+    - type: claude-context
+      path: CLAUDE.md
+    - type: context
+      path: CONTEXT.md
+```
+
+## Section Reference
+
+### version
+
+**Required.** Must be `'1'`.
+
+```yaml
+version: '1'
+```
+
+### hardpoint
+
+Configuration for the Hardpoint security scanner.
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `scanOnStart` | boolean | `true` | Run scan when using `dotset run` |
+| `minSeverity` | string | `medium` | Minimum severity: `info`, `low`, `medium`, `high`, `critical` |
+| `excludePaths` | string[] | `[]` | Glob patterns to exclude |
+| `additionalPaths` | string[] | `[]` | Additional paths to scan |
+
+### tollgate
+
+Configuration for Tollgate access control.
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `timeout` | number | `60000` | Approval timeout in milliseconds |
+| `approvalMethod` | string | `terminal` | `terminal`, `interactive`, or `webhook` |
+| `approvalPort` | number | - | Port for interactive UI |
+| `servers` | object | `{}` | Named server configurations |
+
+#### tollgate.servers
+
+Each server configuration:
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `command` | string | Yes | Command to run |
+| `args` | string[] | No | Command arguments |
+| `env` | object | No | Environment variables |
+| `defaultAction` | string | No | `allow`, `deny`, or `prompt` |
+| `analyzer` | string | No | Content analyzer to use |
+
+### deadfall
+
+Configuration for Deadfall honeypots.
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `autoServe` | boolean | `false` | Auto-start server with `dotset run` |
+| `traps` | array | `[]` | Trap configurations |
+
+#### deadfall.traps
+
+Each trap configuration:
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `type` | string | Yes | Trap type (see below) |
+| `path` | string | Yes | File path for the trap |
+
+Valid trap types:
+- `context`
+- `code`
+- `env`
+- `cursor-rules`
+- `claude-context`
+- `copilot-instructions`
+- `mcp-config`
+
+## Environment Variables
+
+Use `${VAR_NAME}` syntax to reference environment variables:
+
+```yaml
+tollgate:
+  servers:
+    postgres:
+      command: npx
+      args: ["-y", "@modelcontextprotocol/server-postgres"]
+      env:
+        DATABASE_URL: "${DATABASE_URL}"
+        API_KEY: "${MY_API_KEY}"
+```
+
+## Example Configurations
+
+### Minimal Configuration
+
+```yaml
+version: '1'
+```
+
+Uses all defaults — scans on start, prompts for all tool calls.
+
+### Development Configuration
+
+```yaml
+version: '1'
+
+hardpoint:
+  scanOnStart: true
+  minSeverity: high  # Less noise during development
+
+tollgate:
+  timeout: 120000    # More time to review
+  approvalMethod: terminal
+
+deadfall:
+  autoServe: false   # Manual trap management
+```
+
+### Production Configuration
+
+```yaml
+version: '1'
+
+hardpoint:
+  scanOnStart: true
+  minSeverity: medium
+  excludePaths:
+    - node_modules/**
+    - .git/**
+
+tollgate:
+  timeout: 30000     # Faster timeout
+  approvalMethod: terminal
+  servers:
+    database:
+      command: npx
+      args: ["-y", "@modelcontextprotocol/server-postgres"]
+      env:
+        DATABASE_URL: "${DATABASE_URL}"
+      defaultAction: prompt
+
+deadfall:
+  autoServe: true
+  traps:
+    - type: cursor-rules
+      path: .cursorrules
+    - type: claude-context
+      path: CLAUDE.md
+```
+
+## Validation
+
+Validate your configuration:
+
+```bash
+dotset doctor
+```
+
+This checks:
+- YAML syntax
+- Required fields
+- Valid option values
+- Server command existence
+
+## See Also
+
+- [Getting Started](/dotset/guides/getting-started) — Initial setup
+- [dotset init](/dotset/cli/init) — Create configuration
+- [dotset doctor](/dotset/cli/doctor) — Validate configuration

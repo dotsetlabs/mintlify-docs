@@ -1,0 +1,83 @@
+---
+title: CLI Overview
+description: 'Dotset unified CLI reference'
+---
+
+# Dotset CLI
+
+Dotset is a unified CLI that bundles all three Dotset Labs security tools — Hardpoint, Tollgate, and Deadfall — into a single command-line interface.
+
+## Installation
+
+```bash
+npm install -g @dotsetlabs/dotset
+```
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| [`init`](/dotset/cli/init) | Initialize Dotset in the current project |
+| [`doctor`](/dotset/cli/doctor) | Run diagnostics to verify installation |
+| [`status`](/dotset/cli/status) | Show installation and configuration status |
+| [`run`](/dotset/cli/run) | Run all security tools together (main orchestration) |
+| [`scan`](/dotset/cli/scan) | Run Hardpoint security scan |
+| [`wrap`](/dotset/cli/wrap) | Wrap an MCP server with Tollgate proxy |
+| [`trap`](/dotset/cli/trap) | Inject a Deadfall honeypot trap |
+
+## Global Options
+
+```bash
+dotset --version    # Show version
+dotset --help       # Show help
+```
+
+## Quick Start
+
+```bash
+# Initialize configuration
+dotset init
+
+# Verify installation
+dotset doctor --install
+
+# Run with full protection
+dotset run -- npx @modelcontextprotocol/server-postgres
+```
+
+## Two Modes of Operation
+
+### Unified Mode (Recommended)
+
+Use `dotset run` to orchestrate all three tools together:
+
+```bash
+dotset run -- npx @anthropic/mcp-server-filesystem ./
+```
+
+This:
+1. Runs a Hardpoint security scan (pre-flight check)
+2. Optionally starts Deadfall honeypot server
+3. Wraps your MCP server with Tollgate proxy
+
+### Individual Commands
+
+Use individual commands when you need fine-grained control:
+
+```bash
+# Just scan
+dotset scan
+
+# Just wrap with Tollgate
+dotset wrap -- npx @modelcontextprotocol/server-postgres
+
+# Just create a trap
+dotset trap cursor-rules .cursorrules
+```
+
+## Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | Success |
+| `1` | Error or security issues found |

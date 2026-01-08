@@ -46,6 +46,39 @@
             ]
         },
         {
+            "group": "Dotset CLI",
+            "pages": [
+                {
+                    "group": "CLI Commands",
+                    "pages": [
+                        "dotset/cli/overview",
+                        "dotset/cli/init",
+                        "dotset/cli/doctor",
+                        "dotset/cli/status",
+                        "dotset/cli/run",
+                        "dotset/cli/scan",
+                        "dotset/cli/wrap",
+                        "dotset/cli/trap"
+                    ]
+                },
+                {
+                    "group": "Guides",
+                    "pages": [
+                        "dotset/guides/getting-started",
+                        "dotset/guides/configuration",
+                        "dotset/guides/claude-desktop",
+                        "dotset/guides/orchestration"
+                    ]
+                },
+                {
+                    "group": "Concepts",
+                    "pages": [
+                        "dotset/concepts/architecture"
+                    ]
+                }
+            ]
+        },
+        {
             "group": "Hardpoint",
             "pages": [
                 {

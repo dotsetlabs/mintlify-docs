@@ -1,0 +1,74 @@
+---
+title: init
+description: 'Initialize Dotset configuration'
+---
+
+# dotset init
+
+Initialize Dotset in the current project by creating a `dotset.yaml` configuration file.
+
+## Usage
+
+```bash
+dotset init [options]
+```
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `-o, --output <path>` | Output path for config file (default: `dotset.yaml`) |
+| `-f, --force` | Overwrite existing configuration |
+| `--mcp` | Also configure MCP clients (not yet implemented) |
+
+## Examples
+
+```bash
+# Create default config
+dotset init
+
+# Create config with custom name
+dotset init -o .dotset.yaml
+
+# Overwrite existing config
+dotset init --force
+```
+
+## What It Does
+
+1. **Creates `dotset.yaml`** — A unified configuration file for all three tools
+2. **Updates `.gitignore`** — Adds `.dotset/` to ignore the cache directory
+
+## Generated Configuration
+
+The default configuration file looks like:
+
+```yaml
+# Dotset - Unified AI Developer Security Configuration
+# https://docs.dotsetlabs.com/dotset
+
+version: '1'
+hardpoint:
+  scanOnStart: true
+  minSeverity: medium
+tollgate:
+  timeout: 60000
+  approvalMethod: terminal
+  servers: {}
+deadfall:
+  autoServe: false
+  traps: []
+```
+
+## Next Steps
+
+After running `dotset init`:
+
+1. Edit `dotset.yaml` to configure your servers
+2. Run `dotset doctor` to verify installation
+3. Run `dotset run -- <command>` to start with protection
+
+## See Also
+
+- [Configuration Guide](/dotset/guides/configuration) — Full configuration reference
+- [dotset doctor](/dotset/cli/doctor) — Verify installation

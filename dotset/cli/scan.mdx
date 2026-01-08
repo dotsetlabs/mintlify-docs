@@ -1,0 +1,114 @@
+---
+title: scan
+description: 'Run Hardpoint security scan'
+---
+
+# dotset scan
+
+Run a Hardpoint security scan on your developer environment. This is a convenience wrapper around the `hardpoint scan` command.
+
+## Usage
+
+```bash
+dotset scan [scanners...] [options]
+```
+
+## Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `scanners` | Specific scanners to run (optional) |
+
+Available scanners:
+- `ai` — AI config files (.cursorrules, mcp.json, CLAUDE.md)
+- `shell` — Shell configs (.bashrc, .zshrc)
+- `git` — Git hooks and config
+- `network` — Exposed localhost services
+- `secrets` — Hardcoded credentials
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `-s, --severity <level>` | Minimum severity: `info`, `low`, `medium`, `high`, `critical` |
+| `-o, --output <format>` | Output format: `terminal`, `json`, `sarif` |
+| `--path <path>` | Path to scan (default: current directory) |
+| `--install` | Auto-install Hardpoint if missing |
+
+## Examples
+
+```bash
+# Run all scanners
+dotset scan
+
+# Run specific scanners
+dotset scan ai secrets
+
+# Show only high severity findings
+dotset scan -s high
+
+# Output as JSON
+dotset scan -o json
+
+# Scan a specific path
+dotset scan --path ./src
+
+# Auto-install if missing
+dotset scan --install
+```
+
+## Example Output
+
+```bash
+$ dotset scan
+
+Hardpoint Security Scan
+=======================
+
+Scanning: /home/dev/myproject
+Scanners: ai, shell, git, network, secrets
+
+Findings
+--------
+
+  CRITICAL  AI-001: Instruction Override Detected
+            File: .cursorrules:15
+            Pattern attempts to override AI safety guidelines
+
+  HIGH      AI-002: Hidden Unicode Characters
+            File: CLAUDE.md:8
+            Zero-width characters detected
+
+Summary: 1 critical, 1 high (2 total)
+```
+
+## Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | No critical findings |
+| `1` | Findings detected (check output for details) |
+| Other | Scan error |
+
+## Auto-Install
+
+If Hardpoint is not installed, you can use the `--install` flag:
+
+```bash
+$ dotset scan --install
+Installing Hardpoint...
+  Downloading hardpoint v0.1.0 for linux/amd64...
+  Installed to /home/user/.dotset/bin/hardpoint
+
+Hardpoint Security Scan
+=======================
+...
+```
+
+Alternatively, run `dotset doctor --install` to install all missing tools at once.
+
+## See Also
+
+- [Hardpoint CLI](/hardpoint/cli/overview) — Full Hardpoint documentation
+- [Scanners](/hardpoint/concepts/scanners) — Learn about each scanner
+- [dotset run](/dotset/cli/run) — Run scan as part of full orchestration

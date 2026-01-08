@@ -1,0 +1,117 @@
+---
+title: wrap
+description: 'Wrap an MCP server with Tollgate proxy'
+---
+
+# dotset wrap
+
+Wrap any MCP server with Tollgate's policy-based access control. This is a convenience wrapper around the `tollgate wrap` command.
+
+## Usage
+
+```bash
+dotset wrap [options] -- <command> [args...]
+```
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `-d, --default <action>` | Default action: `allow`, `deny`, `prompt` (default: `prompt`) |
+| `--timeout <ms>` | Approval timeout in milliseconds |
+| `--approval <method>` | Approval method: `terminal`, `interactive` |
+| `--approval-port <port>` | Port for interactive approval UI |
+| `--dry-run` | Dry run mode (log actions without executing) |
+
+## Examples
+
+```bash
+# Prompt for all tool calls (default)
+dotset wrap -- npx @modelcontextprotocol/server-postgres
+
+# Allow all by default
+dotset wrap -d allow -- npx @anthropic/mcp-server-filesystem ./
+
+# Use interactive approval UI
+dotset wrap --approval interactive --approval-port 3000 -- npx server
+
+# Set approval timeout
+dotset wrap --timeout 120000 -- npx server
+```
+
+## Default Actions
+
+| Action | Behavior |
+|--------|----------|
+| `prompt` | Ask user for approval (default, recommended) |
+| `allow` | Allow all tool calls without prompting |
+| `deny` | Block all tool calls |
+
+## Approval Methods
+
+### Terminal (Default)
+
+Prompts appear in the terminal:
+
+```bash
+$ dotset wrap -- npx @modelcontextprotocol/server-postgres
+
+[Tollgate] Tool call: query
+  Arguments: { "sql": "SELECT * FROM users" }
+
+  Allow this call? [y/n/a(lways)/d(eny always)]
+```
+
+### Interactive
+
+Opens a web UI for approval:
+
+```bash
+dotset wrap --approval interactive --approval-port 3000 -- npx server
+```
+
+Then visit `http://localhost:3000` to approve/deny tool calls.
+
+## Example Session
+
+```bash
+$ dotset wrap -- npx @modelcontextprotocol/server-filesystem ./src
+
+Starting Tollgate proxy: npx @modelcontextprotocol/server-filesystem ./src
+
+[Tollgate] Tool call: read_file
+  Arguments: { "path": "src/index.ts" }
+  Risk: read
+
+  Allow? [y/n/a/d] y
+
+[Tollgate] Tool call: write_file
+  Arguments: { "path": "src/index.ts", "content": "..." }
+  Risk: write
+
+  Allow? [y/n/a/d] n
+  Denied.
+```
+
+## Dry Run
+
+Use `--dry-run` to see what would happen without actually executing:
+
+```bash
+dotset wrap --dry-run -- npx server
+```
+
+This logs all tool calls and their risk assessments without executing them.
+
+## Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | Success |
+| `1` | Error |
+
+## See Also
+
+- [Tollgate CLI](/tollgate/cli/overview) — Full Tollgate documentation
+- [Policies](/tollgate/concepts/policies) — Policy configuration
+- [dotset run](/dotset/cli/run) — Run wrap as part of full orchestration
