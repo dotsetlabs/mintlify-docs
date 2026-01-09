@@ -20,6 +20,9 @@ hardpoint baseline <command> [flags]
 | `list` | List all suppressions in the current baseline |
 | `add` | Add a new suppression to the baseline |
 | `prune` | Remove expired or unused suppressions |
+| `trust` | Mark the current baseline as trusted |
+| `untrust` | Remove trust from the baseline |
+| `check` | Check if the baseline is trusted |
 
 ## baseline list
 
@@ -135,6 +138,96 @@ Removed 2 suppressions:
   - AI-003 (unused: no matching findings)
 
 Baseline updated successfully.
+```
+
+## baseline trust
+
+Mark the current baseline file as trusted.
+
+When you clone a repository that contains a `.hardpoint/baseline.yaml` file, Hardpoint warns you that the baseline may have been crafted to hide malicious findings. Use this command after reviewing the suppressions.
+
+```bash
+hardpoint baseline trust [flags]
+```
+
+### Examples
+
+```bash
+# Review the baseline first
+hardpoint baseline list
+
+# Then trust it
+hardpoint baseline trust
+```
+
+### Output
+
+```
+Trusted baseline: /path/to/project/.hardpoint/baseline.yaml
+  Suppressions: 5
+
+The baseline will now be used without warnings.
+```
+
+## baseline untrust
+
+Remove trust from the baseline file.
+
+```bash
+hardpoint baseline untrust [flags]
+```
+
+### Examples
+
+```bash
+hardpoint baseline untrust
+```
+
+### Output
+
+```
+Removed trust from baseline: /path/to/project/.hardpoint/baseline.yaml
+
+You will see warnings about this baseline on the next scan.
+```
+
+## baseline check
+
+Check if the current baseline file is trusted.
+
+```bash
+hardpoint baseline check [flags]
+```
+
+### Examples
+
+```bash
+hardpoint baseline check
+```
+
+### Output (trusted)
+
+```
+Baseline is trusted: /path/to/project/.hardpoint/baseline.yaml
+  Suppressions: 5
+```
+
+### Output (untrusted with high-risk suppressions)
+
+```
+WARNING: Untrusted Baseline File Detected
+========================================
+
+Path: /path/to/project/.hardpoint/baseline.yaml
+Suppressions: 3
+Source: Committed to repository (potentially by untrusted source)
+
+High-Risk Suppressed Rules:
+  - AI-001
+  - AI-003
+
+REVIEW REQUIRED: This baseline suppresses security-critical rules.
+Run 'hardpoint baseline list' to inspect before trusting.
 ```
 
 ## Related

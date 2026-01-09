@@ -1,0 +1,146 @@
+---
+title: metrics
+description: 'View trap trigger statistics'
+---
+
+# deadfall metrics
+
+View statistics about trap triggers and honeypot activity.
+
+## Usage
+
+```bash
+deadfall metrics [options]
+```
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `--reset` | Reset all metrics to zero |
+| `--json` | Output as JSON |
+
+## Examples
+
+```bash
+# View metrics
+deadfall metrics
+
+# View as JSON
+deadfall metrics --json
+
+# Reset all metrics
+deadfall metrics --reset
+```
+
+## Output
+
+```
+Trap Trigger Metrics
+────────────────────
+
+Total triggers:       12
+Last 24 hours:        3
+Last 7 days:          8
+
+By Tool:
+  deadfall_ping:      8
+  admin_get_secrets:  3
+  db_full_dump:       1
+
+By Token:
+  abc123 (CONTEXT.md):    5 triggers
+  def456 (main.go):       7 triggers
+
+By Hour (last 24h):
+  12:00-13:00:  ██████  3
+  14:00-15:00:  ████    2
+  16:00-17:00:  ██      1
+```
+
+## JSON Output
+
+```json
+{
+  "total_triggers": 12,
+  "last_24h": 3,
+  "last_7d": 8,
+  "by_tool": {
+    "deadfall_ping": 8,
+    "admin_get_secrets": 3,
+    "db_full_dump": 1
+  },
+  "by_token": {
+    "abc123": {
+      "count": 5,
+      "file": "CONTEXT.md",
+      "last_trigger": "2024-01-15T12:30:00Z"
+    },
+    "def456": {
+      "count": 7,
+      "file": "main.go",
+      "last_trigger": "2024-01-15T14:15:00Z"
+    }
+  }
+}
+```
+
+## Reset
+
+The `--reset` flag clears all collected metrics:
+
+```bash
+$ deadfall metrics --reset
+
+Metrics reset successfully.
+```
+
+This is useful for:
+- Starting fresh after testing
+- Beginning a new monitoring period
+- Clearing test data before production use
+
+## Use Cases
+
+### Security Monitoring
+
+Track how often AI agents trigger traps to detect:
+- Unauthorized file access
+- Compromised agents
+- Suspicious behavior patterns
+
+### Testing Traps
+
+After creating new traps, use metrics to verify they're working:
+
+```bash
+# Create trap
+deadfall trap context CONTEXT.md
+
+# Test with AI agent
+# ...
+
+# Check metrics
+deadfall metrics
+```
+
+### Compliance
+
+Export metrics as JSON for audit trails:
+
+```bash
+deadfall metrics --json > metrics-$(date +%Y%m%d).json
+```
+
+## Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | Success |
+| `1` | Error |
+
+## See Also
+
+- [deadfall status](/deadfall/cli/status) — View active traps
+- [deadfall trap](/deadfall/cli/trap) — Create honeypot traps
+- [Alerting](/deadfall/concepts/alerting) — Alert configuration

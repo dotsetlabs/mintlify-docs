@@ -1,0 +1,147 @@
+---
+title: serve
+description: 'Multi-server orchestration with Tollgate'
+---
+
+# dotset serve
+
+Start multiple MCP servers with unified management and monitoring. This command proxies to `tollgate serve`.
+
+## Usage
+
+```bash
+dotset serve [options]
+```
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `-c, --config <path>` | Config file path (default: `tollgate.yaml`) |
+| `--audit-path <path>` | Custom audit database path |
+| `--timeout <ms>` | Approval timeout (default: 60000) |
+| `--approval <method>` | Approval method: `terminal`, `interactive` |
+| `--approval-port <port>` | Interactive UI port (default: 9847) |
+| `--persist-sessions` | Persist session grants to disk |
+| `--session-path <path>` | Session database path |
+| `--dry-run` | Evaluate policies without executing |
+| `--failure-mode <mode>` | `fail-closed`, `fail-open`, `fail-readonly` |
+| `--all` | Auto-start all configured servers |
+| `-s, --servers <names...>` | Specific servers to start |
+| `--no-interactive` | Non-interactive mode (no CLI) |
+
+## Examples
+
+```bash
+# Start all configured servers
+dotset serve --all
+
+# Start specific servers
+dotset serve -s postgres github
+
+# Use interactive approval UI
+dotset serve --all --approval interactive
+
+# Persist session grants across restarts
+dotset serve --all --persist-sessions
+
+# Non-interactive mode (for background/CI)
+dotset serve --all --no-interactive
+
+# Dry run mode
+dotset serve --all --dry-run
+
+# Custom config path
+dotset serve -c config/tollgate.yaml --all
+```
+
+## Interactive CLI
+
+When running in interactive mode (default), you have access to these commands:
+
+| Command | Description |
+|---------|-------------|
+| `status` / `ls` / `list` | Show status of all servers |
+| `start <n\|name>` | Start a server by number or name |
+| `stop <n\|name>` | Stop a running server |
+| `restart <n\|name>` | Restart a server |
+| `start-all` | Start all configured servers |
+| `stop-all` | Stop all running servers |
+| `stats` | Show orchestrator statistics |
+| `logs <n\|name>` | Show recent logs for a server |
+| `help` | Show available commands |
+| `quit` / `exit` | Exit the orchestrator |
+
+## Example Session
+
+```
+$ dotset serve --all
+
+Starting Tollgate Orchestrator...
+
+  ✓ postgres started (pid 12345)
+  ✓ filesystem started (pid 12346)
+  ✓ github started (pid 12347)
+
+3/3 servers running
+
+tollgate> status
+  #  Server     Status    Health    Uptime    Calls
+  1  postgres   running   healthy   5m 30s    12
+  2  filesystem running   healthy   5m 30s    8
+  3  github     running   healthy   5m 30s    3
+
+tollgate> logs postgres
+Recent logs for postgres:
+  [12:05:32] Tool call: query (approved)
+  [12:05:45] Tool call: query (approved)
+  [12:06:01] Tool call: execute (prompted → approved)
+
+tollgate> stats
+Orchestrator Statistics
+  Running: 3 / 3
+  Total Calls: 23
+  Denied: 2
+  Prompted: 5
+
+tollgate> stop github
+Stopping github...
+Server "github" stopped successfully
+
+tollgate> quit
+Stopping all servers...
+Goodbye!
+```
+
+## Failure Modes
+
+| Mode | Behavior |
+|------|----------|
+| `fail-closed` | Deny tool calls if policy engine fails (safest) |
+| `fail-open` | Allow tool calls if policy engine fails (least safe) |
+| `fail-readonly` | Allow reads, deny writes if policy engine fails |
+
+## Session Persistence
+
+By default, session grants (time-based approvals) are lost when serve stops. Enable persistence:
+
+```bash
+# Store sessions in default location (~/.tollgate/sessions.db)
+dotset serve --all --persist-sessions
+
+# Custom session database path
+dotset serve --all --persist-sessions --session-path ./data/sessions.db
+```
+
+## Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | Clean shutdown |
+| `1` | Error |
+
+## See Also
+
+- [dotset wrap](/dotset/cli/wrap) — Single server mode
+- [dotset templates](/dotset/cli/templates) — Generate server configs
+- [Tollgate Multi-Server](/tollgate/cli/serve) — Full orchestration documentation

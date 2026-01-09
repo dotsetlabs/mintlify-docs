@@ -25,6 +25,8 @@ hardpoint scan [scanner...] [flags]
 
 ## Flags
 
+### General Flags
+
 | Flag | Short | Description |
 | ---- | ----- | ----------- |
 | `--path` | `-p` | Path to scan (default: home directory) |
@@ -33,6 +35,24 @@ hardpoint scan [scanner...] [flags]
 | `--exclude` | `-e` | Paths to exclude (can be repeated) |
 | `--disable-rules` | | Rule IDs to disable (can be repeated) |
 | `--enable-rules` | | Only enable these rules, disable all others (can be repeated) |
+
+### Codebase Scanning Flags (AI Scanner)
+
+| Flag | Description |
+| ---- | ----------- |
+| `--scope` | Scan scope: `config` (AI files only) or `codebase` (all source files) |
+| `--max-depth` | Maximum directory depth for codebase scan (0=unlimited) |
+| `--include` | File patterns to include (e.g., `*.py,*.js`) |
+| `--ai-exclude` | Additional patterns to exclude from codebase scan |
+| `--workers` | Number of parallel scan workers (0=auto) |
+| `--max-file-size` | Maximum file size to scan (e.g., `10MB`) |
+
+### Dependency Scanning Flags (AI Scanner)
+
+| Flag | Description |
+| ---- | ----------- |
+| `--include-deps` | Include dependency directories (node_modules, vendor, etc.) |
+| `--deps-only` | Only scan dependency directories |
 
 ## Examples
 
@@ -99,6 +119,39 @@ hardpoint scan --output json
 
 # SARIF for GitHub Code Scanning
 hardpoint scan --output sarif > results.sarif
+```
+
+### Codebase Scanning
+
+Scan your entire codebase for prompt injection hidden in comments and documentation:
+
+```bash
+# Scan all source code comments
+hardpoint scan ai --scope codebase
+
+# Limit scanning depth
+hardpoint scan ai --scope codebase --max-depth 5
+
+# Only scan specific file types
+hardpoint scan ai --scope codebase --include "*.py,*.js,*.ts"
+
+# Scan with more workers for large codebases
+hardpoint scan ai --scope codebase --workers 8
+```
+
+### Dependency Scanning
+
+Scan dependencies for supply chain attacks:
+
+```bash
+# Include dependencies in scan
+hardpoint scan ai --scope codebase --include-deps
+
+# Scan only dependencies (node_modules, vendor, etc.)
+hardpoint scan ai --deps-only
+
+# Combine with codebase scanning
+hardpoint scan ai --scope codebase --include-deps --workers 4
 ```
 
 ## Output

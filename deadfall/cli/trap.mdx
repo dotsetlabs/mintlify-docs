@@ -30,6 +30,13 @@ A compromised or misbehaving agent will follow these instructions — triggering
 | `type` | Type of trap to create (see Trap Types below) |
 | `path` | Optional. File path (defaults to type-specific path) |
 
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `--expires <duration>` | Auto-expire trap after duration (e.g., `24h`, `7d`, `30d`) |
+| `--json` | Output trap info as JSON |
+
 ## Trap Types
 
 ### Generic Types (Inject into Existing Files)
@@ -83,6 +90,32 @@ deadfall trap mcp-config
 ```
 
 Creates an `mcp.json` with a Deadfall server entry and enticing fake "admin-tools" server.
+
+### Create Trap with Expiration
+
+```bash
+deadfall trap context CONTEXT.md --expires 7d
+```
+
+The trap will automatically expire after 7 days and be removed from tracking.
+
+### JSON Output
+
+```bash
+deadfall trap cursor-rules --json
+```
+
+Output:
+```json
+{
+  "success": true,
+  "type": "cursor-rules",
+  "path": ".cursorrules",
+  "token": "abc123def456...",
+  "expires": null,
+  "created": "2024-01-15T12:00:00Z"
+}
+```
 
 ## How It Works
 

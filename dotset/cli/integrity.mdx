@@ -1,0 +1,208 @@
+---
+title: integrity
+description: 'File integrity monitoring'
+---
+
+# dotset integrity
+
+Monitor file integrity to detect unauthorized changes. This command proxies to `hardpoint integrity`.
+
+## Usage
+
+```bash
+dotset integrity <subcommand> [options]
+```
+
+## Subcommands
+
+### init
+
+Initialize integrity tracking for the project.
+
+```bash
+dotset integrity init [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `-f, --force` | Force re-initialization |
+| `--patterns <patterns>` | File patterns to track (comma-separated) |
+| `--sign` | Sign manifest with GPG |
+| `-p, --path <path>` | Project root path |
+| `--json` | JSON output |
+| `--install` | Auto-install Hardpoint if missing |
+
+### verify
+
+Verify file integrity against stored hashes.
+
+```bash
+dotset integrity verify [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--fail-on-change` | Exit with error if changes detected |
+| `-p, --path <path>` | Project root path |
+| `--json` | JSON output |
+
+### update
+
+Update hash for changed files.
+
+```bash
+dotset integrity update [files...] [options]
+```
+
+### list
+
+List all tracked files.
+
+```bash
+dotset integrity list [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--json` | JSON output |
+
+### diff
+
+Show changes since last verification.
+
+```bash
+dotset integrity diff [options]
+```
+
+### add
+
+Add files to integrity tracking.
+
+```bash
+dotset integrity add <files...>
+```
+
+### remove
+
+Remove files from tracking.
+
+```bash
+dotset integrity remove <files...>
+```
+
+### reset
+
+Clear all integrity tracking.
+
+```bash
+dotset integrity reset
+```
+
+### watch
+
+Watch for file changes in real-time.
+
+```bash
+dotset integrity watch [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--alert-desktop` | Show desktop notifications |
+| `--alert-webhook <url>` | Send alerts to webhook |
+| `--alert-log <path>` | Write alerts to log file |
+| `--debounce <duration>` | Debounce interval (e.g., `1s`) |
+
+## Examples
+
+```bash
+# Initialize with default patterns
+dotset integrity init
+
+# Initialize with specific patterns
+dotset integrity init --patterns "*.yaml,*.json,*.md"
+
+# Force re-initialization
+dotset integrity init -f
+
+# Sign manifest with GPG
+dotset integrity init --sign
+
+# Verify integrity
+dotset integrity verify
+
+# Verify with CI/CD-friendly exit code
+dotset integrity verify --fail-on-change
+
+# Update specific file
+dotset integrity update config.yaml
+
+# List tracked files
+dotset integrity list
+
+# Show changes
+dotset integrity diff
+
+# Add new file to tracking
+dotset integrity add sensitive-config.yaml
+
+# Remove file from tracking
+dotset integrity remove old-config.yaml
+
+# Watch for changes with desktop alerts
+dotset integrity watch --alert-desktop
+
+# Watch with webhook alerts
+dotset integrity watch --alert-webhook https://hooks.slack.com/...
+
+# Watch with log file
+dotset integrity watch --alert-log /var/log/integrity.log
+```
+
+## Output
+
+### Init Output
+
+```
+Initializing integrity tracking...
+
+  Tracking 15 files:
+    - tollgate.yaml
+    - dotset.yaml
+    - package.json
+    - ...
+
+  Manifest created: .hardpoint/integrity.json
+```
+
+### Verify Output
+
+```
+Integrity Verification
+──────────────────────
+
+✓ 12 files unchanged
+⚠ 2 files modified
+✗ 1 file missing
+
+Modified:
+  - config.yaml (hash mismatch)
+  - package.json (hash mismatch)
+
+Missing:
+  - old-secrets.env
+
+Run 'dotset integrity update' to accept changes
+```
+
+## Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | Success (no changes with --fail-on-change) |
+| `1` | Changes detected or error |
+
+## See Also
+
+- [dotset scan](/dotset/cli/scan) — Run security scan
+- [Hardpoint Integrity](/hardpoint/cli/integrity) — Full integrity documentation

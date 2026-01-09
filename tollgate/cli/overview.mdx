@@ -1,11 +1,14 @@
 ---
 title: CLI Overview
-description: 'Tollgate command-line interface'
+description: 'Tollgate command-line interface — runtime protection for AI agents and your terminal'
 ---
 
 # CLI Reference
 
-The Tollgate CLI provides policy-based access control for MCP (Model Context Protocol) servers, adding a security layer between AI agents and their tools.
+Tollgate provides runtime protection for AI-assisted development with two complementary capabilities:
+
+- **Gateway** — MCP proxy for AI agent tool calls (Claude Desktop, Cursor, etc.)
+- **Guard** — Shell Guardian for direct terminal command protection
 
 ## Installation
 
@@ -13,15 +16,38 @@ The Tollgate CLI provides policy-based access control for MCP (Model Context Pro
 npm install -g @dotsetlabs/tollgate
 ```
 
-## Commands
+## Two Product Lines, One CLI
+
+### Gateway Commands (MCP Proxy)
+
+Control what AI agents can do through MCP servers.
 
 | Command | Description |
 |---------|-------------|
 | [`wrap`](/tollgate/cli/wrap) | Wrap any MCP server with instant protection |
 | [`start`](/tollgate/cli/start) | Start proxy for a configured server |
+| [`serve`](/tollgate/cli/serve) | Start Tollgate HTTP API server |
 | [`init`](/tollgate/cli/init) | Create a tollgate.yaml config file |
 | [`templates`](/tollgate/cli/templates) | Browse and apply server config templates |
 | [`scan`](/tollgate/cli/scan) | Scan MCP servers for security risks |
+
+### Guard Commands (Shell Guardian)
+
+Protect your terminal from dangerous commands.
+
+| Command | Description |
+|---------|-------------|
+| [`guard init`](/tollgate/cli/guard) | Generate shell integration hooks |
+| [`guard check`](/tollgate/cli/guard) | Evaluate a command against policies |
+| [`guard preview`](/tollgate/cli/guard) | Preview what a command would do |
+| [`guard status`](/tollgate/cli/guard) | Show Shell Guardian status |
+| [`guard stats`](/tollgate/cli/guard) | Show command statistics |
+| [`guard suggest`](/tollgate/cli/guard) | View rule suggestions from learning |
+
+### Shared Commands
+
+| Command | Description |
+|---------|-------------|
 | [`doctor`](/tollgate/cli/doctor) | Run diagnostics on your environment |
 | [`validate`](/tollgate/cli/validate) | Validate configuration file |
 | [`logs`](/tollgate/cli/logs) | View recent audit logs |
@@ -35,7 +61,7 @@ tollgate --version    # Show version
 tollgate --help       # Show help
 ```
 
-## Quick Examples
+## Quick Start: Gateway (MCP)
 
 ```bash
 # Zero-config protection (prompts for all tool calls)
@@ -46,29 +72,55 @@ tollgate start -s postgres -c ./tollgate.yaml
 
 # View recent tool calls
 tollgate logs -n 50
-
-# Export logs for compliance
-tollgate export -f json -o audit.json
 ```
 
-## Two Modes of Operation
-
-### Wrap Mode (Zero Config)
-
-Instantly protect any MCP server without configuration:
+## Quick Start: Guard (Shell)
 
 ```bash
+# Install shell integration
+tollgate guard init --shell bash >> ~/.bashrc
+source ~/.bashrc
+
+# Check status
+tollgate guard status
+
+# Preview a command's impact
+tollgate guard preview "rm -rf node_modules"
+```
+
+## Which Should I Use?
+
+| Use Case | Solution |
+|----------|----------|
+| Claude Desktop, Cursor, or other MCP clients | Gateway (`tollgate wrap`) |
+| Claude Code or direct shell commands | Guard (`tollgate guard`) |
+| Both AI agents and terminal usage | Use both together |
+
+## Mode Comparison
+
+### Gateway Mode
+
+Policy-based control over AI agent tool calls through MCP:
+
+```bash
+# Zero-config: prompt for everything
 tollgate wrap npx @anthropic/mcp-server-filesystem ./src
-```
 
-### Config Mode (Full Control)
-
-Use a YAML configuration file for fine-grained policies:
-
-```bash
-# Create config
-tollgate init
-
-# Start with config
+# Config-based: fine-grained policies
 tollgate start -s filesystem
 ```
+
+### Guard Mode
+
+Context-aware shell protection with learning:
+
+```bash
+# One-time setup
+tollgate guard init --shell zsh >> ~/.zshrc
+source ~/.zshrc
+
+# Shell Guardian is now active
+rm -rf node_modules  # → Will analyze and prompt if risky
+```
+
+See [Shell Guardian](/tollgate/concepts/shell-guardian) for details on context-aware risk assessment, safer alternatives, and pattern learning.

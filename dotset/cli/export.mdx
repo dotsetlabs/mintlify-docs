@@ -1,0 +1,97 @@
+---
+title: export
+description: 'Export Tollgate audit data'
+---
+
+# dotset export
+
+Export audit data in various formats for compliance, analysis, or SIEM integration. This command proxies to `tollgate export`.
+
+## Usage
+
+```bash
+dotset export [options]
+```
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `-f, --format <format>` | Output format: `json`, `jsonl`, `csv`, `cef` (default: `jsonl`) |
+| `-o, --output <path>` | Output file (default: stdout) |
+| `--since <date>` | Filter records since date (ISO format) |
+| `--until <date>` | Filter records until date (ISO format) |
+| `-s, --server <name>` | Filter by server name |
+| `-n, --limit <count>` | Maximum records to export |
+| `--risk <level>` | Filter by risk level |
+| `--no-redact` | Include non-redacted data |
+| `--audit-path <path>` | Custom audit database path |
+
+## Formats
+
+| Format | Description |
+|--------|-------------|
+| `jsonl` | JSON Lines (one record per line, default) |
+| `json` | Single JSON array |
+| `csv` | Comma-separated values |
+| `cef` | Common Event Format (for SIEM) |
+
+## Examples
+
+```bash
+# Export to stdout as JSONL (default)
+dotset export
+
+# Export to JSON file
+dotset export -f json -o audit.json
+
+# Export as CSV
+dotset export -f csv -o audit.csv
+
+# Export last week's data
+dotset export --since 2024-01-08 --until 2024-01-15 -o weekly.json
+
+# Export only postgres server activity
+dotset export -s postgres -o postgres-audit.json
+
+# Export only write/destructive operations
+dotset export --risk write -o writes.json
+
+# Export for SIEM integration
+dotset export -f cef | logger -t tollgate
+
+# Export without PII redaction (use with caution)
+dotset export --no-redact -o full-audit.json
+```
+
+## Risk Levels
+
+| Level | Description |
+|-------|-------------|
+| `safe` | No-op or info operations |
+| `read` | Read-only operations |
+| `write` | Data modification |
+| `destructive` | Data deletion or major changes |
+| `dangerous` | System-level access or security-sensitive |
+
+## CEF Format
+
+The CEF (Common Event Format) output is compatible with SIEM systems:
+
+```
+CEF:0|DotsetLabs|Tollgate|1.0|tool_call|MCP Tool Call|3|
+  src=postgres suser=claude act=query risk=read outcome=allowed
+  msg=SELECT * FROM users
+```
+
+## Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | Success |
+| `1` | Error |
+
+## See Also
+
+- [dotset logs](/dotset/cli/logs) — View recent audit entries
+- [dotset stats](/dotset/cli/stats) — View audit statistics

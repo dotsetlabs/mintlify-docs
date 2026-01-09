@@ -1,0 +1,196 @@
+---
+title: templates
+description: 'Apply Tollgate configuration templates'
+---
+
+# dotset templates
+
+Browse and apply pre-built Tollgate configuration templates. This command proxies to `tollgate templates`.
+
+## Usage
+
+```bash
+dotset templates <subcommand> [options]
+```
+
+## Subcommands
+
+### list
+
+List available templates.
+
+```bash
+dotset templates list [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `-c, --category <category>` | Filter by category |
+| `-s, --search <query>` | Search templates |
+| `--json` | Output as JSON |
+
+### show
+
+Show detailed information about a template.
+
+```bash
+dotset templates show <name> [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--json` | Output as JSON |
+
+### apply
+
+Apply one or more templates to generate configuration.
+
+```bash
+dotset templates apply <names...> [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `-o, --output <path>` | Output path (default: `./tollgate.yaml`) |
+| `-f, --force` | Overwrite existing file |
+| `-a, --append` | Append to existing file |
+| `-p, --preset <preset>` | Policy preset: `strict`, `balanced`, `permissive` |
+
+## Categories
+
+| Category | Description |
+|----------|-------------|
+| `database` | PostgreSQL, MySQL, SQLite, etc. |
+| `filesystem` | File system access |
+| `web` | HTTP/API servers |
+| `productivity` | Notion, Linear, etc. |
+| `developer` | GitHub, GitLab, etc. |
+| `ai` | AI/ML tools |
+| `communication` | Slack, Discord, etc. |
+
+## Presets
+
+| Preset | Description |
+|--------|-------------|
+| `strict` | Maximum security, prompt for most operations |
+| `balanced` | Good security with reasonable convenience (default) |
+| `permissive` | More convenience, allow most read operations |
+
+## Examples
+
+```bash
+# List all templates
+dotset templates list
+
+# List database templates
+dotset templates list -c database
+
+# Search for postgres
+dotset templates list -s postgres
+
+# Show postgres template details
+dotset templates show postgres
+
+# Apply single template
+dotset templates apply postgres
+
+# Apply multiple templates
+dotset templates apply postgres filesystem github
+
+# Apply with strict preset
+dotset templates apply postgres -p strict
+
+# Apply to custom output path
+dotset templates apply postgres -o config/tollgate.yaml
+
+# Force overwrite existing
+dotset templates apply postgres -f
+
+# Append to existing config
+dotset templates apply github -a
+```
+
+## Output
+
+### List Output
+
+```
+Available Templates (15):
+
+  database:
+    postgres     PostgreSQL database server
+    mysql        MySQL database server
+    sqlite       SQLite database
+
+  filesystem:
+    filesystem   Local file system access
+
+  developer:
+    github       GitHub API access
+    gitlab       GitLab API access
+
+  productivity:
+    notion       Notion workspace
+    linear       Linear project management
+
+Use 'dotset templates show <name>' for details
+```
+
+### Show Output
+
+```
+Template: postgres
+Category: database
+Description: PostgreSQL database server configuration
+
+Tools:
+  - query (SELECT, INSERT, UPDATE, DELETE)
+  - list_tables
+  - describe_table
+
+Default Policies (balanced preset):
+  - query: smart analyzer (allow reads, prompt writes, deny dangerous)
+  - list_tables: allow
+  - describe_table: allow
+
+Environment Variables:
+  - DATABASE_URL (required)
+
+Example:
+  dotset templates apply postgres -o tollgate.yaml
+```
+
+### Apply Output
+
+```
+Applying templates: postgres, filesystem
+
+Creating tollgate.yaml with balanced preset...
+
+  ✓ postgres server configured
+    - 3 tools with smart policies
+    - Requires DATABASE_URL
+
+  ✓ filesystem server configured
+    - 5 tools with smart policies
+    - Working directory: ./
+
+Configuration written to: tollgate.yaml
+
+Next steps:
+  1. Set environment variables
+  2. Run: dotset serve --all
+```
+
+## Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | Success |
+| `1` | Error (template not found, etc.) |
+
+## See Also
+
+- [dotset serve](/dotset/cli/serve) — Start servers with applied config
+- [dotset validate](/dotset/cli/validate) — Validate generated config
+- [Tollgate Configuration](/tollgate/concepts/policies) — Policy documentation

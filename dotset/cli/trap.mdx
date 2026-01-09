@@ -24,7 +24,36 @@ dotset trap <type> <path> [options]
 
 | Option | Description |
 |--------|-------------|
+| `--expires <duration>` | Auto-expire trap after duration (e.g., `24h`, `7d`, `30d`) |
+| `--json` | Output trap info as JSON |
 | `--install` | Auto-install Deadfall if missing |
+
+## Subcommands
+
+### status
+
+Show active traps and their status.
+
+```bash
+dotset trap status [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--json` | Output as JSON |
+
+### metrics
+
+View trap trigger statistics.
+
+```bash
+dotset trap metrics [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--reset` | Reset all metrics |
+| `--json` | Output as JSON |
 
 ## Trap Types
 
@@ -50,8 +79,20 @@ dotset trap claude-context CLAUDE.md
 # Create a generic context trap
 dotset trap context CONTEXT.md
 
+# Create trap with expiration
+dotset trap context CONTEXT.md --expires 7d
+
 # Auto-install Deadfall if missing
 dotset trap cursor-rules .cursorrules --install
+
+# Check trap status
+dotset trap status
+
+# View metrics
+dotset trap metrics
+
+# Reset metrics
+dotset trap metrics --reset
 ```
 
 ## How Traps Work

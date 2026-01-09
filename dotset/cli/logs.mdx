@@ -1,0 +1,65 @@
+---
+title: logs
+description: 'View Tollgate audit logs'
+---
+
+# dotset logs
+
+View recent audit logs from Tollgate's activity database. This command proxies to `tollgate logs`.
+
+## Usage
+
+```bash
+dotset logs [options]
+```
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `-n, --limit <count>` | Number of entries to show (default: 20) |
+| `--audit-path <path>` | Custom path for audit database |
+
+## Examples
+
+```bash
+# View last 20 entries (default)
+dotset logs
+
+# View last 50 entries
+dotset logs -n 50
+
+# Use custom audit database
+dotset logs --audit-path /custom/path/audit.db
+```
+
+## Output
+
+```
+Recent Audit Logs (20 entries):
+
+[2024-01-15 12:05:32] postgres/query
+  Risk: read | Decision: allowed
+  Args: SELECT * FROM users LIMIT 10
+
+[2024-01-15 12:05:45] postgres/execute
+  Risk: write | Decision: prompted → approved
+  Args: INSERT INTO logs (message) VALUES ('User logged in')
+
+[2024-01-15 12:06:01] filesystem/delete_file
+  Risk: destructive | Decision: denied
+  Args: /etc/passwd
+```
+
+## Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | Success |
+| `1` | Error (e.g., audit database not found) |
+
+## See Also
+
+- [dotset stats](/dotset/cli/stats) — View audit statistics
+- [dotset export](/dotset/cli/export) — Export audit data
+- [Tollgate Audit](/tollgate/concepts/audit) — Full audit documentation

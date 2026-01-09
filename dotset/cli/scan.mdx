@@ -31,8 +31,15 @@ Available scanners:
 | Option | Description |
 |--------|-------------|
 | `-s, --severity <level>` | Minimum severity: `info`, `low`, `medium`, `high`, `critical` |
+| `-c, --confidence <level>` | Minimum confidence: `low`, `medium`, `high` |
 | `-o, --output <format>` | Output format: `terminal`, `json`, `sarif` |
 | `--path <path>` | Path to scan (default: current directory) |
+| `--scope <scope>` | Scan scope: `config` (default) or `codebase` |
+| `--max-depth <n>` | Maximum directory depth |
+| `--workers <n>` | Number of parallel workers |
+| `-e, --exclude <pattern>` | Exclude patterns (can be repeated) |
+| `--include-deps` | Include dependency directories (node_modules, vendor) |
+| `--deps-only` | Only scan dependency directories |
 | `--install` | Auto-install Hardpoint if missing |
 
 ## Examples
@@ -47,11 +54,32 @@ dotset scan ai secrets
 # Show only high severity findings
 dotset scan -s high
 
+# Show only medium+ confidence findings
+dotset scan -c medium
+
 # Output as JSON
 dotset scan -o json
 
 # Scan a specific path
 dotset scan --path ./src
+
+# Scan entire codebase (not just config files)
+dotset scan --scope codebase
+
+# Limit directory depth
+dotset scan --max-depth 5
+
+# Use parallel workers
+dotset scan --workers 4
+
+# Exclude patterns
+dotset scan -e node_modules -e vendor -e "*.test.ts"
+
+# Include dependencies
+dotset scan --include-deps
+
+# Scan only dependencies
+dotset scan --deps-only
 
 # Auto-install if missing
 dotset scan --install

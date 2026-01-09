@@ -1,0 +1,159 @@
+---
+title: baseline
+description: 'Manage security finding suppressions'
+---
+
+# dotset baseline
+
+Manage security finding suppressions in Hardpoint. Baselines allow you to suppress known-safe findings. This command proxies to `hardpoint baseline`.
+
+## Usage
+
+```bash
+dotset baseline <subcommand> [options]
+```
+
+## Subcommands
+
+### list
+
+List all suppressed findings.
+
+```bash
+dotset baseline list [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--json` | Output as JSON |
+| `--install` | Auto-install Hardpoint if missing |
+
+### add
+
+Add a new suppression.
+
+```bash
+dotset baseline add <finding-id> [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `-f, --file <pattern>` | File pattern to match (e.g., `*.md`) |
+| `-p, --pattern <regex>` | Content pattern to match |
+| `-r, --reason <text>` | Reason for suppression (required) |
+| `-e, --expires <date>` | Expiration date (ISO format) |
+| `--install` | Auto-install Hardpoint if missing |
+
+### remove
+
+Remove a suppression.
+
+```bash
+dotset baseline remove <finding-id>
+```
+
+### prune
+
+Remove stale suppressions (findings no longer detected).
+
+```bash
+dotset baseline prune [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--dry-run` | Show what would be removed without removing |
+| `--install` | Auto-install Hardpoint if missing |
+
+### trust
+
+Mark the current baseline as trusted.
+
+```bash
+dotset baseline trust
+```
+
+### untrust
+
+Remove trust from the baseline.
+
+```bash
+dotset baseline untrust
+```
+
+### check
+
+Verify baseline integrity.
+
+```bash
+dotset baseline check
+```
+
+## Examples
+
+```bash
+# List all suppressions
+dotset baseline list
+
+# Add a suppression with reason
+dotset baseline add AI-001 -r "Known safe pattern in docs" -f "docs/*.md"
+
+# Add suppression with expiration
+dotset baseline add AI-002 -r "Temporary exception" -e 2025-06-01
+
+# Add suppression with content pattern
+dotset baseline add SHELL-003 -r "Test fixtures" -p "test.*fixture"
+
+# Remove a suppression
+dotset baseline remove AI-001
+
+# Preview what prune would remove
+dotset baseline prune --dry-run
+
+# Trust the baseline after review
+dotset baseline trust
+```
+
+## Output
+
+### List Output
+
+```
+Security Suppressions (3):
+
+  AI-001    docs/*.md
+            Reason: Known safe pattern in docs
+            Created: 2024-01-15
+
+  AI-002    src/examples/*
+            Reason: Temporary exception
+            Expires: 2025-06-01
+
+  SHELL-003 test/fixtures/*
+            Reason: Test fixtures
+            Pattern: test.*fixture
+```
+
+### Prune Output
+
+```
+Pruning stale suppressions...
+
+  Would remove (--dry-run):
+    - AI-003 (finding no longer detected)
+    - SHELL-001 (finding no longer detected)
+
+  2 suppressions would be removed
+```
+
+## Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | Success |
+| `1` | Error |
+
+## See Also
+
+- [dotset scan](/dotset/cli/scan) — Run security scan
+- [Hardpoint Baseline](/hardpoint/concepts/baseline) — Baseline concept documentation

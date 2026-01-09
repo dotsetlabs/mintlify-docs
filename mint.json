@@ -57,8 +57,18 @@
                         "dotset/cli/status",
                         "dotset/cli/run",
                         "dotset/cli/scan",
+                        "dotset/cli/fix",
+                        "dotset/cli/baseline",
+                        "dotset/cli/integrity",
                         "dotset/cli/wrap",
-                        "dotset/cli/trap"
+                        "dotset/cli/serve",
+                        "dotset/cli/validate",
+                        "dotset/cli/guard",
+                        "dotset/cli/templates",
+                        "dotset/cli/trap",
+                        "dotset/cli/logs",
+                        "dotset/cli/stats",
+                        "dotset/cli/export"
                     ]
                 },
                 {
@@ -86,6 +96,7 @@
                     "pages": [
                         "hardpoint/cli/overview",
                         "hardpoint/cli/scan",
+                        "hardpoint/cli/integrity",
                         "hardpoint/cli/baseline",
                         "hardpoint/cli/fix"
                     ]
@@ -124,6 +135,7 @@
                         "tollgate/cli/wrap",
                         "tollgate/cli/start",
                         "tollgate/cli/serve",
+                        "tollgate/cli/guard",
                         "tollgate/cli/init",
                         "tollgate/cli/templates",
                         "tollgate/cli/doctor",
@@ -148,10 +160,22 @@
                     ]
                 },
                 {
+                    "group": "Shell Guardian",
+                    "pages": [
+                        "tollgate/concepts/shell-guardian",
+                        "tollgate/concepts/context-system",
+                        "tollgate/concepts/alternatives",
+                        "tollgate/concepts/preview",
+                        "tollgate/concepts/reversibility",
+                        "tollgate/concepts/learning"
+                    ]
+                },
+                {
                     "group": "Integration Guides",
                     "pages": [
                         "tollgate/guides/claude-desktop",
                         "tollgate/guides/cursor",
+                        "tollgate/guides/shell-integration",
                         "tollgate/guides/production"
                     ]
                 },
@@ -173,6 +197,7 @@
                         "deadfall/cli/init",
                         "deadfall/cli/trap",
                         "deadfall/cli/status",
+                        "deadfall/cli/metrics",
                         "deadfall/cli/serve",
                         "deadfall/cli/test"
                     ]
