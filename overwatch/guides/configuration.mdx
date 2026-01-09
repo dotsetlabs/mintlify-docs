@@ -1,0 +1,243 @@
+---
+title: "Configuration"
+description: "Configure Overwatch's behavior and policies"
+---
+
+# Configuration
+
+Overwatch uses the `overwatch` section of `tollgate.yaml` for configuration. This guide covers all available options.
+
+## Configuration File
+
+Create a `tollgate.yaml` in your project or home directory:
+
+```yaml
+# ~/.config/tollgate/tollgate.yaml or ./tollgate.yaml
+overwatch:
+  enabled: true
+
+  # Risk-to-action mapping
+  risks:
+    safe: allow
+    read: allow
+    write: prompt
+    destructive: prompt
+    dangerous: deny
+
+  # Session settings
+  session:
+    allowRemember: true
+    defaultScope: tool
+    allowedDurations:
+      - once
+      - 5min
+      - 15min
+      - session
+
+  # Fast path for common commands
+  fastPath:
+    enabled: true
+    safePrefixes:
+      - ls
+      - cd
+      - pwd
+      - echo
+
+  # Audit logging
+  audit:
+    enabled: true
+    logAllCommands: false
+    redactSecrets: true
+
+  # Custom rules
+  rules: []
+
+  # Allow/deny lists
+  allowlist: []
+  denylist: []
+```
+
+## Risk Levels
+
+Overwatch classifies commands into five risk levels:
+
+| Level | Description | Examples |
+|-------|-------------|----------|
+| `safe` | No side effects | `echo`, `pwd`, `which` |
+| `read` | Reads data only | `cat`, `less`, `head` |
+| `write` | Modifies files | `touch`, `mkdir`, `cp` |
+| `destructive` | Deletes or overwrites | `rm -rf`, `mv` (overwrite) |
+| `dangerous` | System-level danger | `rm -rf /`, fork bombs |
+
+## Risk Mapping
+
+Configure what action to take for each risk level:
+
+```yaml
+overwatch:
+  risks:
+    safe: allow        # Always allow
+    read: allow        # Always allow
+    write: prompt      # Ask user
+    destructive: prompt # Ask user
+    dangerous: deny    # Always block
+```
+
+Available actions:
+- `allow` - Execute without prompting
+- `prompt` - Ask user for approval
+- `deny` - Block execution
+
+## Session Configuration
+
+Control how approvals are remembered:
+
+```yaml
+overwatch:
+  session:
+    # Allow "remember" options in prompts
+    allowRemember: true
+
+    # Default scope for session grants
+    # - exact: Only this exact command
+    # - tool: Any command starting with same word
+    # - server: Any command (use with caution)
+    defaultScope: tool
+
+    # Duration options to offer
+    allowedDurations:
+      - once      # Just this time
+      - 5min      # 5 minutes
+      - 15min     # 15 minutes
+      - session   # Until shell restart
+```
+
+## Fast Path Configuration
+
+Commands matching the fast path bypass analysis:
+
+```yaml
+overwatch:
+  fastPath:
+    enabled: true
+    safePrefixes:
+      - ls
+      - cd
+      - pwd
+      - echo
+      - cat
+      - head
+      - tail
+      - grep
+      - find
+      - which
+      - type
+      - man
+      - help
+      - history
+      - alias
+      - git status
+      - git diff
+      - git log
+      - git branch
+      - git show
+```
+
+## Custom Rules
+
+Define pattern-based rules:
+
+```yaml
+overwatch:
+  rules:
+    # Allow all npm commands
+    - pattern: "^npm "
+      action: allow
+      reason: "npm is safe in this project"
+
+    # Prompt for docker commands
+    - pattern: "^docker "
+      action: prompt
+      reason: "Docker commands need review"
+
+    # Block rm without flags
+    - pattern: "^rm [^-]"
+      action: deny
+      reason: "Use rm -i for safety"
+```
+
+## Allowlist and Denylist
+
+Exact command matches:
+
+```yaml
+overwatch:
+  # These exact commands are always allowed
+  allowlist:
+    - "npm test"
+    - "npm run build"
+    - "make test"
+
+  # These patterns are always denied
+  denylist:
+    - pattern: "curl.*\\|.*sh"
+      reason: "Piping curl to shell is dangerous"
+    - pattern: "wget.*\\|.*bash"
+      reason: "Piping wget to bash is dangerous"
+```
+
+## Audit Configuration
+
+Control logging behavior:
+
+```yaml
+overwatch:
+  audit:
+    # Enable/disable audit logging
+    enabled: true
+
+    # Log all commands (not just prompted ones)
+    logAllCommands: false
+
+    # Redact secrets from logs
+    redactSecrets: true
+```
+
+## UI Configuration
+
+Customize the approval prompt:
+
+```yaml
+overwatch:
+  ui:
+    # Show risk analysis in prompts
+    showAnalysis: true
+
+    # Show safer alternatives
+    showAlternatives: true
+
+    # Show reversibility info
+    showReversibility: true
+```
+
+## Configuration Locations
+
+Overwatch searches for configuration in order:
+
+1. `./tollgate.yaml` (current directory)
+2. `./tollgate.yml`
+3. `./.tollgate.yaml`
+4. `./.tollgate.yml`
+5. `~/.config/tollgate/tollgate.yaml`
+
+## View Current Configuration
+
+```bash
+overwatch config
+```
+
+## Validate Configuration
+
+```bash
+tollgate validate
+```

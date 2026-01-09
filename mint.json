@@ -31,6 +31,11 @@
             "url": "https://github.com/dotsetlabs/tollgate"
         },
         {
+            "name": "Overwatch",
+            "icon": "shield",
+            "url": "https://github.com/dotsetlabs/tollgate"
+        },
+        {
             "name": "Deadfall",
             "icon": "bell",
             "url": "https://github.com/dotsetlabs/deadfall"
@@ -63,7 +68,7 @@
                         "dotset/cli/wrap",
                         "dotset/cli/serve",
                         "dotset/cli/validate",
-                        "dotset/cli/guard",
+                        "dotset/cli/overwatch",
                         "dotset/cli/templates",
                         "dotset/cli/trap",
                         "dotset/cli/logs",
@@ -135,7 +140,6 @@
                         "tollgate/cli/wrap",
                         "tollgate/cli/start",
                         "tollgate/cli/serve",
-                        "tollgate/cli/guard",
                         "tollgate/cli/init",
                         "tollgate/cli/templates",
                         "tollgate/cli/doctor",
@@ -160,22 +164,10 @@
                     ]
                 },
                 {
-                    "group": "Shell Guardian",
-                    "pages": [
-                        "tollgate/concepts/shell-guardian",
-                        "tollgate/concepts/context-system",
-                        "tollgate/concepts/alternatives",
-                        "tollgate/concepts/preview",
-                        "tollgate/concepts/reversibility",
-                        "tollgate/concepts/learning"
-                    ]
-                },
-                {
                     "group": "Integration Guides",
                     "pages": [
                         "tollgate/guides/claude-desktop",
                         "tollgate/guides/cursor",
-                        "tollgate/guides/shell-integration",
                         "tollgate/guides/production"
                     ]
                 },
@@ -183,6 +175,31 @@
                     "group": "Security",
                     "pages": [
                         "tollgate/security/trust"
+                    ]
+                }
+            ]
+        },
+        {
+            "group": "Overwatch",
+            "pages": [
+                {
+                    "group": "CLI Commands",
+                    "pages": [
+                        "overwatch/cli/overview"
+                    ]
+                },
+                {
+                    "group": "Concepts",
+                    "pages": [
+                        "overwatch/concepts/how-it-works"
+                    ]
+                },
+                {
+                    "group": "Guides",
+                    "pages": [
+                        "overwatch/guides/getting-started",
+                        "overwatch/guides/shell-integration",
+                        "overwatch/guides/configuration"
                     ]
                 }
             ]
