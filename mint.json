@@ -26,19 +26,9 @@
             "url": "https://github.com/dotsetlabs/hardpoint"
         },
         {
-            "name": "Tollgate",
-            "icon": "lock",
-            "url": "https://github.com/dotsetlabs/tollgate"
-        },
-        {
             "name": "Overwatch",
             "icon": "shield",
-            "url": "https://github.com/dotsetlabs/tollgate"
-        },
-        {
-            "name": "Deadfall",
-            "icon": "bell",
-            "url": "https://github.com/dotsetlabs/deadfall"
+            "url": "https://github.com/dotsetlabs/overwatch"
         }
     ],
     "navigation": [
@@ -51,130 +41,36 @@
             ]
         },
         {
-            "group": "Dotset CLI",
-            "pages": [
-                {
-                    "group": "CLI Commands",
-                    "pages": [
-                        "dotset/cli/overview",
-                        "dotset/cli/init",
-                        "dotset/cli/doctor",
-                        "dotset/cli/status",
-                        "dotset/cli/run",
-                        "dotset/cli/scan",
-                        "dotset/cli/fix",
-                        "dotset/cli/baseline",
-                        "dotset/cli/integrity",
-                        "dotset/cli/wrap",
-                        "dotset/cli/serve",
-                        "dotset/cli/validate",
-                        "dotset/cli/overwatch",
-                        "dotset/cli/templates",
-                        "dotset/cli/trap",
-                        "dotset/cli/logs",
-                        "dotset/cli/stats",
-                        "dotset/cli/export"
-                    ]
-                },
-                {
-                    "group": "Guides",
-                    "pages": [
-                        "dotset/guides/getting-started",
-                        "dotset/guides/configuration",
-                        "dotset/guides/claude-desktop",
-                        "dotset/guides/orchestration"
-                    ]
-                },
-                {
-                    "group": "Concepts",
-                    "pages": [
-                        "dotset/concepts/architecture"
-                    ]
-                }
-            ]
-        },
-        {
             "group": "Hardpoint",
             "pages": [
+                "hardpoint/overview",
+                "hardpoint/installation",
                 {
                     "group": "CLI Commands",
                     "pages": [
-                        "hardpoint/cli/overview",
                         "hardpoint/cli/scan",
-                        "hardpoint/cli/integrity",
-                        "hardpoint/cli/baseline",
-                        "hardpoint/cli/fix"
+                        "hardpoint/cli/fix",
+                        "hardpoint/cli/ignore",
+                        "hardpoint/cli/trust",
+                        "hardpoint/cli/verify",
+                        "hardpoint/cli/rules",
+                        "hardpoint/cli/init",
+                        "hardpoint/cli/hook",
+                        "hardpoint/cli/doctor"
                     ]
                 },
                 {
                     "group": "Concepts",
                     "pages": [
                         "hardpoint/concepts/scanners",
-                        "hardpoint/concepts/findings",
-                        "hardpoint/concepts/baseline"
+                        "hardpoint/concepts/rules",
+                        "hardpoint/concepts/semantic-hijacking"
                     ]
                 },
                 {
                     "group": "Guides",
                     "pages": [
-                        "hardpoint/guides/local-development",
-                        "hardpoint/guides/github-actions",
-                        "hardpoint/guides/gitlab-ci"
-                    ]
-                },
-                {
-                    "group": "Security",
-                    "pages": [
-                        "hardpoint/security/trust"
-                    ]
-                }
-            ]
-        },
-        {
-            "group": "Tollgate",
-            "pages": [
-                {
-                    "group": "CLI Commands",
-                    "pages": [
-                        "tollgate/cli/overview",
-                        "tollgate/cli/wrap",
-                        "tollgate/cli/start",
-                        "tollgate/cli/serve",
-                        "tollgate/cli/init",
-                        "tollgate/cli/templates",
-                        "tollgate/cli/doctor",
-                        "tollgate/cli/scan",
-                        "tollgate/cli/validate",
-                        "tollgate/cli/logs",
-                        "tollgate/cli/stats",
-                        "tollgate/cli/export"
-                    ]
-                },
-                {
-                    "group": "Concepts",
-                    "pages": [
-                        "tollgate/concepts/policies",
-                        "tollgate/concepts/natural-language-policies",
-                        "tollgate/concepts/analyzers",
-                        "tollgate/concepts/custom-analyzers",
-                        "tollgate/concepts/guardrails",
-                        "tollgate/concepts/sessions",
-                        "tollgate/concepts/approval",
-                        "tollgate/concepts/audit"
-                    ]
-                },
-                {
-                    "group": "Integration Guides",
-                    "pages": [
-                        "tollgate/guides/claude-desktop",
-                        "tollgate/guides/cursor",
-                        "tollgate/guides/production"
-                    ]
-                },
-                {
-                    "group": "Security",
-                    "pages": [
-                        "tollgate/security/trust"
+                        "hardpoint/guides/ci-integration"
                     ]
                 }
             ]
@@ -182,160 +78,36 @@
         {
             "group": "Overwatch",
             "pages": [
+                "overwatch/overview",
+                "overwatch/installation",
                 {
                     "group": "CLI Commands",
                     "pages": [
-                        "overwatch/cli/overview"
+                        "overwatch/cli/wrap",
+                        "overwatch/cli/start",
+                        "overwatch/cli/sessions",
+                        "overwatch/cli/logs",
+                        "overwatch/cli/stats",
+                        "overwatch/cli/init",
+                        "overwatch/cli/policies",
+                        "overwatch/cli/doctor"
                     ]
                 },
                 {
                     "group": "Concepts",
                     "pages": [
-                        "overwatch/concepts/how-it-works"
+                        "overwatch/concepts/mcp-proxy",
+                        "overwatch/concepts/tool-shadowing",
+                        "overwatch/concepts/policy-engine",
+                        "overwatch/concepts/sessions",
+                        "overwatch/concepts/audit"
                     ]
                 },
                 {
                     "group": "Guides",
                     "pages": [
-                        "overwatch/guides/getting-started",
-                        "overwatch/guides/shell-integration",
+                        "overwatch/guides/claude-desktop",
                         "overwatch/guides/configuration"
-                    ]
-                }
-            ]
-        },
-        {
-            "group": "Deadfall",
-            "pages": [
-                {
-                    "group": "CLI Commands",
-                    "pages": [
-                        "deadfall/cli/overview",
-                        "deadfall/cli/init",
-                        "deadfall/cli/trap",
-                        "deadfall/cli/status",
-                        "deadfall/cli/metrics",
-                        "deadfall/cli/serve",
-                        "deadfall/cli/test"
-                    ]
-                },
-                {
-                    "group": "Concepts",
-                    "pages": [
-                        "deadfall/concepts/detection",
-                        "deadfall/concepts/alerting"
-                    ]
-                },
-                {
-                    "group": "Guides",
-                    "pages": [
-                        "deadfall/guides/getting-started"
-                    ]
-                },
-                {
-                    "group": "Security",
-                    "pages": [
-                        "deadfall/security/trust"
-                    ]
-                }
-            ]
-        },
-        {
-            "group": "API Reference",
-            "pages": [
-                "api/_index",
-                {
-                    "group": "Tollgate API",
-                    "pages": [
-                        "api/tollgate/_index",
-                        {
-                            "group": "Classes",
-                            "pages": [
-                                "api/tollgate/classes/analyzerregistry",
-                                "api/tollgate/classes/auditexporter",
-                                "api/tollgate/classes/auditlogger",
-                                "api/tollgate/classes/configerror",
-                                "api/tollgate/classes/filesystemanalyzer",
-                                "api/tollgate/classes/inmemorysessionstore",
-                                "api/tollgate/classes/piiredactor",
-                                "api/tollgate/classes/policyengine",
-                                "api/tollgate/classes/policyerror",
-                                "api/tollgate/classes/proxyerror",
-                                "api/tollgate/classes/sessionmanager",
-                                "api/tollgate/classes/shellanalyzer",
-                                "api/tollgate/classes/sqlanalyzer",
-                                "api/tollgate/classes/sqlitesessionstore",
-                                "api/tollgate/classes/terminalapprovalhandler"
-                            ]
-                        },
-                        {
-                            "group": "Interfaces",
-                            "pages": [
-                                "api/tollgate/interfaces/analysisresult",
-                                "api/tollgate/interfaces/analyzercontext",
-                                "api/tollgate/interfaces/approvalhandler",
-                                "api/tollgate/interfaces/approvalrequest",
-                                "api/tollgate/interfaces/approvalresponse",
-                                "api/tollgate/interfaces/auditloggeroptions",
-                                "api/tollgate/interfaces/auditrecord",
-                                "api/tollgate/interfaces/bridgeoptions",
-                                "api/tollgate/interfaces/contentanalyzer",
-                                "api/tollgate/interfaces/createsessiongrantinput",
-                                "api/tollgate/interfaces/exportoptions",
-                                "api/tollgate/interfaces/healthcheckconfig",
-                                "api/tollgate/interfaces/policycondition",
-                                "api/tollgate/interfaces/policydecision",
-                                "api/tollgate/interfaces/policypreset"
-                            ]
-                        },
-                        {
-                            "group": "Functions",
-                            "pages": [
-                                "api/tollgate/functions/containspii",
-                                "api/tollgate/functions/createredactor",
-                                "api/tollgate/functions/durationtottlseconds",
-                                "api/tollgate/functions/expandenvvars",
-                                "api/tollgate/functions/exportauditrecords",
-                                "api/tollgate/functions/extractanalyzablecontent",
-                                "api/tollgate/functions/formatvalidationissues",
-                                "api/tollgate/functions/generateconfig",
-                                "api/tollgate/functions/getdatadir",
-                                "api/tollgate/functions/getserverconfig",
-                                "api/tollgate/functions/inferanalyzer",
-                                "api/tollgate/functions/loadconfig",
-                                "api/tollgate/functions/normalizetoolpolicy",
-                                "api/tollgate/functions/redactpii",
-                                "api/tollgate/functions/redactpiifromobject"
-                            ]
-                        },
-                        {
-                            "group": "Type Aliases",
-                            "pages": [
-                                "api/tollgate/type-aliases/approvalresult",
-                                "api/tollgate/type-aliases/auditrisklevel",
-                                "api/tollgate/type-aliases/concreteaction",
-                                "api/tollgate/type-aliases/exportformat",
-                                "api/tollgate/type-aliases/failuremode",
-                                "api/tollgate/type-aliases/healthstatus",
-                                "api/tollgate/type-aliases/policyaction",
-                                "api/tollgate/type-aliases/risklevel",
-                                "api/tollgate/type-aliases/sessionduration",
-                                "api/tollgate/type-aliases/sessionscope",
-                                "api/tollgate/type-aliases/validationlevel"
-                            ]
-                        },
-                        {
-                            "group": "Variables",
-                            "pages": [
-                                "api/tollgate/variables/analyzerregistry",
-                                "api/tollgate/variables/audit_schema",
-                                "api/tollgate/variables/audit_version",
-                                "api/tollgate/variables/default_risk_mapping",
-                                "api/tollgate/variables/default_session_config",
-                                "api/tollgate/variables/policy_presets",
-                                "api/tollgate/variables/server_templates"
-                            ]
-                        }
                     ]
                 }
             ]

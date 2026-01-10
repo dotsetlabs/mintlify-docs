@@ -1,0 +1,78 @@
+---
+title: Installation
+description: 'Install Overwatch'
+---
+
+# Installation
+
+## npm (Recommended)
+
+```bash
+npm install -g @dotsetlabs/overwatch
+```
+
+## Yarn
+
+```bash
+yarn global add @dotsetlabs/overwatch
+```
+
+## pnpm
+
+```bash
+pnpm add -g @dotsetlabs/overwatch
+```
+
+## Verify Installation
+
+```bash
+overwatch --version
+```
+
+## Requirements
+
+- Node.js 20 or later
+
+## Quick Start
+
+### Wrap an MCP Server
+
+```bash
+overwatch wrap npx @modelcontextprotocol/server-postgres
+```
+
+### Create Configuration
+
+```bash
+overwatch init
+```
+
+Creates `overwatch.yaml` with default settings.
+
+### Start with Configuration
+
+```bash
+overwatch start
+```
+
+## Updating
+
+```bash
+npm update -g @dotsetlabs/overwatch
+```
+
+## Uninstalling
+
+```bash
+npm uninstall -g @dotsetlabs/overwatch
+```
+
+## Data Directory
+
+Overwatch stores data in `~/.overwatch/`:
+
+| File | Purpose |
+|:-----|:--------|
+| `audit.db` | SQLite audit log |
+| `sessions.db` | Session grants |
+| `config.yaml` | Global configuration |

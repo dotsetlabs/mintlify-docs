@@ -1,0 +1,133 @@
+---
+title: trust
+description: 'Create HMAC-signed baseline of AI config files'
+---
+
+# hardpoint trust
+
+Create a cryptographic baseline of AI configuration files using HMAC-SHA256 signatures. Use with `hardpoint verify` to detect unauthorized changes (Rules File Backdoor attacks).
+
+## Usage
+
+```bash
+hardpoint trust [file] [flags]
+```
+
+## Arguments
+
+| Argument | Description |
+|:---------|:------------|
+| `file` | Specific file to trust (optional) |
+
+## Flags
+
+| Flag | Description |
+|:-----|:------------|
+| `--all` | Trust all detected AI config files |
+| `--list` | List all trusted files |
+| `--remove <file>` | Remove a file from trusted list |
+| `--reason <text>` | Reason for trusting (recommended for audit trail) |
+
+## How It Works
+
+1. Hardpoint computes SHA-256 hashes of AI config files
+2. The hash baseline is signed with an HMAC key stored in `.hardpoint/secret`
+3. Trusted entries are stored in `.hardpoint/trusted.yaml`
+4. Later, `hardpoint verify` compares current file hashes against this baseline
+
+The HMAC signature prevents tampering with the baseline itself.
+
+## Examples
+
+### Trust All AI Config Files
+
+```bash
+hardpoint trust --all
+```
+
+Output:
+```
+Hardpoint Trust
+===============
+
+Trusted 4 files:
+
+  .cursorrules (sha256: abc123...)
+  CLAUDE.md (sha256: def456...)
+  mcp.json (sha256: ghi789...)
+  .github/copilot-instructions.md (sha256: jkl012...)
+
+Baseline saved to .hardpoint/trusted.yaml
+```
+
+### Trust Specific File
+
+```bash
+hardpoint trust CLAUDE.md --reason "Reviewed by security team"
+```
+
+### List Trusted Files
+
+```bash
+hardpoint trust --list
+```
+
+Output:
+```
+Trusted Files
+=============
+
+  .cursorrules
+    Hash: abc123def456...
+    Algorithm: sha256
+    Trusted: 2026-01-09T10:30:00Z
+    By: user@hostname
+    Reason: Initial setup
+
+  CLAUDE.md
+    Hash: def456ghi789...
+    Algorithm: sha256
+    Trusted: 2026-01-09T10:30:00Z
+    By: user@hostname
+    Reason: Reviewed by security team
+
+2 files trusted.
+```
+
+### Remove from Trusted List
+
+```bash
+hardpoint trust --remove CLAUDE.md
+```
+
+## Trust File Format
+
+The `.hardpoint/trusted.yaml` file:
+
+```yaml
+version: 1
+entries:
+  - path: CLAUDE.md
+    hash: "def456ghi789..."
+    algorithm: sha256
+    trusted_at: "2026-01-09T10:30:00Z"
+    trusted_by: "user@hostname"
+    reason: "Reviewed by security team"
+signature: "hmac_sha256_signature..."
+```
+
+## Storage
+
+```
+.hardpoint/
+├── trusted.yaml    # Trusted file entries with HMAC signature
+└── secret          # HMAC key (mode 0600)
+```
+
+## Best Practices
+
+1. **Trust after review** - Only trust files after manually reviewing their contents
+2. **Document reasons** - Use `--reason` to record why the file was trusted
+3. **Verify in CI** - Run `hardpoint verify --ci` in your CI pipeline
+4. **Re-trust after changes** - After intentional changes, re-run `hardpoint trust`
+5. **Keep `.hardpoint/secret` confidential** - Add to `.gitignore` if needed

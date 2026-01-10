@@ -1,0 +1,123 @@
+---
+title: MCP Proxy
+description: 'Understanding the MCP interception layer'
+---
+
+# MCP Proxy
+
+The MCP Proxy is Overwatch's core component. It sits between AI clients and MCP servers, intercepting and analyzing all tool calls.
+
+## Architecture
+
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│  AI Client  │────▶│  Overwatch  │────▶│ MCP Server  │
+│  (Claude)   │     │    Proxy    │     │  (postgres) │
+└─────────────┘     └─────────────┘     └─────────────┘
+                          │
+              ┌───────────┼───────────┐
+              │           │           │
+        ┌─────▼────┐ ┌────▼─────┐ ┌───▼────────┐
+        │ Policy   │ │  Audit   │ │   Tool     │
+        │ Engine   │ │  Logger  │ │ Shadowing  │
+        └──────────┘ └──────────┘ └────────────┘
+```
+
+## How It Works
+
+1. **Spawn MCP Server**: Overwatch starts the upstream MCP server as a child process
+2. **Intercept Messages**: All JSONRPC messages pass through the proxy
+3. **Detect Tool Shadowing**: Check for tool collisions and mutations across servers
+4. **Apply Policies**: `tools/call` requests are evaluated by the policy engine
+5. **Prompt if Needed**: Based on policy, calls are allowed, denied, or prompt for approval
+6. **Forward or Block**: Approved calls go to the upstream server; denied calls return errors
+7. **Log Everything**: All decisions are recorded in the audit log
+
+## Message Types
+
+| Message Type | Handling |
+|:-------------|:---------|
+| `tools/list` | Pass through, collect tool definitions for shadowing detection |
+| `tools/call` | Intercept, apply policy, prompt if needed |
+| `resources/*` | Pass through |
+| `prompts/*` | Pass through |
+| Other | Pass through directly |
+
+## Tool Call Interception
+
+When a `tools/call` request arrives:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "query",
+    "arguments": {
+      "sql": "SELECT * FROM users"
+    }
+  }
+}
+```
+
+Overwatch:
+
+1. Extracts the tool name and arguments
+2. Looks up the matching policy for this tool
+3. Applies the policy action (allow, deny, or prompt)
+4. Either forwards the call, prompts for approval, or denies
+5. Logs the decision to the audit trail
+
+## Timeouts and Circuit Breaker
+
+Overwatch includes protective mechanisms:
+
+### Request Timeout
+
+Tool calls have a configurable timeout (default: 60 seconds):
+
+```yaml
+defaults:
+  timeout: 60000
+```
+
+If the upstream server doesn't respond in time, the request fails safely.
+
+### Circuit Breaker
+
+If the upstream server fails repeatedly, the circuit breaker opens:
+
+- Rejects new requests immediately
+- Prevents cascading failures
+- Auto-recovers after cooldown
+
+## Multi-Server Mode
+
+With `overwatch start`, multiple servers are proxied simultaneously:
+
+```yaml
+servers:
+  postgres:
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-postgres"]
+
+  filesystem:
+    command: npx
+    args: ["-y", "@anthropic/mcp-server-filesystem", "./"]
+```
+
+Each server gets its own proxy instance but shares:
+- Approval handler (single prompt interface)
+- Audit logger (unified log)
+- Session manager (cross-server grants)
+- Tool shadowing detector (cross-server collision detection)
+
+## Transport Layer
+
+Overwatch uses stdio transport:
+- Reads JSONRPC from stdin
+- Writes JSONRPC to stdout
+- Errors go to stderr
+
+This is compatible with all MCP clients.

@@ -1,0 +1,228 @@
+---
+title: Claude Desktop Integration
+description: 'Set up Overwatch with Claude Desktop'
+---
+
+# Claude Desktop Integration
+
+This guide shows how to configure Overwatch with Claude Desktop to protect MCP server tool calls.
+
+## Prerequisites
+
+- Claude Desktop installed
+- Overwatch installed (`npm install -g @dotsetlabs/overwatch`)
+- An MCP server to protect
+
+## Quick Setup
+
+### 1. Locate Config File
+
+Claude Desktop's configuration file:
+
+| Platform | Path |
+|:---------|:-----|
+| macOS | `~/Library/Application Support/Claude/claude_desktop_config.json` |
+| Windows | `%APPDATA%\Claude\claude_desktop_config.json` |
+| Linux | `~/.config/Claude/claude_desktop_config.json` |
+
+### 2. Wrap MCP Servers
+
+Instead of calling the MCP server directly, wrap it with Overwatch.
+
+**Before:**
+
+```json
+{
+  "mcpServers": {
+    "postgres": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "env": {
+        "DATABASE_URL": "postgres://localhost/mydb"
+      }
+    }
+  }
+}
+```
+
+**After:**
+
+```json
+{
+  "mcpServers": {
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "-y", "@dotsetlabs/overwatch", "wrap",
+        "npx", "-y", "@modelcontextprotocol/server-postgres"
+      ],
+      "env": {
+        "DATABASE_URL": "postgres://localhost/mydb"
+      }
+    }
+  }
+}
+```
+
+### 3. Restart Claude Desktop
+
+After saving the config, restart Claude Desktop for changes to take effect.
+
+## Example Configurations
+
+### Filesystem Server
+
+```json
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y", "@dotsetlabs/overwatch", "wrap",
+        "npx", "-y", "@anthropic/mcp-server-filesystem", "./"
+      ]
+    }
+  }
+}
+```
+
+### GitHub Server
+
+```json
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y", "@dotsetlabs/overwatch", "wrap",
+        "npx", "-y", "@anthropic/mcp-server-github"
+      ],
+      "env": {
+        "GITHUB_TOKEN": "your-token"
+      }
+    }
+  }
+}
+```
+
+### Multiple Servers
+
+```json
+{
+  "mcpServers": {
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "-y", "@dotsetlabs/overwatch", "wrap",
+        "npx", "-y", "@modelcontextprotocol/server-postgres"
+      ],
+      "env": {
+        "DATABASE_URL": "postgres://localhost/mydb"
+      }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y", "@dotsetlabs/overwatch", "wrap",
+        "npx", "-y", "@anthropic/mcp-server-filesystem", "./"
+      ]
+    }
+  }
+}
+```
+
+## Using a Config File
+
+For more control, create `overwatch.yaml` and use `overwatch start`:
+
+### 1. Create Config
+
+```yaml
+# overwatch.yaml
+version: 1
+
+defaults:
+  action: prompt
+
+servers:
+  postgres:
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-postgres"]
+    env:
+      DATABASE_URL: postgres://localhost/mydb
+    policies:
+      - tools: ["query", "select"]
+        action: allow
+      - tools: ["insert", "update"]
+        action: prompt
+      - tools: ["drop_*", "delete_*"]
+        action: deny
+
+  filesystem:
+    command: npx
+    args: ["-y", "@anthropic/mcp-server-filesystem", "./"]
+    policies:
+      - tools: ["read_*"]
+        action: allow
+      - tools: ["write_*", "delete_*"]
+        action: prompt
+
+toolShadowing:
+  enabled: true
+  checkDescriptions: true
+  detectMutations: true
+```
+
+### 2. Update Claude Desktop Config
+
+```json
+{
+  "mcpServers": {
+    "overwatch": {
+      "command": "npx",
+      "args": ["-y", "@dotsetlabs/overwatch", "start"]
+    }
+  }
+}
+```
+
+## Approval Flow
+
+When Claude makes a tool call:
+
+1. Overwatch intercepts the call
+2. Checks for tool shadowing
+3. Applies policies
+4. If approval needed, prompts in terminal
+5. Claude waits for your decision
+6. Approved calls proceed; denied calls fail gracefully
+
+## Troubleshooting
+
+### Overwatch Not Prompting
+
+Make sure Claude Desktop can access your terminal. Prompts appear in the terminal where Claude Desktop was started.
+
+### npx Cache Issues
+
+If npx has cached an old version:
+
+```bash
+npx clear-npx-cache
+```
+
+### Config Syntax Errors
+
+Validate JSON syntax:
+
+```bash
+cat ~/Library/Application\ Support/Claude/claude_desktop_config.json | jq .
+```
+
+### Logs
+
+Check Overwatch logs:
+
+```bash
+overwatch logs --since 1h
+```

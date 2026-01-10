@@ -1,0 +1,94 @@
+---
+title: ignore
+description: 'Suppress security findings'
+---
+
+# hardpoint ignore
+
+Add findings to an ignore list to suppress them in future scans.
+
+## Usage
+
+```bash
+hardpoint ignore [finding-id] [options]
+```
+
+## Options
+
+| Option | Description |
+|:-------|:------------|
+| `--list` | List all ignored findings |
+| `--remove <id>` | Remove finding from ignore list |
+| `--reason <text>` | Reason for ignoring |
+
+## Examples
+
+### Ignore a Finding
+
+```bash
+hardpoint ignore abc123
+```
+
+### Ignore with Reason
+
+```bash
+hardpoint ignore abc123 --reason "False positive - internal testing file"
+```
+
+### List Ignored Findings
+
+```bash
+hardpoint ignore --list
+```
+
+Output:
+```
+Ignored findings (2):
+
+  abc123
+    Reason: False positive - internal testing file
+    Added: 2025-01-10 14:30:00
+    Path: ./test/fixtures/malicious.md
+
+  def456
+    Reason: Acknowledged risk - required for build
+    Added: 2025-01-09 10:15:00
+    Path: ./.git/hooks/pre-commit
+```
+
+### Remove from Ignore List
+
+```bash
+hardpoint ignore --remove abc123
+```
+
+## Ignore File
+
+Ignored findings are stored in `.hardpoint-ignore` in your project root:
+
+```json
+{
+  "entries": [
+    {
+      "findingId": "abc123",
+      "reason": "False positive - internal testing file",
+      "addedAt": "2025-01-10T14:30:00Z",
+      "path": "./test/fixtures/malicious.md"
+    }
+  ]
+}
+```
+
+## Best Practices
+
+1. **Always provide a reason**: Document why a finding is being ignored for future reference
+2. **Review periodically**: Use `--list` to audit ignored findings
+3. **Commit the ignore file**: Include `.hardpoint-ignore` in version control for team visibility
+4. **Prefer fixes over ignores**: Only ignore when auto-fix isn't available and manual fix isn't practical
+
+## Exit Codes
+
+| Code | Meaning |
+|:-----|:--------|
+| 0 | Operation successful |
+| 1 | Finding ID not found or operation failed |

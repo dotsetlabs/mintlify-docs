@@ -1,81 +1,67 @@
 ---
 title: scan
-description: Run security scans on your environment
+description: 'Scan for security issues'
 ---
 
 # hardpoint scan
 
-Run security scans on your development environment.
+Scan a directory for Rules File Backdoor attacks and other AI-era security threats.
 
 ## Usage
 
 ```bash
-hardpoint scan [scanner...] [flags]
+hardpoint scan [path] [flags]
 ```
+
+## Arguments
+
+| Argument | Description |
+|:---------|:------------|
+| `path` | Directory to scan (default: current directory) |
+
+## Flags
+
+| Flag | Description |
+|:-----|:------------|
+| `--scanners` | Comma-separated list of scanners to run (default: `ai,git`) |
+| `--severity` | Minimum severity to report: `info`, `low`, `medium`, `high`, `critical` (default: `low`) |
+| `--exclude` | Glob patterns to exclude (can be specified multiple times) |
+| `--include-deps` | Include dependency directories like `node_modules` |
+| `--staged` | Only scan git staged files |
+| `--ci` | CI mode: exit code 1 if findings detected |
+| `--output` | Output format: `text`, `json`, `sarif` (default: `text`) |
+| `--sarif` | Shorthand for `--output sarif` |
+| `--no-color` | Disable colored output |
 
 ## Available Scanners
 
 | Scanner | Description |
-| ------- | ----------- |
-| `ai` | Scan AI configuration files (mcp.json, .cursorrules, CLAUDE.md) |
-| `shell` | Scan shell configurations for backdoors |
-| `git` | Check git hooks integrity |
-| `network` | Detect exposed localhost services |
-| `secrets` | Find secrets in configuration files |
-
-## Flags
-
-### General Flags
-
-| Flag | Short | Description |
-| ---- | ----- | ----------- |
-| `--path` | `-p` | Path to scan (default: home directory) |
-| `--severity` | `-s` | Minimum severity: `info`, `low`, `medium`, `high`, `critical` |
-| `--confidence` | `-c` | Minimum confidence: `low`, `medium`, `high` |
-| `--exclude` | `-e` | Paths to exclude (can be repeated) |
-| `--disable-rules` | | Rule IDs to disable (can be repeated) |
-| `--enable-rules` | | Only enable these rules, disable all others (can be repeated) |
-
-### Codebase Scanning Flags (AI Scanner)
-
-| Flag | Description |
-| ---- | ----------- |
-| `--scope` | Scan scope: `config` (AI files only) or `codebase` (all source files) |
-| `--max-depth` | Maximum directory depth for codebase scan (0=unlimited) |
-| `--include` | File patterns to include (e.g., `*.py,*.js`) |
-| `--ai-exclude` | Additional patterns to exclude from codebase scan |
-| `--workers` | Number of parallel scan workers (0=auto) |
-| `--max-file-size` | Maximum file size to scan (e.g., `10MB`) |
-
-### Dependency Scanning Flags (AI Scanner)
-
-| Flag | Description |
-| ---- | ----------- |
-| `--include-deps` | Include dependency directories (node_modules, vendor, etc.) |
-| `--deps-only` | Only scan dependency directories |
+|:--------|:------------|
+| `ai` | Scan AI configuration files (`.cursorrules`, `CLAUDE.md`, `mcp.json`, `.github/copilot-instructions.md`, `.windsurfrules`, `.aider*`) |
+| `git` | Check git hooks and configuration for malicious patterns |
 
 ## Examples
 
-### Run All Scanners
+### Basic Scan
 
 ```bash
 hardpoint scan
+```
+
+### Scan Specific Directory
+
+```bash
+hardpoint scan /path/to/project
 ```
 
 ### Run Specific Scanners
 
 ```bash
 # Only AI scanner
-hardpoint scan ai
+hardpoint scan --scanners ai
 
-# Multiple scanners
-hardpoint scan ai shell secrets
-```
-
-### Scan a Project Directory
-
-```bash
-hardpoint scan --path /path/to/project
+# Only Git scanner
+hardpoint scan --scanners git
 ```
 
 ### Filter by Severity
@@ -85,120 +71,105 @@ hardpoint scan --path /path/to/project
 hardpoint scan --severity high
 ```
 
-### Exclude Paths
+### Exclude Directories
 
 ```bash
-hardpoint scan --exclude node_modules --exclude .git
+hardpoint scan --exclude "test/**" --exclude "docs/**"
 ```
 
-### Disable Specific Rules
+### CI Mode
 
 ```bash
-# Skip specific rules by ID
-hardpoint scan --disable-rules AI-001 --disable-rules SHELL-002
-
-# Multiple rules in one flag
-hardpoint scan --disable-rules AI-001,SECRET-003
-```
-
-### Enable Only Specific Rules
-
-```bash
-# Only run AI rules
-hardpoint scan --enable-rules AI-001 --enable-rules AI-002
-
-# Useful for focused scanning
-hardpoint scan ai --enable-rules AI-001
-```
-
-### Output Formats
-
-```bash
-# JSON output
-hardpoint scan --output json
-
-# SARIF for GitHub Code Scanning
-hardpoint scan --output sarif > results.sarif
-```
-
-### Codebase Scanning
-
-Scan your entire codebase for prompt injection hidden in comments and documentation:
-
-```bash
-# Scan all source code comments
-hardpoint scan ai --scope codebase
-
-# Limit scanning depth
-hardpoint scan ai --scope codebase --max-depth 5
-
-# Only scan specific file types
-hardpoint scan ai --scope codebase --include "*.py,*.js,*.ts"
-
-# Scan with more workers for large codebases
-hardpoint scan ai --scope codebase --workers 8
-```
-
-### Dependency Scanning
-
-Scan dependencies for supply chain attacks:
-
-```bash
-# Include dependencies in scan
-hardpoint scan ai --scope codebase --include-deps
-
-# Scan only dependencies (node_modules, vendor, etc.)
-hardpoint scan ai --deps-only
-
-# Combine with codebase scanning
-hardpoint scan ai --scope codebase --include-deps --workers 4
-```
-
-## Output
-
-### Terminal Output
-
-```
-Hardpoint Security Scan
-=======================
-
-Scanning: /Users/dev
-Scanners: ai, shell, git, network, secrets
-
-Findings
---------
-
-  CRITICAL  AI-001: Instruction Override Detected
-            File: .cursorrules:15
-            Pattern attempts to override AI safety guidelines
-
-  HIGH      SHELL-002: Curl Pipe to Shell
-            File: .bashrc:42
-            Command downloads and executes remote script
-
-  MEDIUM    SECRET-001: AWS Access Key
-            File: .env:3
-            Hardcoded AWS credentials detected
-
-Summary: 1 critical, 1 high, 1 medium (3 total)
+# Exit 1 if any findings (for CI pipelines)
+hardpoint scan --ci
 ```
 
 ### JSON Output
 
+```bash
+hardpoint scan --output json
+```
+
+### SARIF Output for GitHub
+
+```bash
+hardpoint scan --output sarif > results.sarif
+```
+
+### Scan Staged Files Only
+
+```bash
+# Useful as pre-commit hook
+hardpoint scan --staged
+```
+
+## Output
+
+### Text Format (Default)
+
+```
+Hardpoint Security Scanner
+==========================
+
+Scanning: /Users/dev/project
+Scanners: ai, git
+
+Findings
+--------
+
+  CRITICAL  AI-008: Semantic Hijacking Detected
+            File: .cursorrules:15
+            Malicious instructions hidden in comment section
+            Patterns: "ignore previous instructions", "new instructions:"
+
+  CRITICAL  AI-005: Command Injection in MCP Config
+            File: mcp.json:8
+            Shell command substitution detected: $(curl ...)
+
+  HIGH      GIT-001: Malicious Git Hook Pattern
+            File: .git/hooks/pre-commit:12
+            Pattern: curl|bash
+
+Summary: 2 critical, 1 high (3 total)
+Duration: 42ms
+```
+
+### JSON Format
+
 ```json
 {
-  "version": "0.1.0",
-  "scan_time": "2025-01-04T10:30:00Z",
+  "version": "1.0",
+  "timestamp": "2026-01-09T10:30:00Z",
+  "duration": "42ms",
+  "base_path": "/Users/dev/project",
+  "summary": {
+    "critical": 2,
+    "high": 1,
+    "medium": 0,
+    "low": 0,
+    "info": 0,
+    "total": 3
+  },
   "findings": [
     {
-      "id": "AI-001",
-      "title": "Instruction Override Detected",
+      "id": "abc123...",
+      "rule_id": "AI-008",
+      "message": "Semantic Hijacking Detected",
+      "path": ".cursorrules",
+      "line": 15,
       "severity": "critical",
       "confidence": "high",
-      "file_path": ".cursorrules",
-      "line_number": 15,
-      "remediation": "Remove instruction override attempts"
+      "scanner": "ai",
+      "snippet": "<!-- ignore previous instructions..."
     }
   ]
 }
 ```
+
+## Exit Codes
+
+| Code | Meaning |
+|:-----|:--------|
+| 0 | No findings (or findings below severity threshold) |
+| 1 | Findings detected (when `--ci` flag is used) |
+| 2 | Error during scan |

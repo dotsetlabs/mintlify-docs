@@ -1,0 +1,218 @@
+---
+title: CI Integration
+description: 'Add Hardpoint to your CI/CD pipeline'
+---
+
+# CI Integration
+
+Hardpoint integrates with popular CI/CD platforms to catch security issues before they reach production.
+
+## GitHub Actions
+
+### Basic Workflow
+
+Create `.github/workflows/hardpoint.yml`:
+
+```yaml
+name: Security Scan
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  hardpoint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Hardpoint
+        run: |
+          go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+
+      - name: Run Hardpoint
+        run: hardpoint scan --ci
+```
+
+### With SARIF Upload
+
+Upload results to GitHub Code Scanning:
+
+```yaml
+name: Security Scan
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  hardpoint:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Hardpoint
+        run: |
+          go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+
+      - name: Run Hardpoint
+        run: hardpoint scan --output sarif > results.sarif
+        continue-on-error: true
+
+      - name: Upload SARIF
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
+```
+
+### With Trust Verification
+
+Verify AI configs haven't been tampered with:
+
+```yaml
+name: Security Scan
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  hardpoint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Hardpoint
+        run: |
+          go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+
+      - name: Verify AI Configs
+        run: hardpoint verify --ci
+
+      - name: Run Hardpoint
+        run: hardpoint scan --ci
+```
+
+---
+
+## GitLab CI
+
+Create `.gitlab-ci.yml`:
+
+```yaml
+hardpoint:
+  stage: test
+  image: golang:1.21
+  before_script:
+    - go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
+  script:
+    - hardpoint scan --ci
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main"
+```
+
+### With SARIF Artifact
+
+```yaml
+hardpoint:
+  stage: test
+  image: golang:1.21
+  before_script:
+    - go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
+  script:
+    - hardpoint scan --output sarif > hardpoint.sarif
+  artifacts:
+    reports:
+      sast: hardpoint.sarif
+    paths:
+      - hardpoint.sarif
+  allow_failure: true
+```
+
+---
+
+## CircleCI
+
+Create `.circleci/config.yml`:
+
+```yaml
+version: 2.1
+
+jobs:
+  hardpoint:
+    docker:
+      - image: cimg/go:1.21
+    steps:
+      - checkout
+      - run:
+          name: Install Hardpoint
+          command: go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
+      - run:
+          name: Run Hardpoint
+          command: hardpoint scan --ci
+
+workflows:
+  security:
+    jobs:
+      - hardpoint
+```
+
+---
+
+## Jenkins
+
+Add to your `Jenkinsfile`:
+
+```groovy
+pipeline {
+    agent any
+
+    stages {
+        stage('Security Scan') {
+            steps {
+                sh 'go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest'
+                sh 'hardpoint scan --ci'
+            }
+        }
+    }
+}
+```
+
+---
+
+## Pre-Commit Hook
+
+For local enforcement, use the pre-commit hook:
+
+```bash
+hardpoint hook install
+```
+
+This runs `hardpoint scan --ci --staged` on every commit.
+
+---
+
+## Exit Codes
+
+| Code | Meaning | CI Behavior |
+|:-----|:--------|:------------|
+| 0 | No findings | Pipeline passes |
+| 1 | Findings detected | Pipeline fails (with `--ci`) |
+| 2 | Error during scan | Pipeline fails |
+
+## Best Practices
+
+1. **Run on PRs** - Catch issues before merge
+2. **Upload SARIF** - Get findings in GitHub Security tab
+3. **Verify trust baseline** - Detect unauthorized config changes
+4. **Cache Go modules** - Speed up builds
+5. **Use `--ci` flag** - Ensures proper exit codes

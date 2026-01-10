@@ -1,0 +1,109 @@
+---
+title: stats
+description: 'Show audit statistics'
+---
+
+# overwatch stats
+
+Display statistics from the audit log.
+
+## Usage
+
+```bash
+overwatch stats [options]
+```
+
+## Options
+
+| Option | Description |
+|:-------|:------------|
+| `--since <duration>` | Stats since time (e.g., `1h`, `1d`, `7d`) |
+| `--json` | Output in JSON format |
+
+## Examples
+
+### Overall Statistics
+
+```bash
+overwatch stats
+```
+
+Output:
+```
+Audit Statistics
+================
+
+Total Operations: 1,247
+  Allowed: 1,189 (95.3%)
+  Denied: 58 (4.7%)
+
+By Risk Level:
+  safe: 203
+  read: 847
+  write: 156
+  destructive: 32
+  dangerous: 9
+
+By Server:
+  postgres: 523
+  filesystem: 412
+  github: 312
+
+Top 10 Tools:
+  query: 498
+  read_file: 312
+  list_directory: 100
+  write_file: 89
+  ...
+```
+
+### Today's Statistics
+
+```bash
+overwatch stats --since 1d
+```
+
+### Last Week
+
+```bash
+overwatch stats --since 7d
+```
+
+### JSON Output
+
+```bash
+overwatch stats --json
+```
+
+```json
+{
+  "total": 1247,
+  "allowed": 1189,
+  "denied": 58,
+  "byRiskLevel": {
+    "safe": 203,
+    "read": 847,
+    "write": 156,
+    "destructive": 32,
+    "dangerous": 9
+  },
+  "byServer": {
+    "postgres": 523,
+    "filesystem": 412,
+    "github": 312
+  },
+  "topTools": [
+    {"name": "query", "count": 498},
+    {"name": "read_file", "count": 312}
+  ]
+}
+```
+
+## Insights
+
+Statistics help you understand:
+
+- **Security posture**: High denial rate may indicate attack attempts
+- **Usage patterns**: Which tools are used most frequently
+- **Risk profile**: Distribution of operations by risk level
+- **Policy tuning**: Identify tools that could be auto-allowed

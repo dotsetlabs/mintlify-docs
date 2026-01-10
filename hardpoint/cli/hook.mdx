@@ -1,0 +1,141 @@
+---
+title: hook
+description: 'Manage git hooks'
+---
+
+# hardpoint hook
+
+Install, uninstall, or check status of Hardpoint git hooks.
+
+## Usage
+
+```bash
+hardpoint hook <subcommand> [flags]
+```
+
+## Subcommands
+
+| Command | Description |
+|:--------|:------------|
+| `install` | Install a git hook |
+| `uninstall` | Remove a git hook |
+| `status` | Check hook installation status |
+
+## Flags
+
+| Flag | Description |
+|:-----|:------------|
+| `--type <type>` | Hook type: `pre-commit`, `pre-push`, `commit-msg` (default: `pre-commit`) |
+| `--manager <manager>` | Hook manager: `native`, `husky`, `lefthook` (default: `native`) |
+
+## Examples
+
+### Install Hook
+
+```bash
+hardpoint hook install
+```
+
+Output:
+```
+Installed pre-commit hook at .git/hooks/pre-commit
+Hardpoint will run on every commit.
+```
+
+### Check Status
+
+```bash
+hardpoint hook status
+```
+
+Output (installed):
+```
+Hook Status
+===========
+
+Native Hooks (.git/hooks/):
+  pre-commit:  installed (hardpoint)
+  pre-push:    not installed
+  commit-msg:  not installed
+
+Husky:
+  not configured
+
+Lefthook:
+  not configured
+```
+
+### Uninstall Hook
+
+```bash
+hardpoint hook uninstall
+```
+
+Output:
+```
+Removed pre-commit hook.
+```
+
+## Hook Managers
+
+Hardpoint detects and integrates with popular hook managers:
+
+| Manager | Detection | Integration |
+|:--------|:----------|:------------|
+| Native git | `.git/hooks/` | Direct installation |
+| Husky | `.husky/` | Adds to existing config |
+| Lefthook | `lefthook.yml` | Adds to existing config |
+
+### Native Git Hooks
+
+By default, Hardpoint creates `.git/hooks/pre-commit`:
+
+```bash
+#!/bin/sh
+# Hardpoint pre-commit hook
+hardpoint scan --ci --staged
+```
+
+### Husky Integration
+
+If Husky is detected, install with:
+
+```bash
+hardpoint hook install --manager husky
+```
+
+### Lefthook Integration
+
+If Lefthook is detected, install with:
+
+```bash
+hardpoint hook install --manager lefthook
+```
+
+This adds to `lefthook.yml`:
+
+```yaml
+pre-commit:
+  commands:
+    hardpoint:
+      run: hardpoint scan --ci --staged
+```
+
+## Hook Behavior
+
+The installed hook:
+
+1. Runs `hardpoint scan --ci --staged`
+2. Only scans staged files (fast)
+3. Exits with code 1 if findings detected
+4. Blocks the commit until issues are fixed
+
+## Bypassing the Hook
+
+In emergencies, skip the hook:
+
+```bash
+git commit --no-verify -m "Emergency fix"
+```
+
+Use sparingly - this bypasses security checks.

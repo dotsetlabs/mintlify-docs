@@ -1,0 +1,104 @@
+---
+title: Sessions
+description: 'Understanding approval grants and session management'
+---
+
+# Sessions
+
+Sessions allow you to grant temporary permissions after approving an operation. Instead of approving every single tool call, you can grant access for a duration.
+
+## Session Durations
+
+When you approve a tool call, you choose how long the grant lasts:
+
+| Duration | Length | Use Case |
+|:---------|:-------|:---------|
+| Once | ~1 second | Single operation, maximum safety |
+| 5 min | 5 minutes | Quick tasks |
+| 15 min | 15 minutes | Moderate development session |
+| Session | 24 hours | Full work session |
+
+## Session Scopes
+
+Sessions are scoped to the tool that was approved:
+
+```
+Approved: query
+Scope: tool
+Grants: Any query call for the duration
+```
+
+## Session Flow
+
+```
+┌─────────────────────────────────────────────┐
+│ Tool Call: query                            │
+│ Server: postgres                            │
+│                                             │
+│ [A]llow once  [5] 5 min  [S]ession  [D]eny │
+└─────────────────────────────────────────────┘
+```
+
+User presses `5`:
+
+```
+✓ Allowed query
+  Grant: 5 minutes
+  Expires: 10:35:00
+```
+
+Next call within 5 minutes:
+
+```
+✓ Allowed query (session grant)
+```
+
+## Managing Sessions
+
+### List Active Sessions
+
+```bash
+overwatch sessions
+```
+
+Output:
+```
+Active Sessions
+===============
+
+ID       Server    Tool    Expires
+abc123   postgres  query   10:35:00 (4m remaining)
+def456   postgres  insert  10:40:00 (9m remaining)
+
+2 active sessions
+```
+
+### Revoke Session
+
+```bash
+overwatch sessions --revoke abc123
+```
+
+### Revoke All
+
+```bash
+overwatch sessions --revoke-all
+```
+
+## Session Persistence
+
+Sessions are stored in SQLite at `~/.overwatch/sessions.db`. This means:
+
+- Sessions persist across Overwatch restarts
+- Audit trail of all grants is maintained
+- Sessions can be reviewed after the fact
+
+Sessions automatically expire based on their grant duration.
+
+## Best Practices
+
+1. **Start with "Once"** - Get familiar with the tool's behavior
+2. **Use "5 min" for iterative work** - Short tasks with repeated calls
+3. **Use "Session" sparingly** - Only for well-understood tools
+4. **Revoke when done** - Clear sessions after completing sensitive work
+5. **Review grants** - Use `overwatch sessions` to see what's active

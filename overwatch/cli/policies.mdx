@@ -1,0 +1,145 @@
+---
+title: policies
+description: 'Display and manage security policies'
+---
+
+# overwatch policies
+
+Display and validate security policies.
+
+## Usage
+
+```bash
+overwatch policies <subcommand> [options]
+```
+
+## Subcommands
+
+| Subcommand | Description |
+|:-----------|:------------|
+| `list` (or `ls`) | List active policies |
+| `validate` | Validate configuration file |
+
+## Options
+
+| Option | Description |
+|:-------|:------------|
+| `-c, --config <path>` | Path to configuration file |
+| `--json` | Output in JSON format |
+
+## Examples
+
+### List All Policies
+
+```bash
+overwatch policies list
+```
+
+Output:
+```
+Security Policies
+=================
+
+Defaults:
+  Action: prompt
+  Timeout: 60000ms
+  Session Duration: 300000ms
+
+Server: postgres
+  query, select:
+    Action: allow
+
+  insert, update:
+    Action: prompt
+
+  drop_*, delete_*:
+    Action: deny
+
+Server: filesystem
+  read_file, list_directory:
+    Action: allow
+
+  write_file, delete_file:
+    Action: prompt
+    Paths:
+      Allow: ./src/**, ./test/**
+      Deny: **/.env*, **/secrets/**
+
+Tool Shadowing:
+  Enabled: true
+  Check Descriptions: true
+  Detect Mutations: true
+```
+
+### Validate Configuration
+
+```bash
+overwatch policies validate
+```
+
+Output (valid):
+```
+Configuration valid: overwatch.yaml
+```
+
+Output (errors):
+```
+Configuration errors:
+
+  Line 15: Invalid action 'smart' - must be allow, deny, or prompt
+  Line 23: Unknown field 'analyzer' - analyzers have been removed
+```
+
+### JSON Output
+
+```bash
+overwatch policies list --json
+```
+
+## Policy Actions
+
+| Action | Behavior |
+|:-------|:---------|
+| `allow` | Always allow without prompt |
+| `deny` | Always deny |
+| `prompt` | Ask user for approval |
+
+## Path-Based Policies
+
+For filesystem operations:
+
+```yaml
+policies:
+  - tools: ["write_file"]
+    action: prompt
+    paths:
+      allow:
+        - ./src/**
+        - ./test/**
+      deny:
+        - **/.env*    # Environment files
+        - ~/.ssh/**   # SSH keys
+        - ~/.aws/**   # AWS credentials
+```
+
+## Policy Matching
+
+Policies are matched in order:
+
+1. Exact tool name match (`query`)
+2. Wildcard match (`read_*`)
+3. Global match (`*`)
+4. Default action
+
+First matching policy wins.
+
+## Validation Checks
+
+The `validate` command checks:
+
+- YAML syntax validity
+- Version compatibility
+- Valid action values
+- Tool pattern syntax
+- Path pattern conflicts
+- Deprecated field warnings

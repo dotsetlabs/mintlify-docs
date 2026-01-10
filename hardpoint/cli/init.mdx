@@ -1,0 +1,136 @@
+---
+title: init
+description: 'Initialize Hardpoint configuration'
+---
+
+# hardpoint init
+
+Initialize a Hardpoint configuration file in your project.
+
+## Usage
+
+```bash
+hardpoint init [flags]
+```
+
+## Flags
+
+| Flag | Description |
+|:-----|:------------|
+| `--pre-commit` | Also install git pre-commit hook |
+| `--force` | Overwrite existing configuration |
+
+## Examples
+
+### Basic Initialization
+
+```bash
+hardpoint init
+```
+
+Creates `.hardpoint.yaml`:
+
+```yaml
+version: 1
+scanners:
+  - ai
+  - git
+severity: low
+exclude:
+  - node_modules/
+  - vendor/
+  - .venv/
+  - dist/
+  - build/
+# disable_rules:
+#   - AI-008  # Example: disable semantic hijacking
+```
+
+### Initialize with Pre-Commit Hook
+
+```bash
+hardpoint init --pre-commit
+```
+
+This also creates `.git/hooks/pre-commit`:
+
+```bash
+#!/bin/sh
+# Hardpoint pre-commit hook
+hardpoint scan --ci --staged
+```
+
+### Overwrite Existing Config
+
+```bash
+hardpoint init --force
+```
+
+## Configuration Options
+
+### `version`
+
+Configuration version (currently `1`).
+
+### `scanners`
+
+List of scanners to run. Available: `ai`, `git`
+
+```yaml
+scanners:
+  - ai
+  - git
+```
+
+### `severity`
+
+Minimum severity to report: `info`, `low`, `medium`, `high`, `critical`
+
+```yaml
+severity: low
+```
+
+### `exclude`
+
+Glob patterns for directories to skip:
+
+```yaml
+exclude:
+  - node_modules/
+  - vendor/
+  - .venv/
+  - dist/
+  - build/
+  - .git/
+```
+
+### `disable_rules`
+
+Specific rules to disable:
+
+```yaml
+disable_rules:
+  - AI-004  # Disable encoded instructions check
+  - GIT-003 # Disable network access warnings
+```
+
+## Config File Locations
+
+Hardpoint looks for configuration in this order:
+
+1. `.hardpoint.yaml`
+2. `.hardpoint.yml`
+3. `hardpoint.yaml`
+4. `hardpoint.yml`
+
+## Next Steps
+
+After initialization:
+
+```bash
+# Run a scan
+hardpoint scan
+
+# Create trust baseline
+hardpoint trust --all
+```

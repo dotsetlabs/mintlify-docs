@@ -1,0 +1,118 @@
+---
+title: sessions
+description: 'Manage approval sessions'
+---
+
+# overwatch sessions
+
+List and manage active approval sessions.
+
+## Usage
+
+```bash
+overwatch sessions <subcommand> [options]
+```
+
+## Subcommands
+
+| Subcommand | Description |
+|:-----------|:------------|
+| `list` (or `ls`) | List all active sessions |
+| `revoke <id>` | Revoke a specific session |
+
+## Options
+
+| Option | Description |
+|:-------|:------------|
+| `--all` | Revoke all sessions (with `revoke`) |
+| `--json` | Output in JSON format |
+
+## Examples
+
+### List Sessions
+
+```bash
+overwatch sessions list
+```
+
+Output:
+```
+Active Sessions
+===============
+
+  abc123
+    Tool: query
+    Server: postgres
+    Scope: exact
+    Expires: 2026-01-09T11:30:00Z (in 14 minutes)
+
+  def456
+    Tool: read_*
+    Server: filesystem
+    Scope: tool
+    Expires: 2026-01-09T15:00:00Z (in 4 hours)
+
+2 active sessions
+```
+
+### Revoke Session
+
+```bash
+overwatch sessions revoke abc123
+```
+
+Output:
+```
+Revoked session abc123
+```
+
+### Revoke All Sessions
+
+```bash
+overwatch sessions revoke --all
+```
+
+Output:
+```
+Revoked 2 sessions
+```
+
+## Session Types
+
+| Scope | Description | Example |
+|:------|:------------|:--------|
+| `exact` | Exact tool name match | `query` only |
+| `tool` | Pattern match | `read_*` matches `read_file`, `read_directory` |
+| `server` | All tools on server | All postgres tools |
+
+## Session Durations
+
+When approving a tool call, you choose a duration:
+
+| Duration | Length | Use Case |
+|:---------|:-------|:---------|
+| Once | ~1 second | Single operation |
+| 5 min | 5 minutes | Quick tasks |
+| 15 min | 15 minutes | Moderate tasks |
+| Session | 24 hours | Full work session |
+
+## Session Persistence
+
+Sessions are stored in SQLite (`~/.overwatch/sessions.db`) and persist across Overwatch restarts. Background cleanup removes expired sessions automatically.
+
+## Audit Trail
+
+Each session includes audit information:
+
+- Who approved the session
+- What tool/pattern was approved
+- When it was created and expires
+- Usage count (how many times used)
+- Revocation details if revoked
+
+## Security Notes
+
+- Sessions are scoped to specific tools/servers
+- Expired sessions are automatically cleaned up
+- Revoking sessions takes effect immediately
+- Sessions include full audit trail

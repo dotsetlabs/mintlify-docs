@@ -1,0 +1,128 @@
+---
+title: rules
+description: 'List and inspect detection rules'
+---
+
+# hardpoint rules
+
+List all detection rules or view details about a specific rule.
+
+## Usage
+
+```bash
+hardpoint rules [rule-id]
+```
+
+## Arguments
+
+| Argument | Description |
+|:---------|:------------|
+| `rule-id` | Optional: Show details for specific rule (e.g., `AI-008`) |
+
+## Examples
+
+### List All Rules
+
+```bash
+hardpoint rules
+```
+
+Output:
+```
+Hardpoint Detection Rules
+=========================
+
+AI Scanner (3 rules)
+--------------------
+  AI-004  Encoded Instructions              medium    medium
+  AI-005  Command Injection in MCP Config   critical  high
+  AI-008  Semantic Hijacking                critical  high
+
+Git Scanner (6 rules)
+---------------------
+  GIT-001 Malicious Git Hook Pattern        critical  high
+  GIT-002 Credential Exfiltration in Hook   critical  high
+  GIT-003 Network Access in Git Hook        medium    medium
+  GIT-004 Obfuscated Git Hook Content       high      medium
+  GIT-005 Suspicious Git Remote URL         medium    medium
+  GIT-006 Suspicious Credential Helper      high      high
+
+Total: 9 rules
+```
+
+### View Rule Details
+
+```bash
+hardpoint rules AI-008
+```
+
+Output:
+```
+Rule: AI-008
+============
+
+Name:        Semantic Hijacking (Rules File Backdoor)
+Scanner:     ai
+Severity:    critical
+Confidence:  high
+
+Description:
+  Detects malicious instructions hidden in comments, metadata, or
+  structural elements that are invisible to developers but executed
+  by AI coding assistants. This is the "Rules File Backdoor" attack.
+
+Detection Methods:
+  - 80+ obfuscation-resistant patterns
+  - Unicode normalization (NFKC)
+  - Leet speak handling (0→o, 1→i, 3→e, 4→a, 5→s, 7→t)
+  - Homoglyph detection (Cyrillic/Greek lookalikes)
+  - Comment/content divergence scoring
+
+Pattern Categories:
+  - Instruction Override ("ignore previous instructions")
+  - Role Manipulation ("you are now", "jailbreak")
+  - Data Exfiltration ("send data to", "steal api_keys")
+  - System Access ("execute command", "reverse shell")
+  - Token Smuggling ("<|im_start|>", "[INST]", "<<SYS>>")
+
+Remediation:
+  Review all comments and metadata fields for hidden instructions.
+  Remove any suspicious patterns or encoded content.
+
+References:
+  - Rules File Backdoor (24 CVEs in 2025)
+  - OWASP LLM Top 10: LLM01 Prompt Injection
+```
+
+## All Detection Rules
+
+### AI Scanner Rules
+
+| ID | Name | Severity | Description |
+|:---|:-----|:---------|:------------|
+| AI-004 | Encoded Instructions | Medium | Base64 or other encoded content hiding malicious payloads |
+| AI-005 | Command Injection in MCP Config | Critical | Shell metacharacters in mcp.json server configurations |
+| AI-008 | Semantic Hijacking | Critical | Hidden malicious instructions in comments (Rules File Backdoor) |
+
+### Git Scanner Rules
+
+| ID | Name | Severity | Description |
+|:---|:-----|:---------|:------------|
+| GIT-001 | Malicious Hook Pattern | Critical | `curl\|sh`, reverse shells, dangerous patterns in git hooks |
+| GIT-002 | Credential Exfiltration | Critical | Hooks accessing secrets, credentials, or environment variables |
+| GIT-003 | Network Access | Medium | Hooks making unexpected network requests |
+| GIT-004 | Obfuscated Content | High | `eval`, `base64 -d`, or obfuscated code in hooks |
+| GIT-005 | Suspicious Remote URL | Medium | Unusual git remote URLs (ngrok, localhost, .onion) |
+| GIT-006 | Suspicious Credential Helper | High | Non-standard or malicious credential helpers |
+
+## Disabling Rules
+
+Rules can be disabled in `.hardpoint.yaml`:
+
+```yaml
+version: 1
+disable_rules:
+  - AI-004  # Disable encoded instructions check
+```
+
+Use with caution - only disable rules after careful consideration.

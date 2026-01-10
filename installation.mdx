@@ -5,33 +5,11 @@ description: 'Install Dotset Labs tools'
 
 # Installation
 
-## Unified CLI (Recommended)
+## Hardpoint (Static Scanner)
 
-The easiest way to use all Dotset Labs tools is through the unified CLI:
+Hardpoint is a Go binary that scans for Rules File Backdoor attacks and other AI-era security threats.
 
-```bash
-npm install -g @dotsetlabs/dotset
-```
-
-Then install the Go binaries:
-
-```bash
-dotset doctor --install
-```
-
-This installs and manages Hardpoint, Tollgate, and Deadfall together. See the [Dotset CLI documentation](/dotset/cli/overview) for more details.
-
----
-
-## Individual Tools
-
-Dotset Labs tools can also be installed independently based on your needs.
-
----
-
-## Hardpoint (Dev Environment Scanner)
-
-### Go Install
+### Go Install (Recommended)
 
 ```bash
 go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
@@ -55,64 +33,42 @@ hardpoint scan
 
 ---
 
-## Tollgate (MCP Access Control)
+## Overwatch (Runtime Security)
+
+Overwatch is a Node.js package that provides runtime protection for MCP servers with tool shadowing detection.
 
 ### npm (Recommended)
 
 ```bash
-npm install -g @dotsetlabs/tollgate
+npm install -g @dotsetlabs/overwatch
 ```
 
 ### Yarn
 
 ```bash
-yarn global add @dotsetlabs/tollgate
+yarn global add @dotsetlabs/overwatch
 ```
 
 ### pnpm
 
 ```bash
-pnpm add -g @dotsetlabs/tollgate
+pnpm add -g @dotsetlabs/overwatch
 ```
 
 ### Verify Installation
 
 ```bash
-tollgate --version
+overwatch --version
 ```
 
 ### Quick Start
 
 ```bash
-tollgate wrap npx @modelcontextprotocol/server-postgres
-```
+# Wrap an MCP server
+overwatch wrap npx @modelcontextprotocol/server-postgres
 
----
-
-## Deadfall (Cognitive Honeypots)
-
-### Go Install
-
-```bash
-go install github.com/dotsetlabs/deadfall/cmd/deadfall@latest
-```
-
-### Download Binary
-
-Download the latest release from [GitHub Releases](https://github.com/dotsetlabs/deadfall/releases).
-
-### Verify Installation
-
-```bash
-deadfall --version
-```
-
-### Quick Start
-
-```bash
-deadfall init
-deadfall trap cursor-rules
-deadfall serve
+# Or initialize configuration
+overwatch init
 ```
 
 ---
@@ -121,9 +77,10 @@ deadfall serve
 
 | Tool | Requirements |
 |:-----|:-------------|
-| **Hardpoint** | Go 1.22+ (for building from source) |
-| **Tollgate** | Node.js 20+ |
-| **Deadfall** | Go 1.22+ (for building from source) |
+| **Hardpoint** | Go 1.21+ (for building from source) |
+| **Overwatch** | Node.js 20+ |
+
+---
 
 ## Updating
 
@@ -131,12 +88,11 @@ deadfall serve
 # Hardpoint (reinstall latest)
 go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
 
-# Tollgate
-npm update -g @dotsetlabs/tollgate
-
-# Deadfall (reinstall latest)
-go install github.com/dotsetlabs/deadfall/cmd/deadfall@latest
+# Overwatch
+npm update -g @dotsetlabs/overwatch
 ```
+
+---
 
 ## Uninstalling
 
@@ -144,9 +100,6 @@ go install github.com/dotsetlabs/deadfall/cmd/deadfall@latest
 # Hardpoint (remove binary from GOPATH)
 rm $(go env GOPATH)/bin/hardpoint
 
-# Tollgate
-npm uninstall -g @dotsetlabs/tollgate
-
-# Deadfall (remove binary from GOPATH)
-rm $(go env GOPATH)/bin/deadfall
+# Overwatch
+npm uninstall -g @dotsetlabs/overwatch
 ```

@@ -1,0 +1,126 @@
+---
+title: verify
+description: 'Verify AI configs against trusted baseline'
+---
+
+# hardpoint verify
+
+Verify that AI configuration files haven't been modified since they were trusted. Detects Rules File Backdoor attacks where attackers modify AI config files.
+
+## Usage
+
+```bash
+hardpoint verify [file] [flags]
+```
+
+## Arguments
+
+| Argument | Description |
+|:---------|:------------|
+| `file` | Specific file to verify (optional, verifies all if omitted) |
+
+## Flags
+
+| Flag | Description |
+|:-----|:------------|
+| `--ci` | CI mode: exit code 1 if verification fails |
+
+## How It Works
+
+1. Hardpoint verifies the HMAC signature of `.hardpoint/trusted.yaml`
+2. For each trusted file, computes the current SHA-256 hash
+3. Compares current hashes against the baseline
+4. Reports any mismatches as potential tampering
+
+## Examples
+
+### Verify All Trusted Files
+
+```bash
+hardpoint verify
+```
+
+Output (all files unchanged):
+```
+Hardpoint Verify
+================
+
+  .cursorrules .............. PASSED
+  CLAUDE.md ................. PASSED
+  mcp.json .................. PASSED
+
+All 3 files verified.
+```
+
+Output (tampering detected):
+```
+Hardpoint Verify
+================
+
+  .cursorrules .............. PASSED
+  CLAUDE.md ................. MODIFIED
+  mcp.json .................. PASSED
+
+WARNING: 1 file has been modified since trusted.
+
+Modified files:
+  CLAUDE.md
+    Expected: def456ghi789...
+    Current:  xyz999abc111...
+
+Run 'hardpoint scan CLAUDE.md' to check for threats.
+Run 'hardpoint trust CLAUDE.md' to update the baseline.
+```
+
+### Verify Specific File
+
+```bash
+hardpoint verify CLAUDE.md
+```
+
+### CI Mode
+
+```bash
+# Exit 1 if any file has been modified
+hardpoint verify --ci
+```
+
+## Verification Results
+
+| Status | Symbol | Meaning |
+|:-------|:-------|:--------|
+| PASSED | ✓ | File hash matches trusted baseline |
+| MODIFIED | ✗ | File hash does not match (potential tampering) |
+| MISSING | ? | File no longer exists |
+| NOT TRUSTED | - | File exists but was never trusted |
+
+## Exit Codes
+
+| Code | Meaning |
+|:-----|:--------|
+| 0 | All files verified successfully |
+| 1 | Verification failed (files modified or missing) |
+| 2 | Error (no trusted files, invalid baseline, etc.) |
+
+## CI Integration
+
+Add to your CI pipeline:
+
+```yaml
+# GitHub Actions
+- name: Verify AI configs
+  run: hardpoint verify --ci
+```
+
+```yaml
+# GitLab CI
+verify:
+  script:
+    - hardpoint verify --ci
+```
+
+## Best Practices
+
+1. **Run in CI** - Add `hardpoint verify --ci` to catch unauthorized changes
+2. **Investigate modifications** - If verification fails, scan the file before re-trusting
+3. **Update baseline intentionally** - Only run `hardpoint trust` after reviewing changes

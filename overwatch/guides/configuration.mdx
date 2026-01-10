@@ -1,243 +1,211 @@
 ---
-title: "Configuration"
-description: "Configure Overwatch's behavior and policies"
+title: Configuration Reference
+description: 'Complete reference for overwatch.yaml'
 ---
 
-# Configuration
+# Configuration Reference
 
-Overwatch uses the `overwatch` section of `tollgate.yaml` for configuration. This guide covers all available options.
+Complete reference for `overwatch.yaml` configuration.
 
-## Configuration File
+## File Locations
 
-Create a `tollgate.yaml` in your project or home directory:
+Overwatch searches for config in this order:
+
+1. Path specified with `--config`
+2. `overwatch.yaml` in current directory
+3. `overwatch.yml` in current directory
+4. `.overwatch.yaml` in current directory
+5. `.overwatch.yml` in current directory
+6. `~/.overwatch/config.yaml`
+
+## Complete Schema
 
 ```yaml
-# ~/.config/tollgate/tollgate.yaml or ./tollgate.yaml
-overwatch:
+# Config version (required)
+version: 1
+
+# Default settings for all servers
+defaults:
+  action: prompt          # Default action: allow, deny, prompt
+  timeout: 60000          # Approval timeout in ms
+  sessionDuration: 300000 # Default session grant in ms
+
+# MCP server configurations
+servers:
+  server-name:
+    command: string       # Command to run (required)
+    args: [string]        # Command arguments
+    env:                  # Environment variables
+      KEY: value
+    policies:             # Policy rules
+      - tools: [string]   # Tool names or patterns
+        action: string    # Action: allow, deny, prompt
+        paths:            # Path-based rules (filesystem)
+          allow: [string]
+          deny: [string]
+
+# Tool shadowing detection
+toolShadowing:
+  enabled: boolean        # Enable detection (default: true)
+  checkDescriptions: boolean # Check for injection in descriptions
+  detectMutations: boolean   # Detect mid-session changes
+
+# Audit logging settings
+audit:
+  enabled: boolean        # Enable audit logging
+  redactPII: boolean      # Redact sensitive data
+```
+
+## Examples
+
+### Minimal Configuration
+
+```yaml
+version: 1
+
+servers:
+  postgres:
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-postgres"]
+```
+
+### Full Development Setup
+
+```yaml
+version: 1
+
+defaults:
+  action: prompt
+  timeout: 60000
+
+servers:
+  postgres:
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-postgres"]
+    env:
+      DATABASE_URL: postgres://localhost/dev
+    policies:
+      - tools: ["query", "select"]
+        action: allow
+      - tools: ["insert", "update"]
+        action: prompt
+      - tools: ["drop_*", "delete_*"]
+        action: deny
+
+  filesystem:
+    command: npx
+    args: ["-y", "@anthropic/mcp-server-filesystem", "./"]
+    policies:
+      - tools: ["read_file", "list_directory"]
+        action: allow
+      - tools: ["write_file"]
+        action: prompt
+        paths:
+          allow:
+            - ./src/**
+            - ./test/**
+          deny:
+            - /.*
+            - ~/.ssh/**
+            - **/.env*
+      - tools: ["delete_file"]
+        action: deny
+
+toolShadowing:
   enabled: true
+  checkDescriptions: true
+  detectMutations: true
 
-  # Risk-to-action mapping
-  risks:
-    safe: allow
-    read: allow
-    write: prompt
-    destructive: prompt
-    dangerous: deny
-
-  # Session settings
-  session:
-    allowRemember: true
-    defaultScope: tool
-    allowedDurations:
-      - once
-      - 5min
-      - 15min
-      - session
-
-  # Fast path for common commands
-  fastPath:
-    enabled: true
-    safePrefixes:
-      - ls
-      - cd
-      - pwd
-      - echo
-
-  # Audit logging
-  audit:
-    enabled: true
-    logAllCommands: false
-    redactSecrets: true
-
-  # Custom rules
-  rules: []
-
-  # Allow/deny lists
-  allowlist: []
-  denylist: []
+audit:
+  enabled: true
+  redactPII: true
 ```
 
-## Risk Levels
-
-Overwatch classifies commands into five risk levels:
-
-| Level | Description | Examples |
-|-------|-------------|----------|
-| `safe` | No side effects | `echo`, `pwd`, `which` |
-| `read` | Reads data only | `cat`, `less`, `head` |
-| `write` | Modifies files | `touch`, `mkdir`, `cp` |
-| `destructive` | Deletes or overwrites | `rm -rf`, `mv` (overwrite) |
-| `dangerous` | System-level danger | `rm -rf /`, fork bombs |
-
-## Risk Mapping
-
-Configure what action to take for each risk level:
+### Production Setup
 
 ```yaml
-overwatch:
-  risks:
-    safe: allow        # Always allow
-    read: allow        # Always allow
-    write: prompt      # Ask user
-    destructive: prompt # Ask user
-    dangerous: deny    # Always block
+version: 1
+
+defaults:
+  action: deny  # Deny by default in production
+  timeout: 30000
+
+servers:
+  postgres:
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-postgres"]
+    policies:
+      - tools: ["query", "select"]
+        action: allow
+      - tools: ["*"]
+        action: deny
+
+toolShadowing:
+  enabled: true
+  checkDescriptions: true
+  detectMutations: true
+
+audit:
+  enabled: true
+  redactPII: true
 ```
 
-Available actions:
-- `allow` - Execute without prompting
-- `prompt` - Ask user for approval
-- `deny` - Block execution
+## Environment Variables
 
-## Session Configuration
-
-Control how approvals are remembered:
+Use `${VAR_NAME}` syntax to reference environment variables:
 
 ```yaml
-overwatch:
-  session:
-    # Allow "remember" options in prompts
-    allowRemember: true
-
-    # Default scope for session grants
-    # - exact: Only this exact command
-    # - tool: Any command starting with same word
-    # - server: Any command (use with caution)
-    defaultScope: tool
-
-    # Duration options to offer
-    allowedDurations:
-      - once      # Just this time
-      - 5min      # 5 minutes
-      - 15min     # 15 minutes
-      - session   # Until shell restart
+servers:
+  postgres:
+    env:
+      DATABASE_URL: ${DATABASE_URL}
 ```
 
-## Fast Path Configuration
+## Policy Actions
 
-Commands matching the fast path bypass analysis:
+| Action | Behavior |
+|:-------|:---------|
+| `allow` | Always allow without prompt |
+| `deny` | Always deny |
+| `prompt` | Ask user for approval |
 
-```yaml
-overwatch:
-  fastPath:
-    enabled: true
-    safePrefixes:
-      - ls
-      - cd
-      - pwd
-      - echo
-      - cat
-      - head
-      - tail
-      - grep
-      - find
-      - which
-      - type
-      - man
-      - help
-      - history
-      - alias
-      - git status
-      - git diff
-      - git log
-      - git branch
-      - git show
-```
+## Tool Patterns
 
-## Custom Rules
+| Pattern | Matches |
+|:--------|:--------|
+| `query` | Only `query` |
+| `read_*` | `read_file`, `read_directory`, etc. |
+| `*` | All tools |
 
-Define pattern-based rules:
+## Path Patterns
 
-```yaml
-overwatch:
-  rules:
-    # Allow all npm commands
-    - pattern: "^npm "
-      action: allow
-      reason: "npm is safe in this project"
+For filesystem operations:
 
-    # Prompt for docker commands
-    - pattern: "^docker "
-      action: prompt
-      reason: "Docker commands need review"
+| Pattern | Matches |
+|:--------|:--------|
+| `./src/**` | All files under src/ |
+| `**/.env*` | All .env files anywhere |
+| `~/.ssh/**` | All SSH key files |
+| `/.*` | Hidden files in root |
 
-    # Block rm without flags
-    - pattern: "^rm [^-]"
-      action: deny
-      reason: "Use rm -i for safety"
-```
+`deny` patterns take precedence over `allow` patterns.
 
-## Allowlist and Denylist
+## Validation
 
-Exact command matches:
-
-```yaml
-overwatch:
-  # These exact commands are always allowed
-  allowlist:
-    - "npm test"
-    - "npm run build"
-    - "make test"
-
-  # These patterns are always denied
-  denylist:
-    - pattern: "curl.*\\|.*sh"
-      reason: "Piping curl to shell is dangerous"
-    - pattern: "wget.*\\|.*bash"
-      reason: "Piping wget to bash is dangerous"
-```
-
-## Audit Configuration
-
-Control logging behavior:
-
-```yaml
-overwatch:
-  audit:
-    # Enable/disable audit logging
-    enabled: true
-
-    # Log all commands (not just prompted ones)
-    logAllCommands: false
-
-    # Redact secrets from logs
-    redactSecrets: true
-```
-
-## UI Configuration
-
-Customize the approval prompt:
-
-```yaml
-overwatch:
-  ui:
-    # Show risk analysis in prompts
-    showAnalysis: true
-
-    # Show safer alternatives
-    showAlternatives: true
-
-    # Show reversibility info
-    showReversibility: true
-```
-
-## Configuration Locations
-
-Overwatch searches for configuration in order:
-
-1. `./tollgate.yaml` (current directory)
-2. `./tollgate.yml`
-3. `./.tollgate.yaml`
-4. `./.tollgate.yml`
-5. `~/.config/tollgate/tollgate.yaml`
-
-## View Current Configuration
+Validate your configuration:
 
 ```bash
-overwatch config
+overwatch policies validate
 ```
 
-## Validate Configuration
+Or check overall installation:
 
 ```bash
-tollgate validate
+overwatch doctor
 ```
+
+This checks:
+- YAML syntax
+- Required fields
+- Server command availability
+- Valid action values

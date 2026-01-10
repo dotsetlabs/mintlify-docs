@@ -1,0 +1,128 @@
+---
+title: wrap
+description: 'Wrap a single MCP server with security'
+---
+
+# overwatch wrap
+
+Wrap a single MCP server with a security proxy. All tool calls are intercepted and analyzed before execution.
+
+## Usage
+
+```bash
+overwatch wrap [options] <command> [args...]
+```
+
+## Arguments
+
+| Argument | Description |
+|:---------|:------------|
+| `command` | The MCP server command to run |
+| `args` | Arguments to pass to the MCP server |
+
+## Options
+
+| Option | Description |
+|:-------|:------------|
+| `-c, --config <path>` | Path to configuration file |
+| `-n, --name <name>` | Server name (default: "wrapped") |
+| `-t, --timeout <ms>` | Approval timeout in milliseconds (default: 60000) |
+| `--fail-mode <mode>` | Fail mode: `open`, `closed`, `readonly` (default: `closed`) |
+| `--no-audit` | Disable audit logging |
+| `--approval <method>` | Approval method: `terminal`, `webhook` |
+| `--approval-webhook-url <url>` | Webhook URL for remote approvals |
+| `--approval-webhook-secret <secret>` | Secret for HMAC signing webhook payloads |
+
+## Examples
+
+### Basic Usage
+
+```bash
+overwatch wrap npx @modelcontextprotocol/server-postgres
+```
+
+Every tool call prompts for approval.
+
+### With Custom Timeout
+
+```bash
+overwatch wrap --timeout 120000 npx @anthropic/mcp-server-filesystem ./src
+```
+
+### With Environment Variables
+
+```bash
+DATABASE_URL="postgres://localhost/mydb" overwatch wrap npx @modelcontextprotocol/server-postgres
+```
+
+### Named Server
+
+```bash
+overwatch wrap --name production-db npx @modelcontextprotocol/server-postgres
+```
+
+## How It Works
+
+1. Overwatch spawns the MCP server as a child process
+2. All JSONRPC messages pass through the proxy
+3. Tool definitions are captured and hashed for shadowing detection
+4. `tools/call` requests are evaluated against policies
+5. Based on policy, the call is allowed, denied, or prompts for approval
+6. Approved calls are forwarded to the upstream server
+7. All operations are logged to the audit trail
+
+## Approval Flow
+
+When a tool call requires approval:
+
+```
+┌─────────────────────────────────────────────┐
+│ Tool Call: query                            │
+│ Server: postgres                            │
+│ Risk: write                                 │
+│                                             │
+│ Arguments:                                  │
+│   sql: INSERT INTO users (name) VALUES ('x')│
+│                                             │
+│ [A]llow once  [5] 5 min  [S]ession  [D]eny │
+└─────────────────────────────────────────────┘
+```
+
+## Session Grants
+
+After approving, you can grant permissions for a duration:
+
+| Grant | Duration | Use Case |
+|:------|:---------|:---------|
+| Once | Single use | One-time operations |
+| 5 min | 5 minutes | Short tasks |
+| 15 min | 15 minutes | Moderate tasks |
+| Session | 24 hours | Full development session |
+
+## Use with Claude Desktop
+
+Update `~/Library/Application Support/Claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y", "@dotsetlabs/overwatch", "wrap",
+        "npx", "-y", "@anthropic/mcp-server-filesystem", "./"
+      ]
+    }
+  }
+}
+```
+
+## Fail Modes
+
+Control behavior when the upstream server fails:
+
+| Mode | Description |
+|:-----|:------------|
+| `closed` | Deny all requests (default, safest) |
+| `open` | Allow requests to continue (risky) |
+| `readonly` | Allow reads, deny writes |

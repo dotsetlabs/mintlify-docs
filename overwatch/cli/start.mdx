@@ -1,0 +1,126 @@
+---
+title: start
+description: 'Start multi-server protection from config'
+---
+
+# overwatch start
+
+Start Overwatch with multiple MCP servers from a configuration file.
+
+## Usage
+
+```bash
+overwatch start [options]
+```
+
+## Options
+
+| Option | Description |
+|:-------|:------------|
+| `-c, --config <path>` | Path to config file (default: auto-detect) |
+| `--fail-mode <mode>` | Fail mode: `open`, `closed`, `readonly` (default: `closed`) |
+| `--no-audit` | Disable audit logging |
+| `--approval <method>` | Approval method: `terminal`, `webhook` |
+| `--approval-webhook-url <url>` | Webhook URL for remote approvals |
+| `--approval-webhook-secret <secret>` | Secret for HMAC signing webhook payloads |
+| `-t, --timeout <ms>` | Approval timeout in milliseconds (default: 60000) |
+
+## Examples
+
+### Start All Servers
+
+```bash
+overwatch start
+```
+
+Starts all servers defined in `overwatch.yaml`.
+
+### With Custom Config
+
+```bash
+overwatch start -c ./my-config.yaml
+```
+
+## Configuration File
+
+Create `overwatch.yaml`:
+
+```yaml
+version: 1
+
+defaults:
+  action: prompt
+  timeout: 60000
+  sessionDuration: 300000
+
+servers:
+  postgres:
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-postgres"]
+    env:
+      DATABASE_URL: postgres://localhost/mydb
+    policies:
+      - tools: ["query", "select"]
+        action: allow
+      - tools: ["insert", "update"]
+        action: prompt
+      - tools: ["drop_*", "delete_*"]
+        action: deny
+
+  filesystem:
+    command: npx
+    args: ["-y", "@anthropic/mcp-server-filesystem", "./"]
+    policies:
+      - tools: ["read_file", "list_directory"]
+        action: allow
+      - tools: ["write_file", "delete_file"]
+        action: prompt
+
+toolShadowing:
+  enabled: true
+  checkDescriptions: true
+  detectMutations: true
+
+audit:
+  enabled: true
+  redactPII: true
+```
+
+## Config File Locations
+
+Overwatch searches for config in this order:
+
+1. Path specified with `--config`
+2. `overwatch.yaml` in current directory
+3. `overwatch.yml` in current directory
+4. `~/.overwatch/config.yaml`
+
+## Server Configuration
+
+Each server can have:
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `command` | string | Command to run (required) |
+| `args` | string[] | Command arguments |
+| `env` | object | Environment variables |
+| `policies` | array | Policy rules |
+
+## Policy Configuration
+
+Each policy rule can have:
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `tools` | string/string[] | Tool name(s) or pattern (`*` for all) |
+| `action` | string | Action: `allow`, `deny`, `prompt` |
+| `paths` | object | Path-based rules (for filesystem) |
+
+## Multi-Server Benefits
+
+Running multiple servers through `overwatch start`:
+
+- Single point of security policy management
+- Unified audit logging
+- Shared session grants across servers
+- Tool shadowing detection across servers

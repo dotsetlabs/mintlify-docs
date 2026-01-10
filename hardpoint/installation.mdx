@@ -1,0 +1,68 @@
+---
+title: Installation
+description: 'Install Hardpoint'
+---
+
+# Installation
+
+## Go Install (Recommended)
+
+```bash
+go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
+```
+
+Requires Go 1.21 or later.
+
+## Download Binary
+
+Download pre-built binaries from [GitHub Releases](https://github.com/dotsetlabs/hardpoint/releases):
+
+```bash
+# macOS (Apple Silicon)
+curl -LO https://github.com/dotsetlabs/hardpoint/releases/latest/download/hardpoint-darwin-arm64
+chmod +x hardpoint-darwin-arm64
+sudo mv hardpoint-darwin-arm64 /usr/local/bin/hardpoint
+
+# macOS (Intel)
+curl -LO https://github.com/dotsetlabs/hardpoint/releases/latest/download/hardpoint-darwin-amd64
+chmod +x hardpoint-darwin-amd64
+sudo mv hardpoint-darwin-amd64 /usr/local/bin/hardpoint
+
+# Linux (x86_64)
+curl -LO https://github.com/dotsetlabs/hardpoint/releases/latest/download/hardpoint-linux-amd64
+chmod +x hardpoint-linux-amd64
+sudo mv hardpoint-linux-amd64 /usr/local/bin/hardpoint
+```
+
+## Verify Installation
+
+```bash
+hardpoint --version
+```
+
+## Quick Start
+
+```bash
+# Scan current directory
+hardpoint scan
+
+# Initialize configuration
+hardpoint init
+```
+
+## Updating
+
+```bash
+# Go install (reinstall latest)
+go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
+```
+
+## Uninstalling
+
+```bash
+# Remove binary from GOPATH
+rm $(go env GOPATH)/bin/hardpoint
+
+# Or if installed to /usr/local/bin
+sudo rm /usr/local/bin/hardpoint
+```

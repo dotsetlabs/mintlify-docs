@@ -1,0 +1,159 @@
+---
+title: Audit Logging
+description: 'Understanding audit logs and export formats'
+---
+
+# Audit Logging
+
+Overwatch maintains a complete audit trail of all tool calls, decisions, and session grants.
+
+## What's Logged
+
+Every tool call records:
+
+| Field | Description |
+|:------|:------------|
+| `id` | Unique entry ID (UUID) |
+| `timestamp` | When the call occurred |
+| `server` | MCP server name |
+| `tool` | Tool that was called |
+| `args` | Tool arguments (may be redacted) |
+| `riskLevel` | Classified risk level |
+| `decision` | `allowed` or `denied` |
+| `sessionId` | Session grant ID (if applicable) |
+| `duration` | Execution time (ms) |
+| `error` | Error message (if failed) |
+
+## Storage
+
+Audit logs are stored in SQLite at `~/.overwatch/audit.db`.
+
+### Configuration
+
+```yaml
+audit:
+  enabled: true
+  redactPII: true
+```
+
+### PII Redaction
+
+When `redactPII: true`, sensitive data is automatically redacted:
+
+- Email addresses
+- IP addresses
+- Credit card numbers
+- API keys (patterns)
+- Passwords in URLs
+
+Redacted content appears as `[REDACTED]`.
+
+## Querying Logs
+
+### CLI
+
+```bash
+# Recent logs
+overwatch logs
+
+# Limit number of entries
+overwatch logs -n 50
+
+# Filter by time
+overwatch logs --since 1h
+overwatch logs --since 7d
+
+# Filter by criteria
+overwatch logs --server postgres
+overwatch logs --risk destructive
+
+# Follow in real-time
+overwatch logs --tail
+```
+
+## Export Formats
+
+### JSON
+
+```bash
+overwatch logs --export json > audit.json
+```
+
+```json
+[
+  {
+    "id": "abc123-def456",
+    "timestamp": "2026-01-09T10:30:15.123Z",
+    "server": "postgres",
+    "tool": "query",
+    "riskLevel": "write",
+    "decision": "allowed",
+    "sessionId": "sess-xyz",
+    "duration": 45
+  }
+]
+```
+
+### CSV
+
+```bash
+overwatch logs --export csv > audit.csv
+```
+
+```csv
+id,timestamp,server,tool,riskLevel,decision,duration
+abc123-def456,2026-01-09T10:30:15.123Z,postgres,query,write,allowed,45
+```
+
+### CEF (Common Event Format)
+
+For SIEM integration:
+
+```bash
+overwatch logs --export cef > audit.cef
+```
+
+```
+CEF:0|DotsetLabs|Overwatch|1.0|ALLOWED|Tool Call Allowed|3|
+cs1=query cs2=postgres outcome=allowed rt=2026-01-09T10:30:15.123Z
+```
+
+CEF severity mapping:
+
+| Risk Level | CEF Severity |
+|:-----------|:-------------|
+| dangerous | 10 |
+| destructive | 8 |
+| write | 5 |
+| read | 3 |
+| safe | 1 |
+
+## Statistics
+
+```bash
+overwatch stats
+```
+
+```
+Audit Statistics
+================
+
+Total Operations: 1,247
+  Allowed: 1,189 (95.3%)
+  Denied: 58 (4.7%)
+
+By Risk Level:
+  safe: 203
+  read: 847
+  write: 156
+  destructive: 32
+  dangerous: 9
+```
+
+## Best Practices
+
+1. **Enable PII redaction** - Protect sensitive data
+2. **Export regularly** - Archive to long-term storage
+3. **Monitor denials** - High denial rate may indicate attacks
+4. **Integrate with SIEM** - Use CEF export for security monitoring
+5. **Review statistics** - Identify unusual patterns

@@ -1,0 +1,125 @@
+---
+title: Overview
+description: 'Runtime security proxy for MCP servers'
+---
+
+# Overwatch
+
+Overwatch is a runtime security proxy for MCP (Model Context Protocol) servers. It intercepts tool calls, detects **Tool Shadowing** attacks (CVE-2025-6514), and enforces policies before execution.
+
+## Why Overwatch?
+
+AI agents using MCP servers have access to powerful tools - databases, filesystems, and APIs. Without access control:
+
+- A single prompt injection can drop database tables
+- Malicious MCP servers can shadow trusted tools
+- Dangerous operations execute without human review
+- No audit trail of what the AI agent did
+
+Overwatch adds a security layer between AI agents and these dangerous operations.
+
+## Quick Start
+
+```bash
+# Install
+npm install -g @dotsetlabs/overwatch
+
+# Wrap any MCP server
+overwatch wrap npx @modelcontextprotocol/server-postgres
+
+# Or start with configuration
+overwatch init
+overwatch start
+```
+
+## Key Features
+
+### Tool Shadowing Detection
+
+Detects CVE-2025-6514 where malicious MCP servers impersonate trusted tools:
+
+- **Schema hashing** - SHA-256 fingerprints of tool definitions
+- **Collision detection** - Same tool name across multiple servers
+- **Mutation monitoring** - Schema changes mid-session
+- **Description analysis** - 30+ suspicious patterns
+
+### Policy Engine
+
+Configure fine-grained access control:
+
+```yaml
+version: 1
+servers:
+  postgres:
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-postgres"]
+    policies:
+      - tools: ["query", "select"]
+        action: allow
+      - tools: ["insert", "update"]
+        action: prompt
+      - tools: ["drop_*", "delete_*"]
+        action: deny
+
+toolShadowing:
+  enabled: true
+  checkDescriptions: true
+  detectMutations: true
+```
+
+### Session Grants
+
+After approving an operation, grant temporary permissions:
+
+| Grant | Duration | Use Case |
+|:------|:---------|:---------|
+| Once | Single use | One-time operations |
+| 5 min | 5 minutes | Short tasks |
+| 15 min | 15 minutes | Moderate tasks |
+| Session | 24 hours | Full development session |
+
+Sessions can be revoked at any time with `overwatch sessions revoke`.
+
+### Audit Logging
+
+Complete audit trail of all operations:
+
+```bash
+overwatch logs                    # View recent logs
+overwatch logs --tail             # Follow in real-time
+overwatch logs --export json      # Export for analysis
+overwatch stats                   # View statistics
+```
+
+Supports JSON, CSV, and CEF (Common Event Format) for SIEM integration.
+
+### Reliability Features
+
+- **Circuit breaker** - Protects against upstream failures
+- **Request timeouts** - Prevents hanging operations
+- **Connection recovery** - Exponential backoff reconnection
+- **Fail modes** - Configure behavior when upstream fails
+
+## Architecture
+
+```
+AI Client → MCPProxy → ToolShadowingDetector → PolicyEngine
+                ↓              ↓                    ↓
+           AuditLogger    CircuitBreaker      SessionManager
+                ↓
+           MCP Server
+```
+
+## Next Steps
+
+<CardGroup>
+  <Card title="Installation" icon="download" href="/overwatch/installation">
+    Install Overwatch
+  </Card>
+  <Card title="Wrap Command" icon="shield" href="/overwatch/cli/wrap">
+    Protect any MCP server
+  </Card>
+  <Card title="Tool Shadowing" icon="mask" href="/overwatch/concepts/tool-shadowing">
+    Understand tool shadowing detection
+  </Card>
+</CardGroup>

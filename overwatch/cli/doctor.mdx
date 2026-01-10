@@ -1,0 +1,113 @@
+---
+title: doctor
+description: 'Diagnose installation and configuration'
+---
+
+# overwatch doctor
+
+Check Overwatch installation and configuration for issues.
+
+## Usage
+
+```bash
+overwatch doctor
+```
+
+## Output
+
+```
+Overwatch Doctor
+================
+
+Installation
+  Version: 1.0.0
+  Node.js: v20.10.0 ✓
+
+Configuration
+  Config file: overwatch.yaml ✓
+  Servers: 2 configured
+  Default action: prompt
+
+Data Directory
+  Path: ~/.overwatch/
+  Audit DB: 2.3 MB ✓
+  Sessions DB: 128 KB ✓
+
+Servers
+  postgres: command found ✓
+  filesystem: command found ✓
+
+All checks passed.
+```
+
+## Checks Performed
+
+### Installation
+
+- Verifies Overwatch version
+- Checks Node.js version (requires 20+)
+
+### Configuration
+
+- Locates and validates config file
+- Counts configured servers
+- Shows default action
+
+### Data Directory
+
+- Checks `~/.overwatch/` exists
+- Shows audit database size
+- Shows sessions database status
+
+### Servers
+
+- Verifies configured server commands exist
+- Checks command accessibility in PATH
+
+## Exit Codes
+
+| Code | Meaning |
+|:-----|:--------|
+| 0 | All checks passed |
+| 1 | One or more checks failed |
+
+## Troubleshooting
+
+### Node.js Version Too Old
+
+```
+Installation
+  Node.js: v18.0.0 ✗ (requires 20+)
+```
+
+Solution: Upgrade Node.js to version 20 or later.
+
+### Config File Not Found
+
+```
+Configuration
+  Config file: not found
+```
+
+Solution:
+```bash
+overwatch init
+```
+
+### Server Command Not Found
+
+```
+Servers
+  postgres: command not found ✗
+```
+
+Solution: Install the required MCP server package or check PATH.
+
+### Audit Database Issues
+
+```
+Data Directory
+  Audit DB: error - cannot open
+```
+
+Solution: Check permissions on `~/.overwatch/` directory.

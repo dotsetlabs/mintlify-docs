@@ -1,0 +1,135 @@
+---
+title: init
+description: 'Initialize Overwatch configuration'
+---
+
+# overwatch init
+
+Initialize Overwatch configuration file.
+
+## Usage
+
+```bash
+overwatch init [options]
+```
+
+## Options
+
+| Option | Description |
+|:-------|:------------|
+| `-f, --force` | Overwrite existing configuration |
+
+## Examples
+
+### Basic Initialization
+
+```bash
+overwatch init
+```
+
+Creates `overwatch.yaml`:
+
+```yaml
+version: 1
+
+defaults:
+  action: prompt
+  timeout: 60000
+  sessionDuration: 300000
+
+servers: {}
+
+toolShadowing:
+  enabled: true
+  checkDescriptions: true
+  detectMutations: true
+
+audit:
+  enabled: true
+  redactPII: true
+```
+
+### Overwrite Existing Config
+
+```bash
+overwatch init --force
+```
+
+## Configuration Structure
+
+### `version`
+
+Configuration version (currently `1`).
+
+### `defaults`
+
+Default settings for all servers:
+
+```yaml
+defaults:
+  action: prompt          # Default action: allow, deny, prompt
+  timeout: 60000          # Approval timeout in ms
+  sessionDuration: 300000 # Session grant duration in ms (5 min)
+```
+
+### `servers`
+
+MCP server configurations:
+
+```yaml
+servers:
+  postgres:
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-postgres"]
+    env:
+      DATABASE_URL: postgres://localhost/mydb
+    policies:
+      - tools: ["query", "select"]
+        action: allow
+      - tools: ["insert", "update"]
+        action: prompt
+      - tools: ["drop_*", "delete_*"]
+        action: deny
+```
+
+### `toolShadowing`
+
+Tool shadowing detection settings:
+
+```yaml
+toolShadowing:
+  enabled: true          # Enable tool shadowing detection
+  checkDescriptions: true # Check tool descriptions for injection
+  detectMutations: true   # Detect mid-session schema changes
+```
+
+### `audit`
+
+Audit logging settings:
+
+```yaml
+audit:
+  enabled: true
+  redactPII: true
+```
+
+## Config File Location
+
+- If in a directory with `package.json`: Creates `overwatch.yaml` in current directory
+- Otherwise: Creates `~/.overwatch/config.yaml`
+
+## After Initialization
+
+```bash
+# Edit configuration
+nano overwatch.yaml
+
+# Start with config
+overwatch start
+
+# Or wrap a single server
+overwatch wrap npx @modelcontextprotocol/server-postgres
+
+# Verify installation
+overwatch doctor
+```

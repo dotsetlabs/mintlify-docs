@@ -1,0 +1,88 @@
+---
+title: Overview
+description: 'Static security scanner for Rules File Backdoor attacks'
+---
+
+# Hardpoint
+
+Hardpoint is a static security scanner designed specifically for AI-assisted development environments. It detects the **Rules File Backdoor** attack - malicious instructions hidden in AI configuration files that are invisible to developers but executed by AI coding assistants.
+
+## Why Hardpoint?
+
+AI coding assistants like Cursor, Claude Code, and GitHub Copilot read configuration files to understand your project. Attackers can exploit this by:
+
+- Hiding malicious instructions in comments that AI models still read
+- Embedding command injection in `mcp.json` server configurations
+- Encoding payloads in Base64 to evade visual inspection
+- Backdooring git hooks to exfiltrate credentials
+
+Hardpoint scans for these threats with 9 detection rules across 2 specialized scanners.
+
+## Quick Start
+
+```bash
+# Install
+go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
+
+# Scan current directory
+hardpoint scan
+
+# Scan specific path
+hardpoint scan /path/to/project
+```
+
+## Detection Rules
+
+| Rule | Severity | Description |
+|:-----|:---------|:------------|
+| **AI-008** | Critical | Semantic Hijacking - 80+ obfuscation-resistant patterns |
+| **AI-005** | Critical | Command Injection in MCP configurations |
+| **AI-004** | Medium | Encoded Instructions (Base64 payloads) |
+| **GIT-001** | Critical | Malicious Git Hook Pattern |
+| **GIT-002** | Critical | Credential Exfiltration in Hook |
+| **GIT-003** | Medium | Network Access in Git Hook |
+| **GIT-004** | High | Obfuscated Git Hook Content |
+| **GIT-005** | Medium | Suspicious Git Remote URL |
+| **GIT-006** | High | Suspicious Credential Helper |
+
+## Scanners
+
+| Scanner | Target Files | Threats Detected |
+|:--------|:-------------|:-----------------|
+| **AI** | `.cursorrules`, `CLAUDE.md`, `mcp.json`, `.github/copilot-instructions.md` | Semantic hijacking, command injection, encoded content |
+| **Git** | `.git/hooks/*`, `.git/config` | Malicious hooks, credential exfiltration, suspicious remotes |
+
+## Output Formats
+
+```bash
+# Human-readable (default)
+hardpoint scan
+
+# JSON for tooling
+hardpoint scan --output json
+
+# SARIF for GitHub Code Scanning
+hardpoint scan --output sarif > results.sarif
+```
+
+## Key Features
+
+- **Zero network access** - All scanning happens locally
+- **Semantic analysis** - Detects Rules File Backdoor attacks with 80+ patterns
+- **Obfuscation resistant** - Handles leet speak, homoglyphs, Unicode normalization
+- **Trust/verify system** - HMAC-SHA256 baselines for AI config integrity
+- **CI integration** - Exit codes and SARIF output for automated pipelines
+
+## Next Steps
+
+<CardGroup>
+  <Card title="Installation" icon="download" href="/hardpoint/installation">
+    Install Hardpoint
+  </Card>
+  <Card title="Scan Command" icon="radar" href="/hardpoint/cli/scan">
+    Learn scan options
+  </Card>
+  <Card title="Semantic Hijacking" icon="eye-slash" href="/hardpoint/concepts/semantic-hijacking">
+    Understand the flagship detection
+  </Card>
+</CardGroup>

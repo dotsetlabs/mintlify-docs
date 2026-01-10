@@ -1,0 +1,111 @@
+---
+title: doctor
+description: 'Diagnose installation and configuration'
+---
+
+# hardpoint doctor
+
+Check Hardpoint installation and configuration for issues.
+
+## Usage
+
+```bash
+hardpoint doctor
+```
+
+## Output
+
+```
+Hardpoint Doctor
+================
+
+Installation
+  Binary version: 1.0.0
+  Binary location: /usr/local/bin/hardpoint
+
+Configuration
+  Config file: .hardpoint.yaml
+  Scanners: ai, git
+  Severity: low
+  Excludes: 5 patterns
+
+Git Integration
+  Git repository: yes
+  Pre-commit hook: installed
+  Hook manager: native
+
+Trust System
+  Trusted files: 3
+  Secret key: present
+
+All checks passed.
+```
+
+## Checks Performed
+
+### Installation
+
+- Verifies binary is accessible
+- Shows version information
+
+### Configuration
+
+- Locates and validates config file
+- Shows active scanners
+- Lists exclusion patterns
+
+### Git Integration
+
+- Checks if in a git repository
+- Verifies pre-commit hook status
+- Detects hook manager (native/husky/lefthook)
+
+### Trust System
+
+- Counts trusted files
+- Checks for HMAC secret key
+
+## Exit Codes
+
+| Code | Meaning |
+|:-----|:--------|
+| 0 | All checks passed |
+| 1 | One or more checks failed |
+
+## Troubleshooting
+
+### No Config File Found
+
+```
+Configuration
+  Config file: not found (using defaults)
+```
+
+Solution:
+```bash
+hardpoint init
+```
+
+### Hook Not Installed
+
+```
+Git Integration
+  Pre-commit hook: not installed
+```
+
+Solution:
+```bash
+hardpoint hook install
+```
+
+### Trust Baseline Missing
+
+```
+Trust System
+  Trusted files: 0
+```
+
+Solution:
+```bash
+hardpoint trust --all
+```

@@ -7,100 +7,75 @@ description: 'Security tools for the AI era'
 
 **Security tools for the AI era.**
 
-Dotset Labs provides security tools for developers working with AI assistants:
+Dotset Labs provides security tools for developers working with AI coding assistants:
 
-- **[Hardpoint](/hardpoint/cli/overview)** - Developer environment security scanner for the AI era
-- **[Tollgate](/tollgate/cli/overview)** - Policy-based access control for AI agents using MCP
-- **[Deadfall](/deadfall/cli/overview)** - Cognitive honeypots for detecting AI agent compromise
+- **[Hardpoint](/hardpoint/overview)** - Static security scanner for Rules File Backdoor attacks
+- **[Overwatch](/overwatch/overview)** - Runtime security proxy for MCP servers
 
 ---
 
 ## Hardpoint
 
-AI coding assistants introduce new attack surfaces. Malicious `.cursorrules` files, prompt injection in `CLAUDE.md`, hidden Unicode characters, and backdoors in shell configs can compromise your development environment.
+AI coding assistants read instructions from configuration files like `.cursorrules`, `CLAUDE.md`, and `mcp.json`. Attackers can exploit this with the **Rules File Backdoor** attack - hiding malicious instructions in comments, encoded content, or structural elements that are invisible to developers but executed by AI.
 
-**Hardpoint** scans your environment for these AI-era threats — detecting issues that traditional security tools miss.
+**Hardpoint** scans your environment for these AI-era threats with 9 detection rules focused on semantic hijacking, command injection, and git security.
 
 ```bash
 go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
 hardpoint scan
 ```
 
-> [!NOTE]
-> Hardpoint runs entirely locally with no network access. [Learn more →](/hardpoint/security/trust)
+**Key Features:**
+- Semantic hijacking detection with 80+ obfuscation-resistant patterns (AI-008)
+- MCP command injection detection in mcp.json configurations (AI-005)
+- Encoded instruction detection for hidden Base64 payloads (AI-004)
+- Git hook security scanning (GIT-001 through GIT-006)
+- Trust/verify system with HMAC-SHA256 integrity checking
+- CI integration with SARIF output for GitHub Code Scanning
+
+> Hardpoint runs entirely locally with no network access.
 
 ---
 
-## Tollgate
+## Overwatch
 
-AI agents using MCP servers have full access to powerful tools — databases, filesystems, and APIs. Without access control, a single prompt injection or misunderstood request can cause damage.
+AI agents using MCP servers have access to powerful tools - databases, filesystems, and APIs. Without access control, a single prompt injection or malicious MCP server can cause serious damage. **Tool Shadowing** (CVE-2025-6514) allows malicious servers to impersonate trusted tools.
 
-**Tollgate** adds policy-based access control to any MCP server, letting you allow, deny, or prompt for approval on each tool call. Identify risks early with automated server scanning and 50+ pre-built policy templates.
-
-```bash
-npm install -g @dotsetlabs/tollgate
-tollgate wrap npx @modelcontextprotocol/server-postgres
-```
-
-> [!NOTE]
-> Tollgate runs entirely locally with no cloud dependencies. [Learn more →](/tollgate/security/trust)
-
----
-
-## Deadfall
-
-AI agents automatically read configuration files like `.cursorrules` and `CLAUDE.md`. Deadfall exploits this behavior — embedding trap instructions that trigger alerts when followed.
-
-**Deadfall** uses cognitive honeypots to detect AI agent compromise by exploiting their instruction-following behavior.
+**Overwatch** is a security proxy that intercepts MCP tool calls, detects tool shadowing attacks, and enforces policies before execution.
 
 ```bash
-go install github.com/dotsetlabs/deadfall/cmd/deadfall@latest
-deadfall init
-deadfall trap cursor-rules
-deadfall serve
+npm install -g @dotsetlabs/overwatch
+overwatch wrap npx @modelcontextprotocol/server-postgres
 ```
 
-> [!NOTE]
-> Deadfall processes everything locally. [Learn more →](/deadfall/security/trust)
+**Key Features:**
+- Tool shadowing detection with schema hashing and mutation monitoring
+- Declarative policy engine with allow/prompt/deny actions
+- Session-based approval grants with revocation
+- Comprehensive audit logging with JSON/CSV/CEF export
+- Circuit breaker and timeout protection for reliability
+
+> Overwatch runs entirely locally with no cloud dependencies.
 
 ---
 
 ## Quick Install
 
-### Unified CLI (Recommended)
-
 ```bash
-# Install all tools with the unified CLI
-npm install -g @dotsetlabs/dotset
-dotset doctor --install
-```
-
-### Individual Tools
-
-```bash
-# For dev environment security
+# Static scanning (Go)
 go install github.com/dotsetlabs/hardpoint/cmd/hardpoint@latest
 
-# For MCP access control
-npm install -g @dotsetlabs/tollgate
-
-# For cognitive honeypots
-go install github.com/dotsetlabs/deadfall/cmd/deadfall@latest
+# Runtime protection (Node.js)
+npm install -g @dotsetlabs/overwatch
 ```
 
 ## Next Steps
 
 <CardGroup>
-  <Card title="Dotset CLI" icon="terminal" href="/dotset/guides/getting-started">
-    Get started with the unified CLI
-  </Card>
   <Card title="Hardpoint Quickstart" icon="radar" href="/quickstart#hardpoint">
-    Scan your dev environment
+    Scan your dev environment for Rules File Backdoor attacks
   </Card>
-  <Card title="Tollgate Quickstart" icon="lock" href="/quickstart#tollgate">
-    Add access control to MCP servers
-  </Card>
-  <Card title="Deadfall Quickstart" icon="bell" href="/quickstart#deadfall">
-    Detect AI agent compromise
+  <Card title="Overwatch Quickstart" icon="shield" href="/quickstart#overwatch">
+    Add runtime protection to MCP servers
   </Card>
 </CardGroup>

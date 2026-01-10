@@ -1,0 +1,211 @@
+---
+title: Policy Engine
+description: 'Understanding policy configuration and tool access control'
+---
+
+# Policy Engine
+
+The Policy Engine evaluates every tool call against configured policies, determining whether to allow, deny, or prompt for each operation.
+
+## Policy Evaluation Flow
+
+```
+Tool Call
+    │
+    ▼
+┌─────────────────┐
+│ Find Matching   │
+│ Policy          │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│ Check Path      │
+│ Rules (if any)  │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│ Apply Action    │
+│ (allow/deny/    │
+│  prompt)        │
+└────────┬────────┘
+         │
+         ▼
+    Decision
+```
+
+## Policy Actions
+
+| Action | Behavior | Use Case |
+|:-------|:---------|:---------|
+| `allow` | Always allow without prompt | Trusted read operations |
+| `deny` | Always deny | Known dangerous operations |
+| `prompt` | Ask user for approval | Default for unknown operations |
+
+## Policy Configuration
+
+### Basic Policy
+
+```yaml
+policies:
+  - tools: ["query"]
+    action: prompt
+```
+
+### Multiple Tools
+
+```yaml
+policies:
+  - tools: ["query", "select"]
+    action: allow
+  - tools: ["insert", "update"]
+    action: prompt
+  - tools: ["drop_*", "delete_*"]
+    action: deny
+```
+
+### With Path Rules
+
+For filesystem operations, you can specify path-based rules:
+
+```yaml
+policies:
+  - tools: ["write_file"]
+    action: prompt
+    paths:
+      allow:
+        - ./src/**
+        - ./test/**
+      deny:
+        - /.*           # Hidden files
+        - ~/.ssh/**     # SSH keys
+        - ~/.aws/**     # AWS credentials
+        - **/.env*      # Environment files
+```
+
+Path rules use glob patterns. `deny` patterns take precedence over `allow` patterns.
+
+### Wildcard Matching
+
+```yaml
+policies:
+  - tools: ["read_*"]   # Matches read_file, read_directory
+    action: allow
+
+  - tools: ["*"]        # Matches all tools
+    action: prompt
+```
+
+## Policy Matching Order
+
+Policies are evaluated in order. First match wins:
+
+1. **Exact match**: `query` matches only `query`
+2. **Wildcard match**: `read_*` matches `read_file`, `read_directory`
+3. **Global match**: `*` matches all tools
+4. **Default action**: Falls back to `defaults.action`
+
+## Server-Specific Policies
+
+Each server can have its own policies:
+
+```yaml
+servers:
+  postgres:
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-postgres"]
+    policies:
+      - tools: ["query", "select"]
+        action: allow
+      - tools: ["insert", "update"]
+        action: prompt
+      - tools: ["drop_*"]
+        action: deny
+
+  filesystem:
+    command: npx
+    args: ["-y", "@anthropic/mcp-server-filesystem", "./"]
+    policies:
+      - tools: ["read_*", "list_*"]
+        action: allow
+      - tools: ["write_*", "delete_*"]
+        action: prompt
+```
+
+## Default Settings
+
+Configure defaults that apply to all servers:
+
+```yaml
+defaults:
+  action: prompt          # Default action if no policy matches
+  timeout: 60000          # Approval timeout in ms
+  sessionDuration: 300000 # Session grant duration in ms (5 min)
+```
+
+## Complete Example
+
+```yaml
+version: 1
+
+defaults:
+  action: prompt
+  timeout: 60000
+  sessionDuration: 300000
+
+servers:
+  postgres:
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-postgres"]
+    env:
+      DATABASE_URL: postgres://localhost/mydb
+    policies:
+      - tools: ["query", "select"]
+        action: allow
+      - tools: ["insert", "update"]
+        action: prompt
+      - tools: ["drop_*", "delete_*", "truncate_*"]
+        action: deny
+
+  filesystem:
+    command: npx
+    args: ["-y", "@anthropic/mcp-server-filesystem", "./"]
+    policies:
+      - tools: ["read_file", "list_directory"]
+        action: allow
+      - tools: ["write_file"]
+        action: prompt
+        paths:
+          allow:
+            - ./src/**
+            - ./test/**
+          deny:
+            - **/.env*
+            - **/secrets/**
+      - tools: ["delete_file"]
+        action: deny
+
+toolShadowing:
+  enabled: true
+  checkDescriptions: true
+  detectMutations: true
+
+audit:
+  enabled: true
+  redactPII: true
+```
+
+## Viewing Active Policies
+
+Use the `policies` command to see current configuration:
+
+```bash
+overwatch policies list
+```
+
+Use `validate` to check for errors:
+
+```bash
+overwatch policies validate
+```

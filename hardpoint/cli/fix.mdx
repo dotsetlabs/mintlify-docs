@@ -1,94 +1,73 @@
 ---
 title: fix
-description: Auto-fix certain security findings
+description: 'Auto-fix resolvable security issues'
 ---
 
 # hardpoint fix
 
-Automatically fix certain security findings. Not all findings can be auto-fixed.
+Automatically fix security issues that have safe resolutions.
 
 ## Usage
 
 ```bash
-hardpoint fix <finding-id> [file...] [flags]
+hardpoint fix [path] [options]
 ```
 
-## Flags
+## Options
 
-| Flag | Description |
-| ---- | ----------- |
-| `--list` | List findings that can be auto-fixed |
-
-## Fixable Findings
-
-| Finding ID | Description |
-| ---------- | ----------- |
-| `AI-003` | Strip hidden Unicode characters from file |
+| Option | Description |
+|:-------|:------------|
+| `--dry-run` | Show what would be fixed without making changes |
+| `-o, --output <format>` | Output format (text, json, sarif) |
 
 ## Examples
 
-### List Fixable Findings
+### Fix Issues in Current Directory
 
 ```bash
-hardpoint fix --list
+hardpoint fix
+```
+
+### Fix Issues in Specific Path
+
+```bash
+hardpoint fix ./project
+```
+
+### Preview Changes
+
+```bash
+hardpoint fix --dry-run
 ```
 
 Output:
 ```
-Fixable findings:
+Would fix: Overly permissive git hook (./hooks/pre-commit)
+  Rule: GIT-001
 
-  AI-003     Strip hidden Unicode characters from file
+Dry run complete: 1 issues can be auto-fixed
+Run without --dry-run to apply fixes
 ```
 
-### Fix Hidden Unicode
+## Fixable Issues
 
-```bash
-# Fix a single file
-hardpoint fix AI-003 README.md
+Not all security issues can be auto-fixed. Currently fixable issues include:
 
-# Fix multiple files
-hardpoint fix AI-003 CLAUDE.md .cursorrules docs/*.md
-```
+| Rule | Fix Applied |
+|:-----|:------------|
+| GIT-001 to GIT-006 | Remove or sanitize malicious hook content |
 
-Output:
-```
-  README.md: removed 3 hidden character(s)
-  CLAUDE.md: no hidden Unicode found
-  .cursorrules: removed 1 hidden character(s)
+### Non-Fixable Issues
 
-Fixed 2 file(s)
-```
+The following issues require manual review:
 
-## How It Works
+- **AI-008** (Semantic Hijacking): Malicious instructions hidden in comments require human judgment
+- **AI-005** (MCP Command Injection): Command injection patterns need context-aware fixes
+- **AI-004** (Encoded Instructions): Encoded content requires manual inspection
 
-### AI-003: Hidden Unicode
+## Exit Codes
 
-Hidden Unicode characters can be used to inject invisible instructions into AI configuration files. This fix removes:
-
-- **Zero-width characters**: Used to hide text from humans
-- **RTL override**: Can reverse text display direction
-- **Homoglyphs**: Characters that look like ASCII but aren't
-- **Invisible separators**: Hidden formatting characters
-
-Before:
-```
-# Project Guidelines
-Follow best practices[INVISIBLE INJECTION HERE]
-```
-
-After:
-```
-# Project Guidelines
-Follow best practices
-```
-
-## Adding New Fixes
-
-Hardpoint's fix system is extensible. To request a new auto-fix:
-
-1. Open an issue on [GitHub](https://github.com/dotsetlabs/hardpoint/issues)
-2. Describe the finding and proposed fix
-3. Include example files if possible
-
-[!NOTE]
-Auto-fixes are conservative and designed to be safe. When in doubt, they leave content unchanged and report the issue for manual review.
+| Code | Meaning |
+|:-----|:--------|
+| 0 | All fixable issues resolved |
+| 1 | Some issues could not be fixed |
